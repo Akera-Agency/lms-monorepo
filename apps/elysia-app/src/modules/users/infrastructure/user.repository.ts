@@ -1,25 +1,25 @@
-import { Kysely } from "kysely";
-import { IDb } from "../../../database/types/IDb";
+import { Kysely } from 'kysely';
+import { IDb } from '../../../database/types/IDb';
 import {
   UserEntity,
   NewUser,
   UpdateUser,
   KyselyUserEntity,
   QueryUser,
-} from "./user.entity";
-import { BaseRepo, FindManyArgs } from "../../../shared/types/base/base.repo";
-import { infinityPagination } from "../../../shared/utils/infinityPagination";
-import { PostgresError } from "../../../shared/Errors/PostgresError";
+} from './user.entity';
+import { BaseRepo, FindManyArgs } from '../../../shared/types/base/base.repo';
+import { infinityPagination } from '../../../shared/utils/infinityPagination';
+import { PostgresError } from '../../../shared/Errors/PostgresError';
 
 export class UserRepository extends BaseRepo<KyselyUserEntity> {
   constructor(trx: Kysely<IDb>) {
-    super(trx, "users");
+    super(trx, 'users');
   }
 
-  async findManyWithPagination(query: QueryUser) {
+  override async findManyWithPagination(query: QueryUser) {
     try {
       const queryBuilder = this.trx
-        .selectFrom("users")
+        .selectFrom('users')
         .$if(!!query.filter, (q) =>
           q.where((eb) =>
             eb.and(
@@ -51,10 +51,10 @@ export class UserRepository extends BaseRepo<KyselyUserEntity> {
           .$if(!!query.limit && !!query.page, (q) =>
             q.offset(((query.page as number) - 1) * (query.limit as number))
           )
-          .selectAll("users")
+          .selectAll('users')
           .execute(),
         queryBuilder
-          .select(this.trx.fn.countAll("users").as("count"))
+          .select(this.trx.fn.countAll('users').as('count'))
           .executeTakeFirst(),
       ]);
       return infinityPagination(res, {
@@ -67,10 +67,10 @@ export class UserRepository extends BaseRepo<KyselyUserEntity> {
     }
   }
 
-  async findOne(args: FindManyArgs<UserEntity>) {
+  override async findOne(args: FindManyArgs<UserEntity>) {
     try {
       const res = await this.trx
-        .selectFrom("users")
+        .selectFrom('users')
         .selectAll()
         .where((eb) =>
           eb.and(
@@ -87,7 +87,7 @@ export class UserRepository extends BaseRepo<KyselyUserEntity> {
   async create(data: NewUser) {
     try {
       const [inserted] = await this.trx
-        .insertInto("users")
+        .insertInto('users')
         .values(data)
         .returningAll()
         .execute();
@@ -100,9 +100,9 @@ export class UserRepository extends BaseRepo<KyselyUserEntity> {
   async update(id: string, data: UpdateUser) {
     try {
       const [updated] = await this.trx
-        .updateTable("users")
+        .updateTable('users')
         .set(data)
-        .where("id", "=", id)
+        .where('id', '=', id)
         .returningAll()
         .execute();
       return updated;
@@ -113,7 +113,7 @@ export class UserRepository extends BaseRepo<KyselyUserEntity> {
 
   async delete(id: string) {
     try {
-      await this.trx.deleteFrom("users").where("id", "=", id).execute();
+      await this.trx.deleteFrom('users').where('id', '=', id).execute();
     } catch (error) {
       throw new PostgresError(error);
     }

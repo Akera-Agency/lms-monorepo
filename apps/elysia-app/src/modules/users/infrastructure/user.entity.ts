@@ -4,8 +4,8 @@ import {
   Insertable,
   Selectable,
   Updateable,
-} from "kysely";
-import { BaseQuery } from "../../../shared/types/base/base.query";
+} from 'kysely';
+import { BaseQuery } from '../../../shared/types/base/base.query';
 
 export interface KyselyUserEntity {
   id: GeneratedAlways<string>;

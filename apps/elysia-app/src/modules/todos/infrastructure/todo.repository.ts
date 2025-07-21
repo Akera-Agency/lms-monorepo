@@ -1,25 +1,25 @@
-import { Kysely } from "kysely";
-import { IDb } from "../../../database/types/IDb";
+import { Kysely } from 'kysely';
+import { IDb } from '../../../database/types/IDb';
 import {
   TodoEntity,
   NewTodo,
   UpdateTodo,
   KyselyTodoEntity,
   QueryTodo,
-} from "./todo.entity";
-import { BaseRepo, FindManyArgs } from "../../../shared/types/base/base.repo";
-import { PostgresError } from "../../../shared/Errors/PostgresError";
-import { infinityPagination } from "../../../shared/utils/infinityPagination";
+} from './todo.entity';
+import { BaseRepo, FindManyArgs } from '../../../shared/types/base/base.repo';
+import { PostgresError } from '../../../shared/Errors/PostgresError';
+import { infinityPagination } from '../../../shared/utils/infinityPagination';
 
 export class TodoRepository extends BaseRepo<KyselyTodoEntity> {
   constructor(trx: Kysely<IDb>) {
-    super(trx, "todos");
+    super(trx, 'todos');
   }
 
-  async findManyWithPagination(query: QueryTodo) {
+  override async findManyWithPagination(query: QueryTodo) {
     try {
       const queryBuilder = this.trx
-        .selectFrom("todos")
+        .selectFrom('todos')
         .$if(!!query.filter, (q) =>
           q.where((eb) =>
             eb.and(
@@ -51,10 +51,10 @@ export class TodoRepository extends BaseRepo<KyselyTodoEntity> {
           .$if(!!query.limit && !!query.page, (q) =>
             q.offset(((query.page as number) - 1) * (query.limit as number))
           )
-          .selectAll("todos")
+          .selectAll('todos')
           .execute(),
         queryBuilder
-          .select(this.trx.fn.countAll("todos").as("count"))
+          .select(this.trx.fn.countAll('todos').as('count'))
           .executeTakeFirst(),
       ]);
       return infinityPagination(res, {
@@ -70,7 +70,7 @@ export class TodoRepository extends BaseRepo<KyselyTodoEntity> {
   async findAll(args: FindManyArgs<TodoEntity>) {
     try {
       const res = await this.trx
-        .selectFrom("todos")
+        .selectFrom('todos')
         .selectAll()
         .where((eb) =>
           eb.and(
@@ -86,10 +86,10 @@ export class TodoRepository extends BaseRepo<KyselyTodoEntity> {
     }
   }
 
-  async findOne(args: FindManyArgs<TodoEntity>) {
+  override async findOne(args: FindManyArgs<TodoEntity>) {
     try {
       const res = await this.trx
-        .selectFrom("todos")
+        .selectFrom('todos')
         .selectAll()
         .where((eb) =>
           eb.and(
@@ -108,7 +108,7 @@ export class TodoRepository extends BaseRepo<KyselyTodoEntity> {
   async create(data: NewTodo) {
     try {
       const [inserted] = await this.trx
-        .insertInto("todos")
+        .insertInto('todos')
         .values(data)
         .returningAll()
         .execute();
@@ -121,9 +121,9 @@ export class TodoRepository extends BaseRepo<KyselyTodoEntity> {
   async update(id: string, data: UpdateTodo) {
     try {
       const [updated] = await this.trx
-        .updateTable("todos")
+        .updateTable('todos')
         .set(data)
-        .where("id", "=", id)
+        .where('id', '=', id)
         .returningAll()
         .execute();
       return updated;
@@ -134,7 +134,7 @@ export class TodoRepository extends BaseRepo<KyselyTodoEntity> {
 
   async delete(id: string) {
     try {
-      await this.trx.deleteFrom("todos").where("id", "=", id).execute();
+      await this.trx.deleteFrom('todos').where('id', '=', id).execute();
     } catch (error) {
       throw new PostgresError(error);
     }

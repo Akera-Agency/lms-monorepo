@@ -1,19 +1,19 @@
-import { BaseModule } from "../../shared/types/base/base.module";
-import { UserRepository } from "./infrastructure/user.repository";
-import { UserService } from "./user.service";
-import { userController } from "./user.controller";
+import { BaseModule } from '../../shared/types/base/base.module';
+import { UserRepository } from './infrastructure/user.repository';
+import { UserService } from './user.service';
+import { userController } from './user.controller';
 
-export const userModule: BaseModule = {
+export const userModule = {
   repositories: {
-    [UserRepository.name]: {
+    UserRepository: {
       import: UserRepository,
     },
   },
   services: {
-    [UserService.name]: {
+    UserService: {
       import: UserService,
       inject: [UserRepository],
     },
   },
   controllers: [userController],
-};
+} satisfies BaseModule;

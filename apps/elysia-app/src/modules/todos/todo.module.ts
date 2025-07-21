@@ -1,19 +1,19 @@
-import { TodoService } from "./todo.service";
-import { TodoRepository } from "./infrastructure/todo.repository";
-import { BaseModule } from "../../shared/types/base/base.module";
-import { todoController } from "./todo.controller";
+import { TodoService } from './todo.service';
+import { TodoRepository } from './infrastructure/todo.repository';
+import { BaseModule } from '../../shared/types/base/base.module';
+import { todoController } from './todo.controller';
 
-export const todoModule: BaseModule = {
+export const todoModule = {
   repositories: {
-    [TodoRepository.name]: {
+    TodoRepository: {
       import: TodoRepository,
     },
   },
   services: {
-    [TodoService.name]: {
+    TodoService: {
       import: TodoService,
       inject: [TodoRepository],
     },
   },
   controllers: [todoController],
-};
+} satisfies BaseModule;

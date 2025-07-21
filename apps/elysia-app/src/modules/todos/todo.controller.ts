@@ -1,22 +1,22 @@
-import Elysia, { t } from "elysia";
-import { TContext } from "../../shared/types/context";
+import Elysia, { t } from 'elysia';
+import { TContext } from '../../shared/types/context';
 
-const prefix = "/todos";
+const prefix = '/todos';
 
 export const todoController = new Elysia<typeof prefix, TContext>({
-  prefix: "/todos",
+  prefix,
   detail: {
-    tags: ["Todos"],
+    tags: ['Todos'],
   },
 })
   .get(
-    "/",
+    '/',
     async (ctx) => {
       return ctx.store.TodoService.findManyWithPagination({
         page: ctx.query.page,
         limit: ctx.query.limit,
         filter: [
-          { column: "user_id", operator: "=", value: ctx.query.user_id },
+          { column: 'user_id', operator: '=', value: ctx.query.user_id },
         ],
       });
     },
@@ -29,7 +29,7 @@ export const todoController = new Elysia<typeof prefix, TContext>({
     }
   )
   .get(
-    ":id",
+    ':id',
     async (ctx) => {
       ctx.store.TodoService.findOne(ctx.params.id);
     },
@@ -40,7 +40,7 @@ export const todoController = new Elysia<typeof prefix, TContext>({
     }
   )
   .post(
-    "/",
+    '/',
     async (ctx) =>
       ctx.store.TodoService.create({
         user_id: ctx.query.user_id,
@@ -54,7 +54,7 @@ export const todoController = new Elysia<typeof prefix, TContext>({
     }
   )
   .put(
-    ":id",
+    ':id',
     async (ctx) => ctx.store.TodoService.update(ctx.params.id, ctx.body),
     {
       params: t.Object({
@@ -66,7 +66,7 @@ export const todoController = new Elysia<typeof prefix, TContext>({
     }
   )
   .delete(
-    ":id",
+    ':id',
     async (ctx) => {
       await ctx.store.TodoService.delete(ctx.params.id);
       return { success: true };

@@ -4,6 +4,7 @@ import { cors } from '@elysiajs/cors';
 import { appModules } from './app.module';
 import { transactionDerive } from './database/transaction';
 import { database } from './database/datasource';
+import { TContext } from './shared/types/context';
 
 const app = new Elysia({
   prefix: '/api',
@@ -12,14 +13,14 @@ const app = new Elysia({
 // Use CORS
 app.use(cors());
 
-// // Commit transaction after successful request
-// app.onAfterHandle(async (ctx: TContext) => {
-//   ctx.store.trx.commit();
-// });
-// // Rollback transaction on error
-// app.onError(async (ctx: TContext) => {
-//   ctx.store.trx.rollback();
-// });
+// Commit transaction after successful request
+app.onAfterHandle(async (ctx) => {
+  (ctx.store as TContext['store']).trx.commit();
+});
+// Rollback transaction on error
+app.onError(async (ctx) => {
+  (ctx.store as TContext['store']).trx.rollback();
+});
 
 app.onRequest(async (ctx) => {
   const trx = await transactionDerive({
@@ -39,7 +40,7 @@ app.onRequest(async (ctx) => {
 
   for (const service of services) {
     for (const [key, value] of Object.entries(service)) {
-      const deps = value.inject.map((key) => store[key.name]);
+      const deps = value.inject.map((key: { name: string }) => store[key.name]);
       if (value.inject.length !== deps.filter(Boolean).length) {
         throw new Error(`Missing dependencies for ${key}`);
       }

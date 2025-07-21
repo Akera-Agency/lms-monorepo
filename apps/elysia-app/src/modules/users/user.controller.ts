@@ -1,16 +1,16 @@
-import Elysia, { t } from "elysia";
-import { TContext } from "../../shared/types/context";
+import Elysia, { t } from 'elysia';
+import { TContext } from '../../shared/types/context';
 
-const prefix = "/users";
+const prefix = '/users';
 
 export const userController = new Elysia<typeof prefix, TContext>({
   prefix,
   detail: {
-    tags: ["Users"],
+    tags: ['Users'],
   },
 })
   .get(
-    "/",
+    '/',
     async (ctx) => {
       return ctx.store.UserService.findManyWithPagination({
         page: ctx.query.page,
@@ -25,7 +25,7 @@ export const userController = new Elysia<typeof prefix, TContext>({
     }
   )
   .get(
-    ":id",
+    ':id',
     async (ctx) => {
       return ctx.store.UserService.findOne(ctx.params.id);
     },
@@ -36,7 +36,7 @@ export const userController = new Elysia<typeof prefix, TContext>({
     }
   )
   .post(
-    "/",
+    '/',
     async (ctx) =>
       ctx.store.UserService.create({
         email: ctx.body.email,
@@ -50,7 +50,7 @@ export const userController = new Elysia<typeof prefix, TContext>({
     }
   )
   .put(
-    ":id",
+    ':id',
     async (ctx) => ctx.store.UserService.update(ctx.params.id, ctx.body),
     {
       params: t.Object({
@@ -63,7 +63,7 @@ export const userController = new Elysia<typeof prefix, TContext>({
     }
   )
   .delete(
-    ":id",
+    ':id',
     async (ctx) => {
       await ctx.store.UserService.delete(ctx.params.id);
       return { success: true };
