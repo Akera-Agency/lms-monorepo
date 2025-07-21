@@ -39,5 +39,8 @@
       }
     }
   ],
-  "targetDefaults": { "test": { "dependsOn": ["^build"] } }
+  "targetDefaults": { "test": { "dependsOn": ["^build"] } },
+  "externalDependencies": {
+    "@akera/ui": ["vite", "vitest"]
+  }
 }
