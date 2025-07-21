@@ -10,14 +10,12 @@
     ],
     "sharedGlobals": ["{workspaceRoot}/.github/workflows/ci.yml"]
   },
-  "nxCloudId": "687e65f7818db6034d873bf7",
+  "nxCloudId": "687e7e985a2f7808da89a569",
   "plugins": [
     {
       "plugin": "@nx/js/typescript",
       "options": {
-        "typecheck": {
-          "targetName": "typecheck"
-        },
+        "typecheck": { "targetName": "typecheck" },
         "build": {
           "targetName": "build",
           "configName": "tsconfig.lib.json",
@@ -41,9 +39,8 @@
       }
     }
   ],
-  "targetDefaults": {
-    "test": {
-      "dependsOn": ["^build"]
-    }
+  "targetDefaults": { "test": { "dependsOn": ["^build"] } },
+  "externalDependencies": {
+    "@akera/ui": ["vite", "vitest"]
   }
 }
