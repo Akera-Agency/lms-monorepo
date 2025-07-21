@@ -1,0 +1,6 @@
+{
+  "name": "elysia-app",
+  "projectType": "application",
+  "sourceRoot": "apps/elysia-app/src",
+  "tags": ["type:app", "framework:elysia"]
+}
