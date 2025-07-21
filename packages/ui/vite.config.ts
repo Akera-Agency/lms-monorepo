@@ -1,20 +1,12 @@
 import { defineConfig } from 'vite';
-import type { LibraryFormats } from 'vite';
 
-export default defineConfig(() => ({
-  root: __dirname,
-  cacheDir: '../../node_modules/.vite/packages/ui',
-  plugins: [],
-  // Uncomment this if you are using workers.
-  // worker: {
-  //  plugins: [ nxViteTsPaths() ],
-  // },
+export default defineConfig({
   build: {
     lib: {
       entry: './src/index.ts',
       name: 'ui',
       fileName: 'index',
-      formats: ['es', 'cjs'] as LibraryFormats[],
+      formats: ['es', 'cjs'] as const,
     },
     rollupOptions: {
       external: ['react', 'react-dom'],
@@ -31,4 +23,4 @@ export default defineConfig(() => ({
       provider: 'v8' as const,
     },
   },
-}));
+});
