@@ -1,14 +1,13 @@
 {
-  "compilerOptions": {
-    "baseUrl": ".",
+  "fileNames": [],
+  "fileInfos": [],
+  "root": [],
+  "options": {
     "composite": true,
     "declarationMap": true,
     "emitDeclarationOnly": true,
     "importHelpers": true,
-    "isolatedModules": true,
-    "lib": ["es2022"],
-    "module": "esnext",
-    "moduleResolution": "bundler",
+    "module": 199,
     "noEmitOnError": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitOverride": true,
@@ -16,10 +15,7 @@
     "noUnusedLocals": true,
     "skipLibCheck": true,
     "strict": true,
-    "target": "es2022",
-    "customConditions": ["development"],
-    "paths": {
-      "@akera/ui": ["packages/ui/src"]
-    }
-  }
+    "target": 9
+  },
+  "version": "5.8.3"
 }
