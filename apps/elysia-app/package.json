@@ -8,6 +8,22 @@
     "build": "bun build src/app.ts --outfile dist/app.js --target bun",
     "start": "bun run dist/app.js",
     "lint": "bun run --bun eslint . --ext .ts",
-    "format": "bun run --bun prettier --write ."
+    "format": "bun run --bun prettier --write .",
+    "---------------DOCKER-----------------": "--------------------------------",
+    "docker:dev": "docker-compose up -d",
+    "docker:dev:build": "docker-compose up -d --build",
+    "docker:dev:logs": "docker-compose logs -f",
+    "docker:dev:down": "docker-compose down",
+    "docker:prod": "docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d",
+    "docker:prod:build": "docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build",
+    "docker:prod:logs": "docker-compose -f docker-compose.yml -f docker-compose.prod.yml logs -f",
+    "docker:prod:down": "docker-compose -f docker-compose.yml -f docker-compose.prod.yml down",
+    "docker:clean": "docker-compose down -v --rmi all",
+    "docker:restart": "docker-compose restart",
+    "docker:restart:app": "docker-compose restart elysia-app",
+    "docker:shell": "docker-compose exec elysia-app sh",
+    "docker:migrate": "docker-compose exec elysia-app bun run database/migrations/runMigrations.ts",
+    "docker:setup": "cp env.example .env && echo 'Please edit .env file with your configuration'",
+    "docker:setup:kong": "./setup-kong.sh"
   }
 }

@@ -4,23 +4,17 @@ import { cors } from '@elysiajs/cors';
 import { appModules } from './app.module';
 import { transactionDerive } from './database/transaction';
 import { database } from './database/datasource';
-import { TContext } from './shared/types/context';
 
 const app = new Elysia({
   prefix: '/api',
 });
 
+app.onError(({ error }) => {
+  console.error(error);
+});
+
 // Use CORS
 app.use(cors());
-
-// Commit transaction after successful request
-app.onAfterHandle(async (ctx) => {
-  (ctx.store as TContext['store']).trx.commit();
-});
-// Rollback transaction on error
-app.onError(async (ctx) => {
-  (ctx.store as TContext['store']).trx.rollback();
-});
 
 app.onRequest(async (ctx) => {
   const trx = await transactionDerive({
@@ -45,6 +39,7 @@ app.onRequest(async (ctx) => {
         throw new Error(`Missing dependencies for ${key}`);
       }
       const instance = new value.import(...deps);
+      store[key] = instance;
       (app.store as Record<string, any>)[key] = instance;
     }
   }

@@ -1,4 +1,9 @@
-import { Kysely, ParseJSONResultsPlugin, PostgresDialect, LogEvent } from 'kysely';
+import {
+  Kysely,
+  ParseJSONResultsPlugin,
+  PostgresDialect,
+  LogEvent,
+} from 'kysely';
 import { Pool } from 'pg';
 import { IDb } from './types/IDb';
 export const database = new Kysely<IDb>({
@@ -21,14 +26,14 @@ export const database = new Kysely<IDb>({
       console.log(
         `Executed query: ${query.sql} ${
           query.parameters.length > 0 ? `with params:[${query.parameters}]` : ''
-        } in ${event.queryDurationMillis} ms`,
+        } in ${event.queryDurationMillis} ms`
       );
     } else {
       console.error(
         `Executed query: ${query.sql} ${
           query.parameters.length > 0 ? `with params:[${query.parameters}]` : ''
         } in ${event.queryDurationMillis} ms`,
-        event.error,
+        event.error
       );
     }
   },
