@@ -6,8 +6,9 @@ export const Logger = createPinoLogger({
   enabled: true,
   serializers: {
     req: (req) => {
-      const { headers, body, ...rest } = req;
-      return rest;
+      delete req.headers;
+      delete req.body;
+      return req;
     },
     err: (err) => {
       if (!err) return err;
@@ -18,12 +19,6 @@ export const Logger = createPinoLogger({
         ...(err.code ? { code: err.code } : {}),
         ...(err.status ? { status: err.status } : {}),
       };
-    },
-    database: () => {
-      return { type: 'Database', connected: true };
-    },
-    stripe: () => {
-      return { type: 'Stripe', initialized: true };
     },
   },
   transport: {
@@ -197,6 +192,7 @@ function safeStringify(obj: any, seen = new WeakSet(), depth = 0): any {
       result[key] = safeStringify(obj[key], seen, depth + 1);
     } catch (e) {
       result[key] = '[Too Complex To Serialize]';
+      Logger.error(e);
     }
   }
 

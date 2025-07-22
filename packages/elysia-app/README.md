@@ -26,7 +26,7 @@ elysia-todo-example/
 
 1. Install dependencies:
    ```sh
-   cd apps/elysia-todo-example
+   cd packages/elysia-app
    bun install # or npm install or pnpm install
    ```
 2. Set your Supabase credentials in `src/config/supabase.ts`.

@@ -65,3 +65,5 @@
 [18:40:30.441] [31mERROR[39m (PostgresError/67263): [90m{"message":"invalid input syntax for type uuid: \"jbdzfj\"","stack":"PostgresError: invalid input syntax for type uuid: \"jbdzfj\"\n    at <anonymous> (/Users/macmini/elysia-starter/akera/apps/elysia-app/src/modules/users/infrastructure/user.repository.ts:83:17)\n    at processTicksAndRejections (native:7:39)"}[39m
 [18:40:32.040] [31mERROR[39m (67263): [36mExecuted query: select * from "users" where "id" = $1 with params:[jbdzfj] in 6.023916999999983 ms[39m
 [18:40:32.040] [31mERROR[39m (PostgresError/67263): [90m{"message":"invalid input syntax for type uuid: \"jbdzfj\"","stack":"PostgresError: invalid input syntax for type uuid: \"jbdzfj\"\n    at <anonymous> (/Users/macmini/elysia-starter/akera/apps/elysia-app/src/modules/users/infrastructure/user.repository.ts:83:17)\n    at processTicksAndRejections (native:7:39)"}[39m
+[20:40:12.220] [32mINFO[39m (76195): [36m🚀 Elysia API running on http://localhost:4001/api[39m
+[20:40:12.220] [32mINFO[39m (76195): [36m🚀 Docs running on http://localhost:4001/api/docs[39m
