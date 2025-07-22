@@ -3,6 +3,7 @@ import { promises as fs } from 'fs';
 import { Migrator, FileMigrationProvider } from 'kysely';
 import { config } from 'dotenv';
 import { database } from '../datasource';
+import { Logger } from 'src/shared/logger/logger';
 
 config();
 
@@ -12,7 +13,7 @@ async function listAppliedMigrations() {
     provider: new FileMigrationProvider({
       fs,
       path,
-      migrationFolder: path.join(process.cwd(), 'src/app/database/migrations'),
+      migrationFolder: path.join(process.cwd(), 'src/database/migrations'),
     }),
   });
 
@@ -24,12 +25,12 @@ async function listAppliedMigrations() {
 async function displayAppliedMigrations() {
   try {
     const appliedMigrations = await listAppliedMigrations();
-    console.log('Applied migrations:');
+    Logger.info('Applied migrations:');
     appliedMigrations.forEach((migrationName) =>
-      console.log('-', migrationName),
+      Logger.info('-', migrationName)
     );
   } catch (error) {
-    console.error('An error occurred:', error);
+    Logger.error('An error occurred:', error);
   } finally {
     await database.destroy();
   }

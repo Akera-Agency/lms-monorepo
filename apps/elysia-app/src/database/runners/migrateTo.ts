@@ -8,18 +8,19 @@ import {
 } from 'kysely';
 import { config } from 'dotenv';
 import { database } from '../datasource';
+import { Logger } from 'src/shared/logger/logger';
 
 config();
 
 async function migrateTo(
-  targetMigration: string | NoMigrations = NO_MIGRATIONS,
+  targetMigration: string | NoMigrations = NO_MIGRATIONS
 ) {
   const migrator = new Migrator({
     db: database,
     provider: new FileMigrationProvider({
       fs,
       path,
-      migrationFolder: path.join(process.cwd(), 'src/app/database/migrations'),
+      migrationFolder: path.join(process.cwd(), 'src/database/migrations'),
     }),
   });
 
@@ -28,24 +29,24 @@ async function migrateTo(
   results?.forEach((migrationResult) => {
     if (migrationResult.status === 'Success') {
       if (migrationResult.direction === 'Up') {
-        console.log(
-          `Migration "${migrationResult.migrationName}" was applied successfully`,
+        Logger.info(
+          `Migration "${migrationResult.migrationName}" was applied successfully`
         );
       } else if (migrationResult.direction === 'Down') {
-        console.log(
-          `Migration "${migrationResult.migrationName}" was reverted successfully`,
+        Logger.info(
+          `Migration "${migrationResult.migrationName}" was reverted successfully`
         );
       }
     } else if (migrationResult.status === 'Error') {
-      console.error(
-        `Failed to apply/revert migration "${migrationResult.migrationName}"`,
+      Logger.error(
+        `Failed to apply/revert migration "${migrationResult.migrationName}"`
       );
     }
   });
 
   if (error) {
-    console.error('Failed to apply/revert migrations');
-    console.error(error);
+    Logger.error('Failed to apply/revert migrations');
+    Logger.error(error);
     process.exit(1);
   }
 
@@ -54,6 +55,6 @@ async function migrateTo(
 
 const targetMigration = process.argv[2];
 
-console.log('targetMigration', targetMigration);
+Logger.info('targetMigration', targetMigration);
 
 migrateTo(targetMigration);

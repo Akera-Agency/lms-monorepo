@@ -1,9 +1,10 @@
-import { promises as fs } from "fs";
-import * as path from "path";
+import { promises as fs } from 'fs';
+import * as path from 'path';
+import { Logger } from 'src/shared/logger/logger';
 
 function getTimestamp(): string {
   const now = new Date();
-  const pad = (n: number) => n.toString().padStart(2, "0");
+  const pad = (n: number) => n.toString().padStart(2, '0');
   return (
     now.getFullYear().toString() +
     pad(now.getMonth() + 1) +
@@ -16,10 +17,10 @@ function getTimestamp(): string {
 
 async function createMigrationFile(description: string): Promise<void> {
   const timestamp = getTimestamp();
-  const filename = `${timestamp}_${description.trim().split(" ").join("_")}.ts`;
+  const filename = `${timestamp}_${description.trim().split(' ').join('_')}.ts`;
   const filePath = path.join(
     process.cwd(),
-    "src/app/database/migrations",
+    'src/database/migrations',
     filename
   );
   const content = `import { Kysely } from 'kysely';
@@ -34,13 +35,15 @@ export async function down(db: Kysely<unknown>) {
 `;
 
   try {
-    await fs.writeFile(filePath, content, { flag: "wx" });
+    await fs.writeFile(filePath, content, { flag: 'wx' });
   } catch (error) {
-    if ((error as { code: string }).code === "EEXIST") {
-      console.error(`Migration file already exists: ${filename}`);
+    if ((error as { code: string }).code === 'EEXIST') {
+      Logger.error(`Migration file already exists: ${filename}`);
     } else {
-      console.error(
-        `Error creating migration file: ${error instanceof Error ? error.message : error}`
+      Logger.error(
+        `Error creating migration file: ${
+          error instanceof Error ? error.message : error
+        }`
       );
     }
   }
@@ -48,11 +51,11 @@ export async function down(db: Kysely<unknown>) {
 
 const description = process.argv[2];
 if (!description) {
-  console.error("Please provide a description for the migration");
+  Logger.error('Please provide a description for the migration');
   process.exit(1);
 }
 
 createMigrationFile(description).catch((error) => {
-  console.error(`Failed to create migration file: ${error.message}`);
+  Logger.error(`Failed to create migration file: ${error.message}`);
   process.exit(1);
 });

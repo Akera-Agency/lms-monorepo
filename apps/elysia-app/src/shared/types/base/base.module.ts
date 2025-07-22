@@ -1,5 +1,3 @@
-import Elysia from 'elysia';
-
 export interface BaseModule {
   repositories: {
     [key: string]: {
@@ -12,5 +10,5 @@ export interface BaseModule {
       inject: (new (...args: any[]) => any)[];
     };
   };
-  controllers: Elysia<any, any>[];
+  controllers: any[];
 }

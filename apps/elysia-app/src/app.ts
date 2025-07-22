@@ -4,13 +4,15 @@ import { cors } from '@elysiajs/cors';
 import { appModules } from './app.module';
 import { transactionDerive } from './database/transaction';
 import { database } from './database/datasource';
+import { env } from './conf/env';
+import { Logger } from './shared/logger/logger';
 
 const app = new Elysia({
   prefix: '/api',
 });
 
 app.onError(({ error }) => {
-  console.error(error);
+  Logger.error(error);
 });
 
 // Use CORS
@@ -65,9 +67,9 @@ const main = async () => {
 
   app.use(swagger({ path: '/docs' }));
 
-  app.listen(4000, () => {
-    console.log('🚀 Elysia API running on http://localhost:4000/api');
-    console.log('🚀 Docs running on http://localhost:4000/api/docs');
+  app.listen(env.PORT, () => {
+    Logger.info(`🚀 Elysia API running on http://localhost:${env.PORT}/api`);
+    Logger.info(`🚀 Docs running on http://localhost:${env.PORT}/api/docs`);
   });
 };
 

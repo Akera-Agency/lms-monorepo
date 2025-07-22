@@ -1,8 +1,9 @@
-import * as path from "path";
-import { promises as fs } from "fs";
-import { Migrator, FileMigrationProvider } from "kysely";
-import { config } from "dotenv";
-import { database } from "../datasource";
+import * as path from 'path';
+import { promises as fs } from 'fs';
+import { Migrator, FileMigrationProvider } from 'kysely';
+import { config } from 'dotenv';
+import { database } from '../datasource';
+import { Logger } from 'src/shared/logger/logger';
 
 config();
 
@@ -12,7 +13,7 @@ async function migrateToLatest() {
     provider: new FileMigrationProvider({
       fs,
       path,
-      migrationFolder: path.join(process.cwd(), "src/app/database/migrations"),
+      migrationFolder: path.join(process.cwd(), 'src/database/migrations'),
     }),
     allowUnorderedMigrations: true,
   });
@@ -20,20 +21,20 @@ async function migrateToLatest() {
   const { error, results } = await migrator.migrateToLatest();
 
   results?.forEach((migrationResult) => {
-    if (migrationResult.status === "Success") {
-      console.log(
+    if (migrationResult.status === 'Success') {
+      Logger.info(
         `migration "${migrationResult.migrationName}" was executed successfully`
       );
-    } else if (migrationResult.status === "Error") {
-      console.error(
+    } else if (migrationResult.status === 'Error') {
+      Logger.error(
         `failed to execute migration "${migrationResult.migrationName}"`
       );
     }
   });
 
   if (error) {
-    console.error("Failed to migrate");
-    console.error(error);
+    Logger.error('Failed to migrate');
+    Logger.error(error);
     process.exit(1);
   }
 
