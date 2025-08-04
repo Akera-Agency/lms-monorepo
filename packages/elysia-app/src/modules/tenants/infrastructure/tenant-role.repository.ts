@@ -1,25 +1,26 @@
 import { Kysely } from 'kysely';
 import { IDb } from '../../../database/types/IDb';
 import {
-  ProjectEntity,
-  NewProject,
-  UpdateProject,
-  KyselyProjectEntity,
-  QueryProject,
-} from './project.entity';
+  TenantRoleEntity,
+  NewTenantRole,
+  UpdateTenantRole,
+  KyselyTenantRoleEntity,
+  QueryTenantRole,
+} from './tenant-role.entity';
 import { BaseRepo, FindManyArgs } from '../../../shared/types/base/base.repo';
-import { PostgresError } from '../../../shared/Errors/PostgresError';
 import { infinityPagination } from '../../../shared/utils/infinityPagination';
+import { PostgresError } from '../../../shared/Errors/PostgresError';
 
-export class ProjectRepository extends BaseRepo<KyselyProjectEntity> {
+export class TenantRoleRepository extends BaseRepo<KyselyTenantRoleEntity> {
   constructor(trx: Kysely<IDb>) {
-    super(trx, 'projects');
+    super(trx, 'tenant_roles');
   }
 
-  override async findManyWithPagination(query: QueryProject) {
+  override async findManyWithPagination(query: QueryTenantRole) {
     try {
       const queryBuilder = this.trx
-        .selectFrom('projects')
+        .selectFrom('tenant_roles')
+        .where('deleted_at', 'is', null)
         .$if(!!query.filter, (q) =>
           q.where((eb) =>
             eb.and(
@@ -51,10 +52,10 @@ export class ProjectRepository extends BaseRepo<KyselyProjectEntity> {
           .$if(!!query.limit && !!query.page, (q) =>
             q.offset(((query.page as number) - 1) * (query.limit as number))
           )
-          .selectAll('projects')
+          .selectAll('tenant_roles')
           .execute(),
         queryBuilder
-          .select(this.trx.fn.countAll('projects').as('count'))
+          .select(this.trx.fn.countAll('tenant_roles').as('count'))
           .executeTakeFirst(),
       ]);
       return infinityPagination(res, {
@@ -67,11 +68,12 @@ export class ProjectRepository extends BaseRepo<KyselyProjectEntity> {
     }
   }
 
-  async findAll(args: FindManyArgs<ProjectEntity>) {
+  async findAll(args: FindManyArgs<TenantRoleEntity>) {
     try {
       const res = await this.trx
-        .selectFrom('projects')
+        .selectFrom('tenant_roles')
         .selectAll()
+        .where('deleted_at', 'is', null)
         .where((eb) =>
           eb.and(
             args.where.map((arg) => {
@@ -86,16 +88,15 @@ export class ProjectRepository extends BaseRepo<KyselyProjectEntity> {
     }
   }
 
-  override async findOne(args: FindManyArgs<ProjectEntity>) {
+  override async findOne(args: FindManyArgs<TenantRoleEntity>) {
     try {
       const res = await this.trx
-        .selectFrom('projects')
+        .selectFrom('tenant_roles')
         .selectAll()
+        .where('deleted_at', 'is', null)
         .where((eb) =>
           eb.and(
-            args.where.map((arg) => {
-              return eb(arg.column, arg.operator, arg.value);
-            })
+            args.where.map((arg) => eb(arg.column, arg.operator, arg.value))
           )
         )
         .executeTakeFirst();
@@ -105,10 +106,10 @@ export class ProjectRepository extends BaseRepo<KyselyProjectEntity> {
     }
   }
 
-  async create(data: NewProject) {
+  async create(data: NewTenantRole) {
     try {
       const [inserted] = await this.trx
-        .insertInto('projects')
+        .insertInto('tenant_roles')
         .values(data)
         .returningAll()
         .execute();
@@ -118,12 +119,13 @@ export class ProjectRepository extends BaseRepo<KyselyProjectEntity> {
     }
   }
 
-  async update(id: string, data: UpdateProject) {
+  async update(id: string, data: UpdateTenantRole) {
     try {
       const [updated] = await this.trx
-        .updateTable('projects')
+        .updateTable('tenant_roles')
         .set(data)
         .where('id', '=', id)
+        .where('deleted_at', 'is', null)
         .returningAll()
         .execute();
       return updated;
@@ -134,7 +136,11 @@ export class ProjectRepository extends BaseRepo<KyselyProjectEntity> {
 
   async delete(id: string) {
     try {
-      await this.trx.deleteFrom('projects').where('id', '=', id).execute();
+      await this.trx
+        .updateTable('tenant_roles')
+        .set({ deleted_at: new Date() })
+        .where('id', '=', id)
+        .execute();
     } catch (error) {
       throw new PostgresError(error);
     }

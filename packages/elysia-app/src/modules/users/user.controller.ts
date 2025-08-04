@@ -1,76 +1,111 @@
 import Elysia, { t } from 'elysia';
-import { TContext } from '../../shared/types/context';
+import {
+  createPermissionGuard,
+  PermissionContext,
+} from '../../shared/guards/permission.guard';
+import { authGuard } from '../../shared/guards/auth.guard';
 
 const prefix = '/users';
 
-export const userController = new Elysia<typeof prefix, TContext>({
+export const userController = new Elysia<typeof prefix, PermissionContext>({
   prefix,
   detail: {
     tags: ['Users'],
   },
 })
+  .use(authGuard)
   .get(
-    '/',
+    '/me',
     async (ctx) => {
-      return ctx.store.UserService.findManyWithPagination({
-        page: ctx.query.page,
-        limit: ctx.query.limit,
-      });
+      const user = ctx.auth.user;
+      return await ctx.store.UserService.findOne(user.sub);
     },
     {
-      query: t.Object({
-        page: t.Number(),
-        limit: t.Number(),
-      }),
+      detail: {
+        tags: ['Users', 'Me'],
+      },
     }
   )
-  .get(
-    ':id',
+  .patch(
+    '/me',
     async (ctx) => {
-      return ctx.store.UserService.findOne(ctx.params.id);
-    },
-    {
-      params: t.Object({
-        id: t.String(),
-      }),
-    }
-  )
-  .post(
-    '/',
-    async (ctx) =>
-      ctx.store.UserService.create({
+      const user = ctx.auth.user;
+      await ctx.store.UserService.update(user.sub, {
         email: ctx.body.email,
         name: ctx.body.name,
-      }),
-    {
-      body: t.Object({
-        email: t.String(),
-        name: t.String(),
-      }),
-    }
-  )
-  .put(
-    ':id',
-    async (ctx) => ctx.store.UserService.update(ctx.params.id, ctx.body),
-    {
-      params: t.Object({
-        id: t.String(),
-      }),
-      body: t.Object({
-        email: t.String(),
-        name: t.String(),
-      }),
-    }
-  )
-  .delete(
-    ':id',
-    async (ctx) => {
-      await ctx.store.UserService.delete(ctx.params.id);
-      return { success: true };
+      });
+      ctx.store.trx.commit();
     },
     {
-      params: t.Object({
-        id: t.String(),
+      body: t.Object({
+        email: t.String(),
+        name: t.String(),
       }),
     }
+  )
+  .guard((app) =>
+    app
+      .use(createPermissionGuard([{ entity: 'users', permission: 'read' }]))
+      .get(
+        '/',
+        async (ctx) => {
+          return ctx.store.UserService.findManyWithPagination({
+            page: ctx.query.page,
+            limit: ctx.query.limit,
+          });
+        },
+        {
+          query: t.Object({
+            page: t.Number(),
+            limit: t.Number(),
+          }),
+        }
+      )
+      .get(
+        ':id',
+        async (ctx) => {
+          return ctx.store.UserService.findOne(ctx.params.id);
+        },
+        {
+          params: t.Object({
+            id: t.String(),
+          }),
+        }
+      )
+  )
+  .guard((app) =>
+    app
+      .use(createPermissionGuard([{ entity: 'users', permission: 'update' }]))
+      .patch(
+        ':id',
+        async (ctx) => {
+          await ctx.store.UserService.update(ctx.params.id, ctx.body);
+          ctx.store.trx.commit();
+        },
+        {
+          params: t.Object({
+            id: t.String(),
+          }),
+          body: t.Object({
+            email: t.String(),
+            name: t.String(),
+          }),
+        }
+      )
+  )
+  .guard((app) =>
+    app
+      .use(createPermissionGuard([{ entity: 'users', permission: 'delete' }]))
+      .delete(
+        ':id',
+        async (ctx) => {
+          await ctx.store.UserService.delete(ctx.params.id);
+          ctx.store.trx.commit();
+        },
+        {
+          params: t.Object({
+            id: t.String(),
+          }),
+        }
+      )
   );

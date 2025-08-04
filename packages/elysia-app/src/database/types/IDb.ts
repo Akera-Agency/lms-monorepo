@@ -1,13 +1,13 @@
 import { KyselyUserEntity } from '../../modules/users/infrastructure/user.entity';
-import { KyselyTodoEntity } from '../../modules/todos/infrastructure/todo.entity';
-import { KyselyProjectEntity } from '../../modules/projects/infrastructure/project.entity';
-import { KyselyTaskEntity } from '../../modules/projects/infrastructure/task.entity';
-import { KyselyCommentEntity } from '../../modules/projects/infrastructure/comment.entity';
+import { KyselyRoleEntity } from '../../modules/roles/infrastructure/role.entity';
+import { KyselyTenantEntity } from '../../modules/tenants/infrastructure/tenant.entity';
+import { KyselyTenantRoleEntity } from '../../modules/tenants/infrastructure/tenant-role.entity';
+import { KyselyTenantUserEntity } from '../../modules/tenants/infrastructure/tenant-user.entity';
 
 export interface IDb {
   users: KyselyUserEntity;
-  todos: KyselyTodoEntity;
-  projects: KyselyProjectEntity;
-  tasks: KyselyTaskEntity;
-  comments: KyselyCommentEntity;
+  roles: KyselyRoleEntity;
+  tenants: KyselyTenantEntity;
+  tenant_roles: KyselyTenantRoleEntity;
+  tenant_users: KyselyTenantUserEntity;
 }

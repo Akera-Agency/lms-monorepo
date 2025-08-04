@@ -7,9 +7,9 @@ import { database } from './database/datasource';
 import { env } from './conf/env';
 import { Logger } from './shared/logger/logger';
 
-const app = new Elysia({
-  prefix: '/api',
-});
+const prefix = '/api';
+
+const app = new Elysia({ prefix });
 
 app.onError(({ error }) => {
   Logger.error(error);
@@ -47,7 +47,6 @@ app.onRequest(async (ctx) => {
   }
 });
 
-// Example: initTools function similar to server
 export const initTools = async () => {
   return {
     database,

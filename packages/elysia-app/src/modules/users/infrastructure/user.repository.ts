@@ -2,7 +2,6 @@ import { Kysely } from 'kysely';
 import { IDb } from '../../../database/types/IDb';
 import {
   UserEntity,
-  NewUser,
   UpdateUser,
   KyselyUserEntity,
   QueryUser,
@@ -20,6 +19,7 @@ export class UserRepository extends BaseRepo<KyselyUserEntity> {
     try {
       const queryBuilder = this.trx
         .selectFrom('users')
+        .where('deleted_at', 'is', null)
         .$if(!!query.filter, (q) =>
           q.where((eb) =>
             eb.and(
@@ -67,11 +67,32 @@ export class UserRepository extends BaseRepo<KyselyUserEntity> {
     }
   }
 
+  async findAll(args: FindManyArgs<UserEntity>) {
+    try {
+      const res = await this.trx
+        .selectFrom('users')
+        .selectAll()
+        .where('deleted_at', 'is', null)
+        .where((eb) =>
+          eb.and(
+            args.where.map((arg) => {
+              return eb(arg.column, arg.operator, arg.value);
+            })
+          )
+        )
+        .execute();
+      return res;
+    } catch (error) {
+      throw new PostgresError(error);
+    }
+  }
+
   override async findOne(args: FindManyArgs<UserEntity>) {
     try {
       const res = await this.trx
         .selectFrom('users')
         .selectAll()
+        .where('deleted_at', 'is', null)
         .where((eb) =>
           eb.and(
             args.where.map((arg) => eb(arg.column, arg.operator, arg.value))
@@ -84,25 +105,13 @@ export class UserRepository extends BaseRepo<KyselyUserEntity> {
     }
   }
 
-  async create(data: NewUser) {
-    try {
-      const [inserted] = await this.trx
-        .insertInto('users')
-        .values(data)
-        .returningAll()
-        .execute();
-      return inserted;
-    } catch (error) {
-      throw new PostgresError(error);
-    }
-  }
-
   async update(id: string, data: UpdateUser) {
     try {
       const [updated] = await this.trx
         .updateTable('users')
         .set(data)
         .where('id', '=', id)
+        .where('deleted_at', 'is', null)
         .returningAll()
         .execute();
       return updated;
@@ -113,7 +122,11 @@ export class UserRepository extends BaseRepo<KyselyUserEntity> {
 
   async delete(id: string) {
     try {
-      await this.trx.deleteFrom('users').where('id', '=', id).execute();
+      await this.trx
+        .updateTable('users')
+        .set({ deleted_at: new Date() })
+        .where('id', '=', id)
+        .execute();
     } catch (error) {
       throw new PostgresError(error);
     }

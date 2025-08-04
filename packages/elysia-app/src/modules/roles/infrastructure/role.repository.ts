@@ -1,25 +1,45 @@
 import { Kysely } from 'kysely';
 import { IDb } from '../../../database/types/IDb';
 import {
-  CommentEntity,
-  NewComment,
-  UpdateComment,
-  KyselyCommentEntity,
-  QueryComment,
-} from './comment.entity';
+  RoleEntity,
+  NewRole,
+  UpdateRole,
+  QueryRole,
+  KyselyRoleEntity,
+} from './role.entity';
 import { BaseRepo, FindManyArgs } from '../../../shared/types/base/base.repo';
 import { PostgresError } from '../../../shared/Errors/PostgresError';
-import { infinityPagination } from '../../../shared/utils/infinityPagination';
+import { infinityPagination } from 'src/shared/utils/infinityPagination';
 
-export class CommentRepository extends BaseRepo<KyselyCommentEntity> {
+export class RoleRepository extends BaseRepo<KyselyRoleEntity> {
   constructor(trx: Kysely<IDb>) {
-    super(trx, 'comments');
+    super(trx, 'roles');
   }
 
-  override async findManyWithPagination(query: QueryComment) {
+  async findAll(args: FindManyArgs<RoleEntity>) {
+    try {
+      const res = await this.trx
+        .selectFrom('roles')
+        .selectAll()
+        .where('deleted_at', 'is', null)
+        .where((eb) =>
+          eb.and(
+            args.where.map((arg) => {
+              return eb(arg.column, arg.operator, arg.value);
+            })
+          )
+        )
+        .execute();
+      return res;
+    } catch (error) {
+      throw new PostgresError(error);
+    }
+  }
+
+  override async findManyWithPagination(query: QueryRole) {
     try {
       const queryBuilder = this.trx
-        .selectFrom('comments')
+        .selectFrom('roles')
         .$if(!!query.filter, (q) =>
           q.where((eb) =>
             eb.and(
@@ -51,10 +71,10 @@ export class CommentRepository extends BaseRepo<KyselyCommentEntity> {
           .$if(!!query.limit && !!query.page, (q) =>
             q.offset(((query.page as number) - 1) * (query.limit as number))
           )
-          .selectAll('comments')
+          .selectAll('roles')
           .execute(),
         queryBuilder
-          .select(this.trx.fn.countAll('comments').as('count'))
+          .select(this.trx.fn.countAll('roles').as('count'))
           .executeTakeFirst(),
       ]);
       return infinityPagination(res, {
@@ -67,24 +87,12 @@ export class CommentRepository extends BaseRepo<KyselyCommentEntity> {
     }
   }
 
-  async findByTaskId(taskId: string) {
+  override async findOne(args: FindManyArgs<RoleEntity>) {
     try {
       const res = await this.trx
-        .selectFrom('comments')
+        .selectFrom('roles')
         .selectAll()
-        .where('task_id', '=', taskId)
-        .execute();
-      return res;
-    } catch (error) {
-      throw new PostgresError(error);
-    }
-  }
-
-  override async findOne(args: FindManyArgs<CommentEntity>) {
-    try {
-      const res = await this.trx
-        .selectFrom('comments')
-        .selectAll()
+        .where('deleted_at', 'is', null)
         .where((eb) =>
           eb.and(
             args.where.map((arg) => {
@@ -99,10 +107,10 @@ export class CommentRepository extends BaseRepo<KyselyCommentEntity> {
     }
   }
 
-  async create(data: NewComment) {
+  async create(data: NewRole) {
     try {
       const [inserted] = await this.trx
-        .insertInto('comments')
+        .insertInto('roles')
         .values(data)
         .returningAll()
         .execute();
@@ -112,12 +120,13 @@ export class CommentRepository extends BaseRepo<KyselyCommentEntity> {
     }
   }
 
-  async update(id: string, data: UpdateComment) {
+  async update(id: string, data: UpdateRole) {
     try {
       const [updated] = await this.trx
-        .updateTable('comments')
+        .updateTable('roles')
         .set(data)
         .where('id', '=', id)
+        .where('deleted_at', 'is', null)
         .returningAll()
         .execute();
       return updated;
@@ -128,7 +137,11 @@ export class CommentRepository extends BaseRepo<KyselyCommentEntity> {
 
   async delete(id: string) {
     try {
-      await this.trx.deleteFrom('comments').where('id', '=', id).execute();
+      await this.trx
+        .updateTable('roles')
+        .set({ deleted_at: new Date() })
+        .where('id', '=', id)
+        .execute();
     } catch (error) {
       throw new PostgresError(error);
     }

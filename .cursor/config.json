@@ -1,0 +1,29 @@
+{
+  "rules": [
+    {
+      "pattern": "src/modules/**/infrastructure/*.entity.ts",
+      "description": "Defines the KyselyEntity, Selectable, Insertable, Updateable, and Query types for this entity."
+    },
+    {
+      "pattern": "src/modules/**/infrastructure/*.repository.ts",
+      "description": "Contains the repository class extending BaseRepo with all DB access logic."
+    },
+    {
+      "pattern": "src/modules/**/*.service.ts",
+      "description": "Defines the service layer that wraps the repository with light logic."
+    },
+    {
+      "pattern": "src/modules/**/*.controller.ts",
+      "description": "Elysia controller that defines HTTP endpoints using the service."
+    },
+    {
+      "pattern": "src/modules/**/*.module.ts",
+      "description": "Declares and wires the repository, service, and controller in a module object."
+    },
+    {
+      "pattern": "src/modules/**/infrastructure/*.entity.ts",
+      "description": "Defines types for KyselyEntity.",
+      "docs": "docs/cursor-structure-guide.md"
+    }
+  ]
+}
