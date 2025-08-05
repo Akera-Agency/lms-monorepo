@@ -1,7 +1,7 @@
 import { SingletonBase } from 'elysia';
 import { initTools } from '../../app';
-import { ITransaction } from '../../database/types/transaction';
 import { servicesMap } from '../../app.module';
+import { ITransaction } from 'src/database/types/transaction';
 
 export interface TContext extends SingletonBase {
   tools: Awaited<ReturnType<typeof initTools>>;

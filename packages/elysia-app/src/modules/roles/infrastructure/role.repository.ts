@@ -107,6 +107,48 @@ export class RoleRepository extends BaseRepo<KyselyRoleEntity> {
     }
   }
 
+  async findByUserId({ userId }: { userId: string }) {
+    try {
+      const tenant_roles_query = this.trx
+        .with('x_tenant_users', (qb) =>
+          qb
+            .selectFrom('tenant_users')
+            .where('user_id', '=', userId)
+            .selectAll()
+        )
+        .selectFrom('tenant_roles')
+        .innerJoin(
+          'x_tenant_users',
+          'x_tenant_users.tenant_role_id',
+          'tenant_roles.id'
+        )
+        .where('deleted_at', 'is', null)
+        .selectAll(['tenant_roles'])
+        .execute();
+
+      const main_roles_query = this.trx
+        .with('x_users', (qb) =>
+          qb.selectFrom('users').where('id', '=', userId).selectAll()
+        )
+        .selectFrom('roles')
+        .innerJoin('x_users', 'x_users.role_id', 'roles.id')
+        .selectAll(['roles'])
+        .execute();
+
+      const [tenant_roles, main_roles] = await Promise.all([
+        tenant_roles_query,
+        main_roles_query,
+      ]);
+
+      return {
+        tenant_roles,
+        main_roles,
+      };
+    } catch (error) {
+      throw new PostgresError(error);
+    }
+  }
+
   async create(data: NewRole) {
     try {
       const [inserted] = await this.trx

@@ -1,19 +1,23 @@
 import { swagger } from '@elysiajs/swagger';
 import Elysia from 'elysia';
 import { cors } from '@elysiajs/cors';
-import { appModules } from './app.module';
+import { appModules, servicesMap } from './app.module';
 import { transactionDerive } from './database/transaction';
 import { database } from './database/datasource';
 import { env } from './conf/env';
 import { Logger } from './shared/logger/logger';
+import { TContext } from './shared/types/context';
 
 const prefix = '/api';
 
-const app = new Elysia({ prefix });
-
-app.onError(({ error }) => {
-  Logger.error(error);
-});
+const app = new Elysia<typeof prefix, TContext>({ prefix })
+  .onAfterHandle((ctx) => {
+    ctx.store.trx.commit();
+  })
+  .onError((ctx) => {
+    Logger.error(ctx.error);
+    ctx.store.trx.rollback();
+  });
 
 // Use CORS
 app.use(cors());
@@ -22,7 +26,7 @@ app.onRequest(async (ctx) => {
   const trx = await transactionDerive({
     request: ctx.request,
   });
-  (app.store as Record<string, any>)['trx'] = trx;
+  app.store['trx'] = trx;
 
   const store: Record<string, any> = {};
   const repos = appModules.map((module) => module.repositories);
@@ -30,7 +34,7 @@ app.onRequest(async (ctx) => {
 
   for (const repo of repos) {
     for (const [key, value] of Object.entries(repo)) {
-      store[key] = new value.import(trx.db);
+      store[key] = new value.import(trx);
     }
   }
 
@@ -42,7 +46,7 @@ app.onRequest(async (ctx) => {
       }
       const instance = new value.import(...deps);
       store[key] = instance;
-      (app.store as Record<string, any>)[key] = instance;
+      app.store[key as keyof servicesMap] = instance;
     }
   }
 });

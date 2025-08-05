@@ -30,6 +30,13 @@ export class RoleService extends BaseService {
     return result;
   }
 
+  async findByUserId(userId: string) {
+    const result = await this.roleRepository.findByUserId({
+      userId,
+    });
+    return result;
+  }
+
   async findByName(name: string): Promise<RoleEntity> {
     const result = await this.roleRepository.findOne({
       where: [{ column: 'name', operator: '=', value: name }],

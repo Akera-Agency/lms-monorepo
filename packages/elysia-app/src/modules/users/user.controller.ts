@@ -34,7 +34,6 @@ export const userController = new Elysia<typeof prefix, PermissionContext>({
         email: ctx.body.email,
         name: ctx.body.name,
       });
-      ctx.store.trx.commit();
     },
     {
       body: t.Object({
@@ -80,7 +79,6 @@ export const userController = new Elysia<typeof prefix, PermissionContext>({
         ':id',
         async (ctx) => {
           await ctx.store.UserService.update(ctx.params.id, ctx.body);
-          ctx.store.trx.commit();
         },
         {
           params: t.Object({
@@ -100,7 +98,6 @@ export const userController = new Elysia<typeof prefix, PermissionContext>({
         ':id',
         async (ctx) => {
           await ctx.store.UserService.delete(ctx.params.id);
-          ctx.store.trx.commit();
         },
         {
           params: t.Object({
