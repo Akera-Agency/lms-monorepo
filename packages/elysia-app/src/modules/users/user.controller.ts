@@ -1,13 +1,12 @@
 import Elysia, { t } from 'elysia';
-import {
-  createAccessGuard,
-  PermissionContext,
-} from '../../shared/guards/permission.guard';
+import { createAccessGuard } from '../../shared/guards/permission.guard';
 import { authGuard } from '../../shared/guards/auth.guard';
+import { eventBus } from 'src/core/event-bus';
+import { TContext } from 'src/shared/types/context';
 
 const prefix = '/users';
 
-export const userController = new Elysia<typeof prefix, PermissionContext>({
+export const userController = new Elysia<typeof prefix, TContext>({
   prefix,
   detail: {
     tags: ['Users'],
@@ -92,7 +91,15 @@ export const userController = new Elysia<typeof prefix, PermissionContext>({
       .patch(
         ':id',
         async (ctx) => {
-          return await ctx.store.UserService.update(ctx.params.id, ctx.body);
+          const updatedUser = await ctx.store.UserService.update(
+            ctx.params.id,
+            ctx.body
+          );
+          eventBus.emit('user:updated', {
+            id: updatedUser.id,
+            email: updatedUser.email,
+          });
+          return updatedUser;
         },
         {
           params: t.Object({

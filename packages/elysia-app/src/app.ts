@@ -3,14 +3,15 @@ import Elysia from 'elysia';
 import { cors } from '@elysiajs/cors';
 import { appModules, servicesMap } from './app.module';
 import { transactionDerive } from './database/transaction';
-import { database } from './database/datasource';
 import { env } from './conf/env';
 import { Logger } from './shared/logger/logger';
 import { TContext } from './shared/types/context';
+import { seed } from './database/runners/seed';
+import { eventBusPlugin } from './plugins/event-bus.plugin';
 
 const prefix = '/api';
 
-const app = new Elysia<typeof prefix, TContext>({ prefix })
+export const app = new Elysia<typeof prefix, TContext>({ prefix })
   .onAfterHandle((ctx) => {
     ctx.store.trx.commit();
   })
@@ -22,13 +23,16 @@ const app = new Elysia<typeof prefix, TContext>({ prefix })
 // Use CORS
 app.use(cors());
 
+// Expose event bus
+app.use(eventBusPlugin);
+
 app.onRequest(async (ctx) => {
   const trx = await transactionDerive({
     request: ctx.request,
   });
   app.store['trx'] = trx;
 
-  const store: Record<string, any> = {};
+  const store: Record<string, unknown> = {};
   const repos = appModules.map((module) => module.repositories);
   const services = appModules.map((module) => module.services);
 
@@ -51,16 +55,8 @@ app.onRequest(async (ctx) => {
   }
 });
 
-export const initTools = async () => {
-  return {
-    database,
-  };
-};
-
 const main = async () => {
-  const tools = await initTools();
-
-  app.decorate('tools', tools);
+  await seed();
 
   const controllers = appModules.map((module) => module.controllers);
 
