@@ -37,6 +37,11 @@ export class UserRepository extends BaseRepo<KyselyUserEntity> {
               ) || []
             )
           )
+        )
+        .$if(!!query.tenantId, (q) =>
+          q
+            .innerJoin('tenant_users', 'tenant_users.user_id', 'users.id')
+            .where('tenant_users.tenant_id', '=', query.tenantId!)
         );
 
       const [res, total] = await Promise.all([
@@ -87,7 +92,9 @@ export class UserRepository extends BaseRepo<KyselyUserEntity> {
     }
   }
 
-  override async findOne(args: FindManyArgs<UserEntity>) {
+  override async findOne(
+    args: FindManyArgs<UserEntity> & { tenantId?: string }
+  ) {
     try {
       const res = await this.trx
         .selectFrom('users')
@@ -97,6 +104,11 @@ export class UserRepository extends BaseRepo<KyselyUserEntity> {
           eb.and(
             args.where.map((arg) => eb(arg.column, arg.operator, arg.value))
           )
+        )
+        .$if(!!args.tenantId, (q) =>
+          q
+            .innerJoin('tenant_users', 'tenant_users.user_id', 'users.id')
+            .where('tenant_users.tenant_id', '=', args.tenantId!)
         )
         .executeTakeFirst();
       return res ?? null;

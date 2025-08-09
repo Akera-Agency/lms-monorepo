@@ -2,6 +2,7 @@ import { Elysia } from 'elysia';
 import { AppError } from '../Errors/AppError';
 import { TContext } from '../types/context';
 import jwt from 'jsonwebtoken';
+import { Logger } from '../logger/logger';
 
 // Supabase JWT token payload interface
 export interface ITokenPayload {
@@ -26,8 +27,11 @@ export interface AuthContext extends TContext {
   auth: {
     user: ITokenPayload;
     token: string;
+    tenantId?: string;
   };
 }
+
+export const X_TENANT_ID = 'x-tenant-id';
 
 // Helper function to extract JWT token from headers
 const extractToken = (
@@ -97,10 +101,13 @@ export const authGuard = new Elysia<string, TContext>().derive(
       throw new AppError('Anonymous access is not allowed');
     }
 
+    const tenantId: string | undefined = headers[X_TENANT_ID];
+
     return {
       auth: {
         user,
         token,
+        tenantId,
       },
     };
   }
@@ -127,6 +134,7 @@ export const optionalAuthGuard = new Elysia<string, TContext>().derive(
 
       // Check if user is anonymous
       if (user.is_anonymous) {
+        Logger.info('Anonymous access is not allowed');
         return {
           auth: null,
         };
@@ -140,6 +148,8 @@ export const optionalAuthGuard = new Elysia<string, TContext>().derive(
       };
     } catch (error) {
       // Return null auth if token is invalid
+      Logger.error(error);
+      Logger.info('Invalid JWT token');
       return {
         auth: null,
       };

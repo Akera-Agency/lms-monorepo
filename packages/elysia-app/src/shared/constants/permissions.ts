@@ -1,14 +1,13 @@
 import { IDb } from 'src/database/types/IDb';
 
 // Permission types for type safety
-export type BasePermission = 'create' | 'read' | 'update' | 'delete' | 'manage';
+export type BasePermission = 'create' | 'read' | 'update' | 'delete';
 
 export const PERMISSIONS: BasePermission[] = [
   'create',
   'read',
   'update',
   'delete',
-  'manage',
 ];
 
 export const ENTITIES: (keyof IDb)[] = [
@@ -26,21 +25,14 @@ export enum ROLES {
   TEACHER = 'teacher',
 }
 
-// Role hierarchy (higher roles have access to lower roles)
-export const ROLE_HIERARCHY: Record<ROLES, number> = {
-  [ROLES.ADMIN]: 100,
-  [ROLES.TEACHER]: 60,
-  [ROLES.STUDENT]: 20,
-};
-
 // Default role permissions mapping - aligned with the guard system
 export const DEFAULT_ROLE_PERMISSIONS = {
   [ROLES.ADMIN]: {
-    users: ['create', 'read', 'update', 'delete', 'manage'],
-    tenants: ['create', 'read', 'update', 'delete', 'manage'],
-    roles: ['create', 'read', 'update', 'delete', 'manage'],
-    tenant_roles: ['create', 'read', 'update', 'delete', 'manage'],
-    tenant_users: ['create', 'read', 'update', 'delete', 'manage'],
+    users: ['create', 'read', 'update', 'delete'],
+    tenants: ['create', 'read', 'update', 'delete'],
+    roles: ['create', 'read', 'update', 'delete'],
+    tenant_roles: ['create', 'read', 'update', 'delete'],
+    tenant_users: ['create', 'read', 'update', 'delete'],
   },
   [ROLES.TEACHER]: {
     users: ['read'],
@@ -67,40 +59,39 @@ export function getRolePermissions(
 
 // Helper function to check if a role has a specific permission
 export function hasRolePermission(
-  role: ROLES,
+  rolePermissions: Record<string, string[]>,
   entity: keyof IDb,
   permission: BasePermission
 ): boolean {
-  const rolePermissions = getRolePermissions(role);
   return rolePermissions[entity]?.includes(permission) || false;
 }
 
-// Helper function to check if a role has access to another role
-export function hasRoleAccess(userRole: ROLES, requiredRole: ROLES): boolean {
-  return ROLE_HIERARCHY[userRole] >= ROLE_HIERARCHY[requiredRole];
-}
-
-// Helper function to get all permissions for a role (including inherited)
-export function getAllRolePermissions(
-  role: ROLES
+// Helper function to merge multiple role permissions
+export function mergeRolePermissions(
+  roles: Array<{ permissions: Record<string, string[]> }>
 ): Record<keyof IDb, BasePermission[]> {
   const permissions: Record<keyof IDb, BasePermission[]> = {
-    ...DEFAULT_ROLE_PERMISSIONS[role],
+    users: [],
+    tenants: [],
+    roles: [],
+    tenant_roles: [],
+    tenant_users: [],
   };
 
-  // Add permissions from all roles that this role has access to
-  Object.entries(ROLE_HIERARCHY).forEach(([roleName, level]) => {
-    if (hasRoleAccess(role, roleName as ROLES)) {
-      const rolePerms = DEFAULT_ROLE_PERMISSIONS[roleName as ROLES];
-      Object.entries(rolePerms).forEach(([entity, perms]) => {
-        if (!permissions[entity as keyof IDb]) {
-          permissions[entity as keyof IDb] = [];
-        }
-        permissions[entity as keyof IDb] = [
-          ...new Set([...permissions[entity as keyof IDb], ...perms]),
-        ];
-      });
-    }
+  roles.forEach((role) => {
+    Object.entries(role.permissions).forEach(([entity, perms]) => {
+      permissions[entity as keyof IDb] = [
+        ...permissions[entity as keyof IDb],
+        ...(perms as BasePermission[]),
+      ];
+    });
+  });
+
+  // Remove duplicates
+  Object.keys(permissions).forEach((entity) => {
+    permissions[entity as keyof IDb] = [
+      ...new Set(permissions[entity as keyof IDb]),
+    ];
   });
 
   return permissions;

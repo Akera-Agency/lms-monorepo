@@ -1,7 +1,8 @@
 import Elysia, { t } from 'elysia';
 import { TContext } from '../../shared/types/context';
 import { authGuard } from '../../shared/guards/auth.guard';
-import { createPermissionGuard } from 'src/shared/guards/permission.guard';
+import { createAccessGuard } from 'src/shared/guards/permission.guard';
+import { AppError } from 'src/shared/Errors/AppError';
 
 const prefix = '/tenants';
 
@@ -14,7 +15,12 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
   .use(authGuard)
   .guard((app) =>
     app
-      .use(createPermissionGuard([{ entity: 'tenants', permission: 'read' }]))
+      .use(
+        createAccessGuard({
+          permissions: [{ entity: 'tenants', permission: 'read' }],
+          require: 'all',
+        })
+      )
       .get(
         '/',
         async (ctx) => {
@@ -45,9 +51,22 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
           }),
         }
       )
+  )
+  .guard((app) =>
+    app
+      .use(
+        createAccessGuard({
+          permissions: [{ entity: 'tenants', permission: 'read' }],
+          require: 'all',
+          requireTenant: true,
+        })
+      )
       .get(
         '/:id',
         async (ctx) => {
+          if (ctx.auth.tenantId !== ctx.params.id) {
+            throw new AppError('You are not authorized to access this tenant');
+          }
           return await ctx.store.TenantService.findOne(ctx.params.id);
         },
         {
@@ -59,7 +78,12 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
   )
   .guard((app) =>
     app
-      .use(createPermissionGuard([{ entity: 'tenants', permission: 'create' }]))
+      .use(
+        createAccessGuard({
+          permissions: [{ entity: 'tenants', permission: 'create' }],
+          require: 'all',
+        })
+      )
       .post(
         '/',
         async (ctx) => {
@@ -77,10 +101,19 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
   )
   .guard((app) =>
     app
-      .use(createPermissionGuard([{ entity: 'tenants', permission: 'update' }]))
+      .use(
+        createAccessGuard({
+          permissions: [{ entity: 'tenants', permission: 'update' }],
+          require: 'all',
+          requireTenant: true,
+        })
+      )
       .patch(
         '/:id',
         async (ctx) => {
+          if (ctx.auth.tenantId !== ctx.params.id) {
+            throw new AppError('You are not authorized to update this tenant');
+          }
           return await ctx.store.TenantService.update(ctx.params.id, ctx.body);
         },
         {
@@ -98,10 +131,19 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
   )
   .guard((app) =>
     app
-      .use(createPermissionGuard([{ entity: 'tenants', permission: 'delete' }]))
+      .use(
+        createAccessGuard({
+          permissions: [{ entity: 'tenants', permission: 'delete' }],
+          require: 'all',
+          requireTenant: true,
+        })
+      )
       .delete(
         '/:id',
         async (ctx) => {
+          if (ctx.auth.tenantId !== ctx.params.id) {
+            throw new AppError('You are not authorized to delete this tenant');
+          }
           return await ctx.store.TenantService.delete(ctx.params.id);
         },
         {
@@ -114,11 +156,18 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
   .guard((app) =>
     app
       .use(
-        createPermissionGuard([{ entity: 'tenant_roles', permission: 'read' }])
+        createAccessGuard({
+          permissions: [{ entity: 'tenant_roles', permission: 'read' }],
+          require: 'all',
+          requireTenant: true,
+        })
       )
       .get(
         '/:id/roles',
         async (ctx) => {
+          if (ctx.auth.tenantId !== ctx.params.id) {
+            throw new AppError('You are not authorized to access this tenant');
+          }
           return await ctx.store.TenantService.getTenantRoles(ctx.params.id);
         },
         {
@@ -131,13 +180,20 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
   .guard((app) =>
     app
       .use(
-        createPermissionGuard([
-          { entity: 'tenant_roles', permission: 'create' },
-        ])
+        createAccessGuard({
+          permissions: [{ entity: 'tenant_roles', permission: 'create' }],
+          require: 'all',
+          requireTenant: true,
+        })
       )
       .post(
         '/:id/roles',
         async (ctx) => {
+          if (ctx.auth.tenantId !== ctx.params.id) {
+            throw new AppError(
+              'You are not authorized to create a role for this tenant'
+            );
+          }
           const tenant = await ctx.store.TenantService.findOne(ctx.params.id);
           return await ctx.store.TenantService.createRoleForTenant({
             ...ctx.body,
@@ -161,13 +217,20 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
   .guard((app) =>
     app
       .use(
-        createPermissionGuard([
-          { entity: 'tenant_roles', permission: 'update' },
-        ])
+        createAccessGuard({
+          permissions: [{ entity: 'tenant_roles', permission: 'update' }],
+          require: 'all',
+          requireTenant: true,
+        })
       )
       .patch(
         '/:id/roles/:roleId',
         async (ctx) => {
+          if (ctx.auth.tenantId !== ctx.params.id) {
+            throw new AppError(
+              'You are not authorized to update this role for this tenant'
+            );
+          }
           return await ctx.store.TenantService.updateRoleForTenant(
             ctx.params.roleId,
             ctx.body
@@ -191,13 +254,20 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
   .guard((app) =>
     app
       .use(
-        createPermissionGuard([
-          { entity: 'tenant_roles', permission: 'delete' },
-        ])
+        createAccessGuard({
+          permissions: [{ entity: 'tenant_roles', permission: 'delete' }],
+          require: 'all',
+          requireTenant: true,
+        })
       )
       .delete(
         '/:id/roles/:roleId',
         async (ctx) => {
+          if (ctx.auth.tenantId !== ctx.params.id) {
+            throw new AppError(
+              'You are not authorized to delete this role for this tenant'
+            );
+          }
           await ctx.store.TenantService.removeRoleFromTenant(ctx.params.roleId);
         },
         {
@@ -211,13 +281,20 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
   .guard((app) =>
     app
       .use(
-        createPermissionGuard([
-          { entity: 'tenant_users', permission: 'create' },
-        ])
+        createAccessGuard({
+          permissions: [{ entity: 'tenant_users', permission: 'create' }],
+          require: 'all',
+          requireTenant: true,
+        })
       )
       .post(
         '/:id/users',
         async (ctx) => {
+          if (ctx.auth.tenantId !== ctx.params.id) {
+            throw new AppError(
+              'You are not authorized to assign a user to this tenant'
+            );
+          }
           return await ctx.store.TenantService.assignUserToTenant(
             ctx.params.id,
             ctx.body.userId,
@@ -238,13 +315,20 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
   .guard((app) =>
     app
       .use(
-        createPermissionGuard([
-          { entity: 'tenant_users', permission: 'delete' },
-        ])
+        createAccessGuard({
+          permissions: [{ entity: 'tenant_users', permission: 'delete' }],
+          require: 'all',
+          requireTenant: true,
+        })
       )
       .delete(
         '/:id/users/:userId',
         async (ctx) => {
+          if (ctx.auth.tenantId !== ctx.params.id) {
+            throw new AppError(
+              'You are not authorized to remove a user from this tenant'
+            );
+          }
           return await ctx.store.TenantService.removeUserFromTenant(
             ctx.params.id,
             ctx.params.userId
@@ -261,11 +345,18 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
   .guard((app) =>
     app
       .use(
-        createPermissionGuard([{ entity: 'tenant_users', permission: 'read' }])
+        createAccessGuard({
+          permissions: [{ entity: 'tenant_users', permission: 'read' }],
+          require: 'all',
+          requireTenant: true,
+        })
       )
       .get(
         '/:id/users',
         async (ctx) => {
+          if (ctx.auth.tenantId !== ctx.params.id) {
+            throw new AppError('You are not authorized to access this tenant');
+          }
           return await ctx.store.TenantService.getTenantUsers(ctx.params.id, {
             page: ctx.query.page,
             limit: ctx.query.limit,
@@ -285,13 +376,20 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
   .guard((app) =>
     app
       .use(
-        createPermissionGuard([
-          { entity: 'tenant_users', permission: 'update' },
-        ])
+        createAccessGuard({
+          permissions: [{ entity: 'tenant_users', permission: 'update' }],
+          require: 'all',
+          requireTenant: true,
+        })
       )
       .patch(
         '/:id/users/:userId/role',
         async (ctx) => {
+          if (ctx.auth.tenantId !== ctx.params.id) {
+            throw new AppError(
+              'You are not authorized to update this user role for this tenant'
+            );
+          }
           return await ctx.store.TenantService.updateUserRoleInTenant(
             ctx.params.id,
             ctx.params.userId,

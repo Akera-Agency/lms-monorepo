@@ -11,9 +11,10 @@ export class UserService extends BaseService {
     return this.userRepository.findManyWithPagination(query);
   }
 
-  findOne(id: string) {
+  findOne({ id, tenantId }: { id: string; tenantId?: string }) {
     return this.userRepository.findOne({
       where: [{ column: 'id', operator: '=', value: id }],
+      tenantId,
     });
   }
 

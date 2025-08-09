@@ -1,6 +1,6 @@
 import Elysia, { t } from 'elysia';
 import {
-  createPermissionGuard,
+  createAccessGuard,
   PermissionContext,
 } from '../../shared/guards/permission.guard';
 import { authGuard } from '../../shared/guards/auth.guard';
@@ -18,7 +18,9 @@ export const userController = new Elysia<typeof prefix, PermissionContext>({
     '/me',
     async (ctx) => {
       const user = ctx.auth.user;
-      return await ctx.store.UserService.findOne(user.sub);
+      return await ctx.store.UserService.findOne({
+        id: user.sub,
+      });
     },
     {
       detail: {
@@ -44,11 +46,16 @@ export const userController = new Elysia<typeof prefix, PermissionContext>({
   )
   .guard((app) =>
     app
-      .use(createPermissionGuard([{ entity: 'users', permission: 'read' }]))
+      .use(
+        createAccessGuard({
+          permissions: [{ entity: 'users', permission: 'read' }],
+          require: 'all',
+        })
+      )
       .get(
         '/',
         async (ctx) => {
-          return ctx.store.UserService.findManyWithPagination({
+          return await ctx.store.UserService.findManyWithPagination({
             page: ctx.query.page,
             limit: ctx.query.limit,
           });
@@ -63,7 +70,9 @@ export const userController = new Elysia<typeof prefix, PermissionContext>({
       .get(
         ':id',
         async (ctx) => {
-          return ctx.store.UserService.findOne(ctx.params.id);
+          return await ctx.store.UserService.findOne({
+            id: ctx.params.id,
+          });
         },
         {
           params: t.Object({
@@ -74,11 +83,16 @@ export const userController = new Elysia<typeof prefix, PermissionContext>({
   )
   .guard((app) =>
     app
-      .use(createPermissionGuard([{ entity: 'users', permission: 'update' }]))
+      .use(
+        createAccessGuard({
+          permissions: [{ entity: 'users', permission: 'update' }],
+          require: 'all',
+        })
+      )
       .patch(
         ':id',
         async (ctx) => {
-          await ctx.store.UserService.update(ctx.params.id, ctx.body);
+          return await ctx.store.UserService.update(ctx.params.id, ctx.body);
         },
         {
           params: t.Object({
@@ -93,11 +107,16 @@ export const userController = new Elysia<typeof prefix, PermissionContext>({
   )
   .guard((app) =>
     app
-      .use(createPermissionGuard([{ entity: 'users', permission: 'delete' }]))
+      .use(
+        createAccessGuard({
+          permissions: [{ entity: 'users', permission: 'delete' }],
+          require: 'all',
+        })
+      )
       .delete(
         ':id',
         async (ctx) => {
-          await ctx.store.UserService.delete(ctx.params.id);
+          return await ctx.store.UserService.delete(ctx.params.id);
         },
         {
           params: t.Object({

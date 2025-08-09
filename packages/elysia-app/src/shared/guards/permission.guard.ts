@@ -1,34 +1,20 @@
 import { Elysia } from 'elysia';
 import { AppError } from '../Errors/AppError';
-import {
-  BasePermission,
-  ROLES,
-  hasRolePermission,
-  getAllRolePermissions,
-} from '../constants/permissions';
+import { BasePermission, ROLES } from '../constants/permissions';
 import { IDb } from 'src/database/types/IDb';
 import { AuthContext } from './auth.guard';
-import { RoleContext, createRoleGuard } from './role.guard';
-import { TContext } from '../types/context';
 
 // Extended context with permission information
-export interface PermissionContext extends RoleContext {
+export interface PermissionContext extends AuthContext {
   permissions: {
-    checkPermission: (
-      entity: keyof IDb,
-      permission: BasePermission
-    ) => Promise<boolean>;
-    requirePermission: (
-      entity: keyof IDb,
-      permission: BasePermission
-    ) => Promise<void>;
-    canManageEntity: (entity: keyof IDb) => Promise<boolean>;
-    getUserId: () => string;
-    getRolePermissions: () => Record<keyof IDb, BasePermission[]>;
+    checkPermission: (entity: keyof IDb, permission: BasePermission) => boolean;
+    requirePermission: (entity: keyof IDb, permission: BasePermission) => void;
+    getRolePermissions: () => RolePermissionsByScope;
     checkRolePermission: (
       entity: keyof IDb,
       permission: BasePermission
     ) => boolean;
+    getTenantIds: () => string[];
   };
 }
 
@@ -38,301 +24,224 @@ export interface PermissionCheck {
   permission: BasePermission;
 }
 
-// Helper function to get user ID from auth context
-const getUserIdFromAuth = (auth: AuthContext['auth']): string => {
-  return auth.user.sub; // Use the 'sub' field from JWT as user ID
+// Structured role permissions separated by scope
+export type RolePermissionsByScope = {
+  main: Record<keyof IDb, BasePermission[]>;
+  tenants: Record<string, Record<keyof IDb, BasePermission[]>>;
 };
 
-// Permission guard factory
-export const createPermissionGuard = (checks: PermissionCheck[]) => {
-  return new Elysia<string, RoleContext>().derive(
+const createEmptyPermissions = (): Record<keyof IDb, BasePermission[]> => ({
+  users: [],
+  roles: [],
+  tenants: [],
+  tenant_roles: [],
+  tenant_users: [],
+});
+
+const dedupePermissionSets = (
+  permissions: Record<keyof IDb, BasePermission[]>
+): Record<keyof IDb, BasePermission[]> => {
+  const deduped = createEmptyPermissions();
+  (Object.keys(permissions) as Array<keyof IDb>).forEach((entity) => {
+    deduped[entity] = [...new Set(permissions[entity])];
+  });
+  return deduped;
+};
+
+// Unified access guard options
+export type AccessGuardOptions = {
+  permissions?: PermissionCheck[];
+  require?: 'all' | 'any';
+  requireTenant?: boolean;
+};
+
+// Unified access guard that can enforce role checks, all/any permission checks, or just provide utilities
+export const createAccessGuard = (options?: AccessGuardOptions) =>
+  new Elysia<string, PermissionContext>().derive(
     { as: 'global' },
     async (context) => {
-      const { auth, role, store } = context as unknown as TContext &
-        RoleContext;
+      const { auth, store } = context as unknown as typeof context &
+        AuthContext;
 
-      const userId = getUserIdFromAuth(auth);
+      if (!auth) {
+        throw new AppError('Authentication token is required');
+      }
 
-      // Helper function to check permissions
-      const checkPermission = async (
+      const { main_roles, tenant_roles } = await store.RoleService.findByUserId(
+        auth.user.sub
+      );
+
+      // Permission utilities use already-fetched roles for consistency and performance
+      const checkPermission = (
         entity: keyof IDb,
-        permission: BasePermission
-      ): Promise<boolean> => {
-        if (!userId) {
+        permission: BasePermission,
+        tenantId?: string
+      ): boolean => {
+        if (!auth.user.sub) {
           return false;
         }
 
-        // First check if user has admin role (bypass permission checks)
-        if (role.hasRole(ROLES.ADMIN)) {
+        if (main_roles.some((role) => role.name === ROLES.ADMIN)) {
           return true;
         }
 
-        // Check with the RoleService for database-based permissions
-        return await store.RoleService.hasPermission(
-          userId,
-          entity,
-          permission
-        );
+        for (const role of main_roles) {
+          const permissions = role.permissions[entity] || [];
+          if (permissions.includes(permission)) {
+            return true;
+          }
+        }
+
+        if (tenantId) {
+          const tenantRolesForTenant = tenant_roles.filter(
+            (role) => role.tenant_id === tenantId
+          );
+          for (const role of tenantRolesForTenant) {
+            const permissions = role.permissions[entity] || [];
+            if (permissions.includes(permission)) {
+              return true;
+            }
+          }
+          return false;
+        }
+
+        for (const role of tenant_roles) {
+          const permissions = role.permissions[entity] || [];
+          if (permissions.includes(permission)) {
+            return true;
+          }
+        }
+
+        return false;
       };
 
-      // Helper function to require permissions (throws if not authorized)
-      const requirePermission = async (
+      const requirePermission = (
         entity: keyof IDb,
-        permission: BasePermission
-      ): Promise<void> => {
-        const hasPermission = await checkPermission(entity, permission);
+        permission: BasePermission,
+        tenantId?: string
+      ): void => {
+        const hasPermission = checkPermission(entity, permission, tenantId);
         if (!hasPermission) {
+          const tenantContext = tenantId ? ` in tenant ${tenantId}` : '';
           throw new AppError(
-            `Insufficient permissions: ${permission} on ${entity}`
+            `Insufficient permissions: ${permission} on ${entity}${tenantContext}`
           );
         }
       };
 
-      // Helper function to check if user can manage a specific entity
-      const canManageEntity = async (entity: keyof IDb): Promise<boolean> => {
-        if (!userId) {
-          return false;
-        }
+      const getRolePermissions = (): RolePermissionsByScope => {
+        // Build main (platform-wide) permissions
+        const mainPermissions = createEmptyPermissions();
+        main_roles.forEach((role) => {
+          Object.entries(role.permissions).forEach(([entity, perms]) => {
+            const entityKey = entity as keyof IDb;
+            mainPermissions[entityKey] = [
+              ...mainPermissions[entityKey],
+              ...(perms as BasePermission[]),
+            ];
+          });
+        });
 
-        // Admin can manage all entities
-        if (role.hasRole(ROLES.ADMIN)) {
-          return true;
-        }
+        // Build tenant-scoped permissions grouped by tenant_id
+        const tenantsPermissions: Record<
+          string,
+          Record<keyof IDb, BasePermission[]>
+        > = {};
+        tenant_roles.forEach((role) => {
+          if (!tenantsPermissions[role.tenant_id]) {
+            tenantsPermissions[role.tenant_id] = createEmptyPermissions();
+          }
+          Object.entries(role.permissions).forEach(([entity, perms]) => {
+            const entityKey = entity as keyof IDb;
+            tenantsPermissions[role.tenant_id][entityKey] = [
+              ...tenantsPermissions[role.tenant_id][entityKey],
+              ...(perms as BasePermission[]),
+            ];
+          });
+        });
 
-        return await store.RoleService.hasPermission(userId, entity, 'manage');
+        // Dedupe
+        const dedupedMain = dedupePermissionSets(mainPermissions);
+        const dedupedTenants: Record<
+          string,
+          Record<keyof IDb, BasePermission[]>
+        > = {};
+        Object.entries(tenantsPermissions).forEach(([tenantId, perms]) => {
+          dedupedTenants[tenantId] = dedupePermissionSets(perms);
+        });
+
+        return { main: dedupedMain, tenants: dedupedTenants };
       };
 
-      // Helper function to get role-based permissions
-      const getRolePermissions = (): Record<keyof IDb, BasePermission[]> => {
-        return getAllRolePermissions(role.currentRole);
-      };
-
-      // Helper function to check role-based permissions
       const checkRolePermission = (
         entity: keyof IDb,
-        permission: BasePermission
+        permission: BasePermission,
+        tenantId?: string
       ): boolean => {
-        return hasRolePermission(role.currentRole, entity, permission);
+        for (const role of main_roles) {
+          const permissions = role.permissions[entity] || [];
+          if (permissions.includes(permission)) {
+            return true;
+          }
+        }
+        if (tenantId) {
+          const tenantRolesForTenant = tenant_roles.filter(
+            (role) => role.tenant_id === tenantId
+          );
+          for (const role of tenantRolesForTenant) {
+            const permissions = role.permissions[entity] || [];
+            if (permissions.includes(permission)) {
+              return true;
+            }
+          }
+          return false;
+        }
+        for (const role of tenant_roles) {
+          const permissions = role.permissions[entity] || [];
+          if (permissions.includes(permission)) {
+            return true;
+          }
+        }
+        return false;
       };
 
-      // Check all required permissions
-      for (const check of checks) {
-        await requirePermission(check.entity, check.permission);
+      // Permission checks if requested
+      if (options?.permissions && options.permissions.length > 0) {
+        const mode: 'all' | 'any' = options.require ?? 'all';
+        if (mode === 'all') {
+          for (const check of options.permissions) {
+            requirePermission(
+              check.entity,
+              check.permission,
+              options.requireTenant ? auth.tenantId : undefined
+            );
+          }
+        } else {
+          const hasAnyPermission = options.permissions.some((check) =>
+            checkPermission(
+              check.entity,
+              check.permission,
+              options.requireTenant ? auth.tenantId : undefined
+            )
+          );
+          if (!hasAnyPermission) {
+            throw new AppError(
+              `User does not have any of the required permissions`
+            );
+          }
+        }
       }
 
       return {
         permissions: {
           checkPermission,
           requirePermission,
-          canManageEntity,
-          getUserId: () => userId,
           getRolePermissions,
           checkRolePermission,
+          getTenantIds: () => {
+            return [...new Set(tenant_roles.map((role) => role.tenant_id))];
+          },
         },
       };
     }
   );
-};
-
-// Any permission guard factory (user must have ANY of the specified permissions)
-export const createAnyPermissionGuard = (checks: PermissionCheck[]) => {
-  return new Elysia<string, RoleContext>().derive(
-    { as: 'global' },
-    async (context) => {
-      const { auth, role, store } = context as unknown as TContext &
-        RoleContext;
-
-      const userId = getUserIdFromAuth(auth);
-
-      // Helper function to check permissions
-      const checkPermission = async (
-        entity: keyof IDb,
-        permission: BasePermission
-      ): Promise<boolean> => {
-        if (!userId) {
-          return false;
-        }
-
-        // First check if user has admin role (bypass permission checks)
-        if (role.hasRole(ROLES.ADMIN)) {
-          return true;
-        }
-
-        // Check with the RoleService
-        return await store.RoleService.hasPermission(
-          userId,
-          entity,
-          permission
-        );
-      };
-
-      // Helper function to require permissions (throws if not authorized)
-      const requirePermission = async (
-        entity: keyof IDb,
-        permission: BasePermission
-      ): Promise<void> => {
-        const hasPermission = await checkPermission(entity, permission);
-        if (!hasPermission) {
-          throw new AppError(
-            `Insufficient permissions: ${permission} on ${entity}`
-          );
-        }
-      };
-
-      // Helper function to check if user can manage a specific entity
-      const canManageEntity = async (entity: keyof IDb): Promise<boolean> => {
-        if (!userId) {
-          return false;
-        }
-
-        if (role.hasRole(ROLES.ADMIN)) {
-          return true;
-        }
-
-        return await store.RoleService.hasPermission(userId, entity, 'manage');
-      };
-
-      // Helper function to get role-based permissions
-      const getRolePermissions = (): Record<keyof IDb, BasePermission[]> => {
-        return getAllRolePermissions(role.currentRole);
-      };
-
-      // Helper function to check role-based permissions
-      const checkRolePermission = (
-        entity: keyof IDb,
-        permission: BasePermission
-      ): boolean => {
-        return hasRolePermission(role.currentRole, entity, permission);
-      };
-
-      // Check if user has ANY of the required permissions
-      let hasAnyPermission = false;
-
-      for (const check of checks) {
-        const hasPermission = await checkPermission(
-          check.entity,
-          check.permission
-        );
-        if (hasPermission) {
-          hasAnyPermission = true;
-          break;
-        }
-      }
-
-      if (!hasAnyPermission) {
-        throw new AppError(
-          `User does not have any of the required permissions`
-        );
-      }
-
-      return {
-        permissions: {
-          checkPermission,
-          requirePermission,
-          canManageEntity,
-          getUserId: () => userId,
-          getRolePermissions,
-          checkRolePermission,
-        },
-      };
-    }
-  );
-};
-
-// Flexible permission guard (provides permission utilities without requiring specific permissions)
-export const flexiblePermissionGuard = new Elysia<string, RoleContext>().derive(
-  { as: 'global' },
-  async (context) => {
-    const { auth, role, store } = context as unknown as TContext & RoleContext;
-
-    const userId = getUserIdFromAuth(auth);
-
-    // Helper function to check permissions
-    const checkPermission = async (
-      entity: keyof IDb,
-      permission: BasePermission
-    ): Promise<boolean> => {
-      if (!userId) {
-        return false;
-      }
-
-      // First check if user has admin role (bypass permission checks)
-      if (role.hasRole(ROLES.ADMIN)) {
-        return true;
-      }
-
-      // Check with the RoleService
-      return await store.RoleService.hasPermission(userId, entity, permission);
-    };
-
-    // Helper function to require permissions (throws if not authorized)
-    const requirePermission = async (
-      entity: keyof IDb,
-      permission: BasePermission
-    ): Promise<void> => {
-      const hasPermission = await checkPermission(entity, permission);
-      if (!hasPermission) {
-        throw new AppError(
-          `Insufficient permissions: ${permission} on ${entity}`
-        );
-      }
-    };
-
-    // Helper function to check if user can manage a specific entity
-    const canManageEntity = async (entity: keyof IDb): Promise<boolean> => {
-      if (!userId) {
-        return false;
-      }
-
-      if (role.hasRole(ROLES.ADMIN)) {
-        return true;
-      }
-
-      return await store.RoleService.hasPermission(userId, entity, 'manage');
-    };
-
-    // Helper function to get role-based permissions
-    const getRolePermissions = (): Record<keyof IDb, BasePermission[]> => {
-      return getAllRolePermissions(role.currentRole);
-    };
-
-    // Helper function to check role-based permissions
-    const checkRolePermission = (
-      entity: keyof IDb,
-      permission: BasePermission
-    ): boolean => {
-      return hasRolePermission(role.currentRole, entity, permission);
-    };
-
-    return {
-      permissions: {
-        checkPermission,
-        requirePermission,
-        canManageEntity,
-        getUserId: () => userId,
-        getRolePermissions,
-        checkRolePermission,
-      },
-    };
-  }
-);
-
-// Combined role and permission guard factory
-export const createRolePermissionGuard = (
-  requiredRole: ROLES,
-  permissions?: PermissionCheck[]
-) => {
-  const guards: any[] = [];
-
-  // Add role guard
-  guards.push(createRoleGuard(requiredRole));
-
-  // Add permission guards if specified
-  if (permissions && permissions.length > 0) {
-    guards.push(createPermissionGuard(permissions));
-  } else {
-    guards.push(flexiblePermissionGuard);
-  }
-
-  return guards;
-};

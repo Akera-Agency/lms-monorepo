@@ -1,7 +1,7 @@
 import Elysia, { t } from 'elysia';
 import { TContext } from '../../shared/types/context';
 import { authGuard } from 'src/shared/guards/auth.guard';
-import { createPermissionGuard } from 'src/shared/guards/permission.guard';
+import { createAccessGuard } from 'src/shared/guards/permission.guard';
 
 const prefix = '/roles';
 
@@ -18,7 +18,12 @@ export const roleController = new Elysia<typeof prefix, TContext>({
   })
   .guard((app) =>
     app
-      .use(createPermissionGuard([{ entity: 'roles', permission: 'read' }]))
+      .use(
+        createAccessGuard({
+          permissions: [{ entity: 'roles', permission: 'read' }],
+          require: 'all',
+        })
+      )
       .get(
         '/',
         async (ctx) => {
@@ -80,7 +85,12 @@ export const roleController = new Elysia<typeof prefix, TContext>({
   )
   .guard((app) =>
     app
-      .use(createPermissionGuard([{ entity: 'roles', permission: 'create' }]))
+      .use(
+        createAccessGuard({
+          permissions: [{ entity: 'roles', permission: 'create' }],
+          require: 'all',
+        })
+      )
       .post(
         '/',
         async (ctx) => {
@@ -98,7 +108,12 @@ export const roleController = new Elysia<typeof prefix, TContext>({
   )
   .guard((app) =>
     app
-      .use(createPermissionGuard([{ entity: 'roles', permission: 'update' }]))
+      .use(
+        createAccessGuard({
+          permissions: [{ entity: 'roles', permission: 'update' }],
+          require: 'all',
+        })
+      )
       .patch(
         '/:id',
         async (ctx) => {
@@ -119,7 +134,12 @@ export const roleController = new Elysia<typeof prefix, TContext>({
   )
   .guard((app) =>
     app
-      .use(createPermissionGuard([{ entity: 'roles', permission: 'delete' }]))
+      .use(
+        createAccessGuard({
+          permissions: [{ entity: 'roles', permission: 'delete' }],
+          require: 'all',
+        })
+      )
       .delete(
         '/:id',
         async (ctx) => {

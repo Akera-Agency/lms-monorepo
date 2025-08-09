@@ -18,4 +18,6 @@ export type UserEntity = Selectable<KyselyUserEntity>;
 export type NewUser = Insertable<KyselyUserEntity>;
 export type UpdateUser = Updateable<KyselyUserEntity>;
 
-export type QueryUser = BaseQuery<KyselyUserEntity>;
+export type QueryUser = BaseQuery<KyselyUserEntity> & {
+  tenantId?: string;
+};
