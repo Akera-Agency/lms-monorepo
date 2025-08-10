@@ -1,8 +1,12 @@
 import { EventEmitter2 } from 'eventemitter2';
+import { UserEntity } from 'src/modules/users/infrastructure/user.entity';
 
 // Declare your events and payloads
 export type AppEvents = {
-  'user:updated': { id: string; email: string };
+  'user:updated': {
+    new: UserEntity;
+    old: UserEntity;
+  };
 };
 
 // A small typed layer over EventEmitter2

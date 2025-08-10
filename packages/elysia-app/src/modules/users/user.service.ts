@@ -1,28 +1,40 @@
 import { UserRepository } from './infrastructure/user.repository';
 import { QueryUser, UpdateUser } from './infrastructure/user.entity';
 import { BaseService } from '../../shared/types/base/base.service';
+import { eventBus } from 'src/core/event-bus';
+import { AppError } from 'src/shared/Errors/AppError';
 
 export class UserService extends BaseService {
   constructor(private userRepository: UserRepository) {
     super();
   }
 
-  findManyWithPagination(query: QueryUser) {
-    return this.userRepository.findManyWithPagination(query);
+  async findManyWithPagination(query: QueryUser) {
+    return await this.userRepository.findManyWithPagination(query);
   }
 
-  findOne({ id, tenantId }: { id: string; tenantId?: string }) {
-    return this.userRepository.findOne({
+  async findOne({ id, tenantId }: { id: string; tenantId?: string }) {
+    const user = await this.userRepository.findOne({
       where: [{ column: 'id', operator: '=', value: id }],
       tenantId,
     });
+    if (!user) {
+      throw new AppError('User not found');
+    }
+    return user;
   }
 
-  update(id: string, data: UpdateUser) {
-    return this.userRepository.update(id, data);
+  async update(id: string, data: UpdateUser) {
+    const oldUser = await this.findOne({ id });
+    const user = await this.userRepository.update(id, data);
+    eventBus.emit('user:updated', {
+      new: user,
+      old: oldUser,
+    });
+    return user;
   }
 
-  delete(id: string) {
-    return this.userRepository.delete(id);
+  async delete(id: string) {
+    await this.userRepository.delete(id);
   }
 }

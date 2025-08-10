@@ -1,7 +1,6 @@
 import Elysia, { t } from 'elysia';
 import { createAccessGuard } from '../../shared/guards/permission.guard';
 import { authGuard } from '../../shared/guards/auth.guard';
-import { eventBus } from 'src/core/event-bus';
 import { TContext } from 'src/shared/types/context';
 
 const prefix = '/users';
@@ -95,10 +94,6 @@ export const userController = new Elysia<typeof prefix, TContext>({
             ctx.params.id,
             ctx.body
           );
-          eventBus.emit('user:updated', {
-            id: updatedUser.id,
-            email: updatedUser.email,
-          });
           return updatedUser;
         },
         {
