@@ -13,47 +13,58 @@ const prefix = '/api';
 
 export const app = new Elysia<typeof prefix, TContext>({ prefix })
   .onAfterHandle((ctx) => {
-    ctx.store.trx.commit();
+    try {
+      ctx.store?.trx?.commit?.();
+    } catch (e) {
+      Logger.error(e);
+      ctx.store?.trx?.rollback?.();
+    }
   })
   .onError((ctx) => {
     Logger.error(ctx.error);
-    ctx.store.trx.rollback();
-  });
-
-// Use CORS
-app.use(cors());
-
-// Expose event bus
-app.use(eventBusPlugin);
-
-app.onRequest(async (ctx) => {
-  const trx = await transactionDerive({
-    request: ctx.request,
-  });
-  app.store['trx'] = trx;
-
-  const store: Record<string, unknown> = {};
-  const repos = appModules.map((module) => module.repositories);
-  const services = appModules.map((module) => module.services);
-
-  for (const repo of repos) {
-    for (const [key, value] of Object.entries(repo)) {
-      store[key] = new value.import(trx);
+    try {
+      ctx.store?.trx?.rollback?.();
+    } catch (e) {
+      Logger.error(e);
     }
-  }
+  })
+  .use(cors())
+  .use(eventBusPlugin)
+  .derive(async (ctx) => {
+    const trx = await transactionDerive({
+      request: ctx.request,
+    });
 
-  for (const service of services) {
-    for (const [key, value] of Object.entries(service)) {
-      const deps = value.inject.map((key: { name: string }) => store[key.name]);
-      if (value.inject.length !== deps.filter(Boolean).length) {
-        throw new Error(`Missing dependencies for ${key}`);
+    const localStore: Record<string, unknown> = {};
+    const repos = appModules.map((module) => module.repositories);
+    const services = appModules.map((module) => module.services);
+
+    for (const repo of repos) {
+      for (const [key, value] of Object.entries(repo)) {
+        localStore[key] = new value.import(trx);
       }
-      const instance = new value.import(...deps);
-      store[key] = instance;
-      app.store[key as keyof servicesMap] = instance;
     }
-  }
-});
+
+    for (const service of services) {
+      for (const [key, value] of Object.entries(service)) {
+        const deps = value.inject.map(
+          (key: { name: string }) => localStore[key.name]
+        );
+        if (value.inject.length !== deps.filter(Boolean).length) {
+          throw new Error(`Missing dependencies for ${key}`);
+        }
+        const instance = new value.import(...deps);
+        localStore[key] = instance;
+      }
+    }
+
+    return {
+      store: {
+        trx,
+        ...(localStore as servicesMap),
+      },
+    } as Partial<TContext>;
+  });
 
 const main = async () => {
   await seed();
