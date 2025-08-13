@@ -1,12 +1,14 @@
 import { ColumnType, Insertable, Selectable, Updateable } from 'kysely';
 import { BaseQuery } from '../../../shared/types/base/base.query';
+import { LanguagesEnum } from 'src/shared/constants/i18n';
 
 export interface KyselyUserEntity {
   id: string;
-  email: string;
+  email: ColumnType<string, string, string | null>;
   name: string;
   role_id: string | null;
   avatar_url: string | null;
+  language: LanguagesEnum;
   is_active: boolean;
   last_login_at: Date | null;
   deleted_at: Date | null;

@@ -34,11 +34,6 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
                     operator: 'ilike',
                     value: `%${ctx.query.search}%`,
                   },
-                  {
-                    column: 'slug',
-                    operator: 'ilike',
-                    value: `%${ctx.query.search}%`,
-                  },
                 ]
               : undefined,
           });
@@ -92,7 +87,6 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
         {
           body: t.Object({
             name: t.String(),
-            slug: t.String(),
             description: t.Optional(t.String()),
             logo_url: t.Optional(t.String()),
           }),
@@ -122,7 +116,6 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
           }),
           body: t.Object({
             name: t.Optional(t.String()),
-            slug: t.Optional(t.String()),
             description: t.Optional(t.String()),
             logo_url: t.Optional(t.String()),
           }),

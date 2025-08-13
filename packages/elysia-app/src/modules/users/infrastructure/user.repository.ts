@@ -136,7 +136,7 @@ export class UserRepository extends BaseRepo<KyselyUserEntity> {
     try {
       await this.trx
         .updateTable('users')
-        .set({ deleted_at: new Date() })
+        .set({ deleted_at: new Date(), email: null })
         .where('id', '=', id)
         .execute();
     } catch (error) {

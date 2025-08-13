@@ -1,12 +1,11 @@
 import { EventEmitter2 } from 'eventemitter2';
-import { UserEntity } from 'src/modules/users/infrastructure/user.entity';
+import type { NotifyInput } from 'src/modules/notifications/types/types';
+import { UserUpdatedEvent } from 'src/modules/users/user.handler';
 
 // Declare your events and payloads
 export type AppEvents = {
-  'user:updated': {
-    new: UserEntity;
-    old: UserEntity;
-  };
+  'user:updated': UserUpdatedEvent;
+  'notification:enqueue': NotifyInput;
 };
 
 // A small typed layer over EventEmitter2

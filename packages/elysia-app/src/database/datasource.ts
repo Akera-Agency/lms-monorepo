@@ -9,6 +9,7 @@ import { IDb } from './types/IDb';
 import { env } from 'src/conf/env';
 import { Logger } from 'src/shared/logger/logger';
 
+const connectionString = `postgresql://${env.POSTGRES_USER}.${env.POOLER_TENANT_ID}:${env.POSTGRES_PASSWORD}@${env.POSTGRES_HOST}:${env.POSTGRES_PORT}/${env.POSTGRES_DB}`;
 export const database = new Kysely<IDb>({
   plugins: [new ParseJSONResultsPlugin()],
   dialect: new PostgresDialect({
@@ -16,7 +17,7 @@ export const database = new Kysely<IDb>({
       Logger.info('db connected');
     },
     pool: new Pool({
-      connectionString: `postgres://${env.POSTGRES_USER}.${env.POOLER_TENANT_ID}:${env.POSTGRES_PASSWORD}@${env.POSTGRES_HOST}:${env.POSTGRES_PORT}/${env.POSTGRES_DB}`,
+      connectionString,
     }),
   }),
   log(event: LogEvent) {

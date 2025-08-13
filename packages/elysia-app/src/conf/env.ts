@@ -17,6 +17,13 @@ const schema = z.object({
   // Supabase
   SUPABASE_URL: z.string().nonempty(),
   SUPABASE_SERVICE_ROLE_KEY: z.string().nonempty(),
+
+  // Resend
+  RESEND_DOMAIN: z.string().nonempty(),
+  RESEND_API_KEY: z.string().nonempty(),
+
+  // Notifications
+  NOTIFS_DEBUG: z.enum(['0', '1']).optional().default('0'),
 });
 
 export const env = schema.parse(

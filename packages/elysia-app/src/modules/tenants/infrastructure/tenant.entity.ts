@@ -9,8 +9,7 @@ import { BaseQuery } from '../../../shared/types/base/base.query';
 
 export interface KyselyTenantEntity {
   id: GeneratedAlways<string>;
-  name: string;
-  slug: string;
+  name: ColumnType<string, string, string | null>;
   description: string | null;
   logo_url: string | null;
   deleted_at: ColumnType<Date | null, never, Date | null>;

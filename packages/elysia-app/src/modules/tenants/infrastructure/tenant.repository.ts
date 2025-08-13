@@ -143,7 +143,7 @@ export class TenantRepository extends BaseRepo<KyselyTenantEntity> {
     try {
       await this.trx
         .updateTable('tenants')
-        .set({ deleted_at: new Date() })
+        .set({ deleted_at: new Date(), name: null })
         .where('id', '=', id)
         .execute();
     } catch (error) {

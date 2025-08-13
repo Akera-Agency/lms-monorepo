@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "setup": "bunx nx docker supabase && bunx nx dev elysia-app"
+    "setup": "bunx nx docker supabase"
   },
   "private": true,
   "dependencies": {
@@ -60,6 +60,7 @@
     "react-hook-form": "^7.60.0",
     "react-resizable-panels": "^3.0.3",
     "recharts": "2.15.4",
+    "resend": "^6.0.1",
     "sonner": "^2.0.6",
     "tailwind-merge": "^3.3.1",
     "tailwindcss-animate": "^1.0.7",

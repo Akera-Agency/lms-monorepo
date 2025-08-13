@@ -4,10 +4,10 @@ import {
   Kysely,
   Selectable,
   Updateable,
-} from "kysely";
-import { InfinityPaginationResultType } from "../InfinityPaginationResultType";
-import { IDb } from "../../../database/types/IDb";
-import { BaseQuery } from "./base.query";
+} from 'kysely';
+import { InfinityPaginationResultType } from '../InfinityPaginationResultType';
+import { IDb } from '../../../database/types/IDb';
+import { BaseQuery } from './base.query';
 
 type UpdateArgs<TEntity, UpdateDto> = {
   where: FindArgs<TEntity>[];
@@ -58,7 +58,7 @@ export class BaseRepo<TEntity extends IDb[keyof IDb]> {
   createMany?(
     payload: Insertable<TEntity>[],
     ...other_args: unknown[]
-  ): Promise<Selectable<TEntity>[]>;
+  ): Promise<Selectable<TEntity>[]> | Promise<void>;
   deleteMany?(
     args: FindManyArgs<Selectable<TEntity>>,
     ...other_args: unknown[]

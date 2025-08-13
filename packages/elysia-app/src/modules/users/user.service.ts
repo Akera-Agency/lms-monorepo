@@ -27,10 +27,7 @@ export class UserService extends BaseService {
   async update(id: string, data: UpdateUser) {
     const oldUser = await this.findOne({ id });
     const user = await this.userRepository.update(id, data);
-    eventBus.emit('user:updated', {
-      new: user,
-      old: oldUser,
-    });
+    eventBus.emit('user:updated', { newUser: user, oldUser });
     return user;
   }
 

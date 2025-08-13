@@ -16,6 +16,9 @@ export const ENTITIES: (keyof IDb)[] = [
   'roles',
   'tenant_roles',
   'tenant_users',
+  'notifications',
+  'notification_logs',
+  'notification_preferences',
 ];
 
 // Role definitions aligned with the guard system
@@ -33,6 +36,9 @@ export const DEFAULT_ROLE_PERMISSIONS = {
     roles: ['create', 'read', 'update', 'delete'],
     tenant_roles: ['create', 'read', 'update', 'delete'],
     tenant_users: ['create', 'read', 'update', 'delete'],
+    notifications: ['create', 'read', 'update', 'delete'],
+    notification_logs: ['create', 'read', 'update', 'delete'],
+    notification_preferences: ['create', 'read', 'update', 'delete'],
   },
   [ROLES.TEACHER]: {
     users: ['read'],
@@ -40,6 +46,9 @@ export const DEFAULT_ROLE_PERMISSIONS = {
     roles: ['read'],
     tenant_roles: ['read'],
     tenant_users: ['read', 'update'],
+    notifications: ['read'],
+    notification_logs: ['read'],
+    notification_preferences: ['read'],
   },
   [ROLES.STUDENT]: {
     users: ['read'],
@@ -47,6 +56,9 @@ export const DEFAULT_ROLE_PERMISSIONS = {
     roles: ['read'],
     tenant_roles: ['read'],
     tenant_users: ['read'],
+    notifications: ['read'],
+    notification_logs: ['read'],
+    notification_preferences: ['read'],
   },
 } as const satisfies Record<ROLES, Record<keyof IDb, BasePermission[]>>;
 

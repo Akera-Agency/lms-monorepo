@@ -1,6 +1,6 @@
 import { Kysely, sql } from 'kysely';
 
-export async function up(db: Kysely<any>): Promise<void> {
+export async function up(db: Kysely<unknown>): Promise<void> {
   // Enable UUID extension
   await db.executeQuery(
     sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`.compile(db)
@@ -35,7 +35,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn('id', 'uuid', (col) =>
       col.primaryKey().references('auth.users.id').onDelete('cascade')
     )
-    .addColumn('email', 'text', (col) => col.notNull())
+    .addColumn('email', 'text')
     .addColumn('name', 'text', (col) => col.notNull().unique())
     .addColumn('role_id', 'uuid', (col) =>
       col.references('roles.id').onDelete('set null')
@@ -52,12 +52,13 @@ export async function up(db: Kysely<any>): Promise<void> {
     )
     .execute();
 
-  // Add unique constraint for email (excluding soft-deleted records)
-  await sql`
-    ALTER TABLE public.users 
-    ADD CONSTRAINT users_email_unique 
-    UNIQUE (email) WHERE deleted_at IS NULL;
-  `.execute(db);
+  await db.schema
+    .withSchema('public')
+    .alterTable('users')
+    .addUniqueConstraint('users_email_unique', ['email'], (col) =>
+      col.nullsNotDistinct()
+    )
+    .execute();
 
   // 3. Create tenants table for multitenancy
   await db.schema
@@ -66,7 +67,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn('id', 'uuid', (col) =>
       col.primaryKey().defaultTo(sql`gen_random_uuid()`)
     )
-    .addColumn('name', 'text', (col) => col.notNull())
+    .addColumn('name', 'text')
     .addColumn('description', 'text')
     .addColumn('logo_url', 'text')
     .addColumn('deleted_at', 'timestamptz')
@@ -79,11 +80,13 @@ export async function up(db: Kysely<any>): Promise<void> {
     .execute();
 
   // Add unique constraint for slug (excluding soft-deleted records)
-  await sql`
-    ALTER TABLE public.tenants 
-    ADD CONSTRAINT tenants_slug_unique 
-    UNIQUE (slug) WHERE deleted_at IS NULL;
-  `.execute(db);
+  await db.schema
+    .withSchema('public')
+    .alterTable('tenants')
+    .addUniqueConstraint('tenants_name_unique', ['name'], (col) =>
+      col.nullsNotDistinct()
+    )
+    .execute();
 
   // 4. Create tenant_roles table for tenant-specific roles
   await db.schema
@@ -111,13 +114,6 @@ export async function up(db: Kysely<any>): Promise<void> {
     )
     .execute();
 
-  // Add unique constraint for tenant_id + name combination (excluding soft-deleted records)
-  await sql`
-    ALTER TABLE public.tenant_roles 
-    ADD CONSTRAINT tenant_roles_tenant_id_name_unique 
-    UNIQUE (tenant_id, name) WHERE deleted_at IS NULL;
-  `.execute(db);
-
   // 5. Create tenant_users junction table
   await db.schema
     .withSchema('public')
@@ -140,7 +136,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     )
     .execute();
 
-  db.schema
+  await db.schema
     .alterTable('tenant_users')
     .addPrimaryKeyConstraint('tenant_users_pkey', ['tenant_id', 'user_id'])
     .execute();
@@ -156,8 +152,7 @@ export async function up(db: Kysely<any>): Promise<void> {
         NEW.id,
         NEW.email,
         COALESCE(NEW.raw_user_meta_data->>'name', NEW.email),
-        true,
-       
+        true
       );
       RETURN NEW;
     END;
@@ -197,7 +192,7 @@ export async function up(db: Kysely<any>): Promise<void> {
   `.execute(db);
 }
 
-export async function down(db: Kysely<any>): Promise<void> {
+export async function down(db: Kysely<unknown>): Promise<void> {
   // Drop the triggers first
   await sql`
     DROP TRIGGER IF EXISTS users_update_trigger ON auth.users;

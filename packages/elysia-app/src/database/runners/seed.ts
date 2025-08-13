@@ -53,7 +53,8 @@ async function seedDefaultRoles() {
 
     Logger.info('Default system roles seeded successfully.');
   } catch (error) {
-    Logger.error('Failed to seed default roles', error);
+    console.log('🚀 ~ seedDefaultRoles ~ error:', error);
+    Logger.error('Failed to seed default roles' + error);
     process.exitCode = 1;
   }
 }
