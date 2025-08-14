@@ -4,7 +4,8 @@
   "license": "MIT",
   "scripts": {
     "setup": "bunx nx docker supabase",
-    "dev": "nx run-many --target=serve --all --parallel"
+    "dev": "nx run-many --target=serve --all --parallel",
+    "build": "nx run-many --target=build --all --parallel"
   },
   "private": true,
   "dependencies": {
