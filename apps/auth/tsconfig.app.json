@@ -18,7 +18,8 @@
     /* Paths */
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@ui/*": ["../../packages/ui/src/*"]
     },
 
     /* Linting */
@@ -29,5 +30,10 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src"]
+  "include": ["src"],
+  "references": [
+    {
+      "path": "../../packages/ui/tsconfig.lib.json"
+    }
+  ]
 }
