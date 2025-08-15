@@ -5,6 +5,12 @@
   "references": [
     {
       "path": "./packages/ui"
+    },
+    {
+      "path": "./packages/elysia-app"
+    },
+    {
+      "path": "./packages/supabase"
     }
   ]
 }

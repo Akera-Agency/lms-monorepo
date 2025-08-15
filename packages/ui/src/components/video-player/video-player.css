@@ -1,0 +1,26 @@
+.vjs-custom-skin .vjs-big-play-button {
+  background: hsl(var(--primary));
+  border-color: hsl(var(--primary));
+}
+
+.video-js:hover .vjs-big-play-button,
+.video-js .vjs-big-play-button:focus {
+  background-color: hsl(var(--primary));
+  border-color: hsl(var(--primary));
+  transition: all 0s;
+}
+
+.vjs-custom-skin .vjs-control-bar {
+  background-color: rgba(0, 0, 0, 0.478);
+}
+
+.vjs-custom-skin .vjs-volume-level,
+.vjs-custom-skin .vjs-play-progress {
+  background: hsl(var(--primary));
+}
+
+@media (min-width: 1440px) {
+  .video-js {
+    height: 26rem !important;
+  }
+}
