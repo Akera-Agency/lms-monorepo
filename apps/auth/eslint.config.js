@@ -16,8 +16,12 @@ export default tseslint.config([
       reactRefresh.configs.vite,
     ],
     languageOptions: {
-      ecmaVersion: 2020,
-      globals: globals.browser,
+      parserOptions: {
+        project: './tsconfig.json', 
+        tsconfigRootDir: __dirname,
+        ecmaVersion: 2020,
+        globals: globals.browser,
+      },
     },
   },
 ])
