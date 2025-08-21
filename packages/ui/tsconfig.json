@@ -2,12 +2,22 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "baseUrl": ".",
+    "jsx": "react-jsx",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "paths": {
       "@akera/ui": ["src"]
     }
   },
   "files": [],
-  "include": [],
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.js",
+    "src/**/*.jsx",
+    "src/**/*.json",
+    "src/**/*.css",
+    "src/**/*.scss"
+  ],
   "references": [
     {
       "path": "./tsconfig.lib.json"
