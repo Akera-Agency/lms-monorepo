@@ -5,6 +5,20 @@ import { createAccessGuard } from 'src/shared/guards/permission.guard';
 
 const prefix = '/roles';
 
+const createRoleValidationSchema = t.Object({
+  name: t.String(),
+  description: t.Optional(t.String()),
+  permissions: t.Object({}),
+  is_system_role: t.Boolean(),
+});
+
+const updateRoleValidationSchema = t.Object({
+  name: t.Optional(t.String()),
+  description: t.Optional(t.String()),
+  permissions: t.Optional(t.Object({})),
+  is_system_role: t.Optional(t.Boolean()),
+});
+
 export const roleController = new Elysia<typeof prefix, TContext>({
   prefix,
   detail: {
@@ -97,12 +111,7 @@ export const roleController = new Elysia<typeof prefix, TContext>({
           return await ctx.store.RoleService.create(ctx.body);
         },
         {
-          body: t.Object({
-            name: t.String(),
-            description: t.Optional(t.String()),
-            permissions: t.Record(t.String(), t.Array(t.String())),
-            is_system_role: t.Boolean(),
-          }),
+          body: createRoleValidationSchema,
         }
       )
   )
@@ -123,12 +132,7 @@ export const roleController = new Elysia<typeof prefix, TContext>({
           params: t.Object({
             id: t.String(),
           }),
-          body: t.Object({
-            name: t.Optional(t.String()),
-            description: t.Optional(t.String()),
-            permissions: t.Optional(t.Record(t.String(), t.Array(t.String()))),
-            is_system_role: t.Optional(t.Boolean()),
-          }),
+          body: updateRoleValidationSchema,
         }
       )
   )
