@@ -1,6 +1,6 @@
 import Elysia, { t } from 'elysia';
 import { TContext } from '../../shared/types/context';
-import { authGuard, optionalAuthGuard } from '../../shared/guards/auth.guard';
+import { authGuard } from '../../shared/guards/auth.guard';
 import { createAccessGuard } from 'src/shared/guards/permission.guard';
 import { AppError } from 'src/shared/Errors/AppError';
 
@@ -45,16 +45,6 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
     tags: ['Tenants'],
   },
 })
-  .use(optionalAuthGuard)
-  .post(
-    '/create-test',
-    async (ctx) => {
-      return await ctx.store.TenantService.create(ctx.body);
-    },
-    {
-      body: createTenantValidationSchema,
-    }
-  )
   .use(authGuard)
   .guard((app) =>
     app
