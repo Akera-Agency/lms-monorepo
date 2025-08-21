@@ -37,8 +37,8 @@ const createEmptyPermissions = (): Record<keyof IDb, BasePermission[]> => ({
   tenant_roles: [],
   tenant_users: [],
   notifications: [],
-  notification_email_log: [],
   notification_preferences: [],
+  notification_logs: [],
 });
 
 const dedupePermissionSets = (
@@ -67,7 +67,10 @@ export const createAccessGuard = (options?: AccessGuardOptions) =>
         AuthContext;
 
       if (!auth) {
-        throw new AppError('Authentication token is required');
+        throw new AppError({
+          error: 'Authentication token is required',
+          statusCode: 401,
+        });
       }
 
       const { main_roles, tenant_roles } = await store.RoleService.findByUserId(
@@ -126,9 +129,10 @@ export const createAccessGuard = (options?: AccessGuardOptions) =>
         const hasPermission = checkPermission(entity, permission, tenantId);
         if (!hasPermission) {
           const tenantContext = tenantId ? ` in tenant ${tenantId}` : '';
-          throw new AppError(
-            `Insufficient permissions: ${permission} on ${entity}${tenantContext}`
-          );
+          throw new AppError({
+            error: `Insufficient permissions: ${permission} on ${entity}${tenantContext}`,
+            statusCode: 403,
+          });
         }
       };
 
@@ -228,9 +232,10 @@ export const createAccessGuard = (options?: AccessGuardOptions) =>
             )
           );
           if (!hasAnyPermission) {
-            throw new AppError(
-              `User does not have any of the required permissions`
-            );
+            throw new AppError({
+              error: `User does not have any of the required permissions`,
+              statusCode: 403,
+            });
           }
         }
       }

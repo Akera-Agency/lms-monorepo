@@ -17,6 +17,7 @@ const schema = z.object({
   // Supabase
   SUPABASE_URL: z.string().nonempty(),
   SUPABASE_SERVICE_ROLE_KEY: z.string().nonempty(),
+  SUPABASE_JWT_SECRET: z.string().nonempty(),
 
   // Resend
   RESEND_DOMAIN: z.string().nonempty(),

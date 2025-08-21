@@ -3,15 +3,15 @@ export interface IEventError {
 }
 
 export function isEventError(exception: unknown): exception is IEventError {
-  return exception instanceof Error && exception.name === "EventError";
+  return exception instanceof Error && exception.name === 'EventError';
 }
 
 export class EventError extends Error {
   public error: Error;
 
-  constructor(error: any) {
-    super(error);
-    this.name = "EventError";
+  constructor(error: Error) {
+    super(error.message);
+    this.name = 'EventError';
     this.error = error;
     Error.captureStackTrace(this, this.constructor);
   }

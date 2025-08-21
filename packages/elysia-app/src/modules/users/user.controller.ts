@@ -20,20 +20,12 @@ export const userController = new Elysia<typeof prefix, TContext>({
   },
 })
   .use(authGuard)
-  .get(
-    '/me',
-    async (ctx) => {
-      const user = ctx.auth.user;
-      return await ctx.store.UserService.findOne({
-        id: user.sub,
-      });
-    },
-    {
-      detail: {
-        tags: ['Users', 'Me'],
-      },
-    }
-  )
+  .get('/me', async (ctx) => {
+    const user = ctx.auth.user;
+    return await ctx.store.UserService.findOne({
+      id: user.sub,
+    });
+  })
   .patch(
     '/me',
     async (ctx) => {
