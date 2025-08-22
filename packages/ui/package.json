@@ -43,7 +43,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "framer-motion": "^12.23.12",
-    "lucide-react": "^0.539.0",
+    "lucide-react": "^0.540.0",
     "ogl": "^1.0.11",
     "tailwind-merge": "^3.3.1",
     "tiptap": "^1.32.2",

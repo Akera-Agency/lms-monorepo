@@ -1,4 +1,4 @@
-import { useAuthForm } from "@/hooks/useAuth";
+import { useAuthForm } from "../../../../../packages/auth/src/hooks/useAuth";
 import { AuthForm } from "@/components/auth-form"
 
 export default function SignupPage() {
@@ -12,7 +12,6 @@ export default function SignupPage() {
     error,
     setError, 
     signUp,
-    navigate 
     } = useAuthForm();
 
   const handleSignUp = async (e:any) =>{
@@ -22,7 +21,7 @@ export default function SignupPage() {
       const result = await signUp(email, password)
       if (result?.data.session) {
         console.log("Signup successful:", result.data);
-        navigate({ to: "/profile" });
+        window.location.href = "/profile"
       }
       else {
         console.error("Signup failed:", result.error);
@@ -30,8 +29,12 @@ export default function SignupPage() {
       }
     }
     catch (error) {
-      console.error("Error signing up:", error);
-      setError(error as string);
+      console.error("Error resetting password:", error);
+      if (error instanceof Error) {
+        setError(error.message);  
+      } else {
+        setError("Something went wrong. Please try again.");
+      }
     }
     finally {
       setLoading(false);
@@ -70,6 +73,9 @@ export default function SignupPage() {
               id === "email" ? setEmail(value) : setPassword(value);
             }}
             error={error}
+            passwordInput={true}
+            emailInput={true}
+            OAuth={true}
           />
           </div>
         </div>

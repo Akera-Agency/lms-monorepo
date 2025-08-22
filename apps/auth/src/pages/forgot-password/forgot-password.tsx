@@ -1,37 +1,39 @@
 import { AuthForm } from "@/components/auth-form"
 import { useAuthForm } from "../../../../../packages/auth/src/hooks/useAuth";
 
-export default function LoginPage() {
+export default function ForgotPassword() {
     const {
       email,
-      password,
+      setSuccessMessage,
+      successMessage,
       setEmail,
-      setPassword,
       loading,
       setLoading,
       error,
       setError,
-      signIn,
+      resetPassword,
     } = useAuthForm();
 
-    const handleSignIn = async (e:any) =>{
+    const handleResetPassword = async (e:any) =>{
+      setSuccessMessage(null)
+      setError(null)
       e.preventDefault();
       setLoading(true);
       try{
-        const result = await signIn(email, password)
-        if (result?.data.session) {
-          console.log("Login successful:", result.data);
-          window.location.href = `${import.meta.env.VITE_STUDENT_APP}/profile`
+        const result = await resetPassword(email, "/reset-password")
+        if (!result?.error) {
+          console.log("reset successful:", result.data);
+          setSuccessMessage("Check your email for the reset password link")
         }
       else {
-          console.error("Login failed:", result.error);
-          setError(result?.error?.message || "Login failed");
+          console.error("reset failed:", result.error);
+          setError(result?.error?.message || "reset failed");
         }
       }
       catch (error) {
         console.error("Error resetting password:", error);
         if (error instanceof Error) {
-          setError(error.message); 
+          setError(error.message);  
         } else {
           setError("Something went wrong. Please try again.");
         }
@@ -58,23 +60,24 @@ export default function LoginPage() {
         <div className="flex flex-1 items-center justify-center">
           <div className="w-full max-w-xs text-white">
           <AuthForm
-            title="Welcome back"
-            subtitle="Enter your email below to login to your account"
-            forgotPassword={true}
-            submitText="Login"
-            loadingText="Logging in..."
-            footerQuestion="Don't have an account?"
-            footerLinkHref="/signup"
-            footerLinkText="Sign up"
+            title="Forgot your password?"
+            subtitle="Enter your email below to get a reset link "
+            forgotPassword={false}
+            submitText="Send"
+            loadingText="Sending..."
+            footerQuestion="Back to"
+            footerLinkHref="/login"
+            footerLinkText="Login"
             isLoading={loading}
-            handleAuth={handleSignIn}
+            handleAuth={handleResetPassword}
             handleInputChange={(e) => {
-              const { id, value } = e.target;
-              id === "email" ? setEmail(value) : setPassword(value);
+                const { value } = e.target;
+                setEmail(value) ;
             }}
             error={error}
-            OAuth={true}
-            passwordInput={true}
+            successMessage={successMessage}
+            OAuth={false}
+            passwordInput={false}
             emailInput={true}
           />
           </div>
@@ -82,7 +85,7 @@ export default function LoginPage() {
       </div>
       <div className="bg-muted relative hidden lg:block">
         <img
-          src="/signup-image.avif"
+          src="/forgot-password-image.png"
           alt="Image"
           className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
         />
