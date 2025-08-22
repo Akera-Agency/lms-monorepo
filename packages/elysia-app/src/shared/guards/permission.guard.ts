@@ -3,6 +3,8 @@ import { AppError } from '../Errors/AppError';
 import { BasePermission, ROLES } from '../constants/permissions';
 import { IDb } from 'src/database/types/IDb';
 import { AuthContext } from './auth.guard';
+import { getMessage } from '../constants/messages';
+import { LanguagesEnum } from '../constants/i18n';
 
 // Extended context with permission information
 export interface PermissionContext extends AuthContext {
@@ -67,8 +69,13 @@ export const createAccessGuard = (options?: AccessGuardOptions) =>
         AuthContext;
 
       if (!auth) {
+        // Get user's preferred language from headers (default to English)
+        const acceptLanguage = (context as any).headers?.['accept-language'] || 'en';
+        const language = acceptLanguage.startsWith('fr') ? LanguagesEnum.fr : 
+                        acceptLanguage.startsWith('ar') ? LanguagesEnum.ar : LanguagesEnum.en;
+        
         throw new AppError({
-          error: 'Authentication token is required',
+          error: getMessage('TOKEN_REQUIRED', language),
           statusCode: 401,
         });
       }

@@ -24,7 +24,7 @@ const languages = [
   },
   {
     label: 'Deutsch',
-    value: 'es',
+    value: 'de',
     icon: <Flag className="mr-2 inline" />,
   },
 ]

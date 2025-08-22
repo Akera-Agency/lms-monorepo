@@ -1,0 +1,101 @@
+<!-- Subject: Bienvenue sur notre plateforme ! -->
+
+<html lang='fr'>
+  <head>
+    <meta charset='utf-8' />
+    <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+    <meta http-equiv='X-UA-Compatible' content='IE=edge' />
+    <title>Bienvenue sur notre plateforme</title>
+    <style>
+      /* Base styles */ body { font-family: "Segoe UI", Tahoma, Geneva, Verdana,
+      sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0;
+      background-color: #f5f5f5; -webkit-font-smoothing: antialiased; } /*
+      Container */ .container { max-width: 600px; margin: 0 auto;
+      background-color: #ffffff; border-radius: 8px; overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); } /* Header */ .header {
+      background-color: #1772c6; padding: 30px 20px; text-align: center; }
+      .header img { max-height: 40px; margin-bottom: 15px; } .header h1 { color:
+      white; font-size: 24px; font-weight: 600; margin: 0; } /* Content */
+      .content { padding: 30px 25px; } h2 { color: #1772c6; font-size: 20px;
+      margin-top: 0; margin-bottom: 20px; } p { margin: 0 0 20px; font-size:
+      16px; } /* Features */ .features { margin: 25px 0; padding: 0; }
+      .feature-item { display: flex; align-items: center; margin-bottom: 15px;
+      padding-left: 10px; } .feature-icon { background-color: #e6f0fa;
+      border-radius: 50%; width: 36px; height: 36px; display: flex; align-items:
+      center; justify-content: center; margin-right: 15px; flex-shrink: 0; }
+      .feature-icon span { color: #1772c6; font-size: 18px; font-weight: bold; }
+      .feature-text { font-size: 15px; } /* Button */ .button-container {
+      text-align: center; margin: 30px 0; } .button { display: inline-block;
+      padding: 12px 28px; background-color: #1772c6; color: white;
+      text-decoration: none; border-radius: 6px; font-weight: 600; font-size:
+      16px; transition: background-color 0.2s; } .button:hover {
+      background-color: #1565b3; } /* Footer */ .footer { background-color:
+      #f9f9f9; padding: 20px; text-align: center; border-top: 1px solid #eaeaea;
+      } .footer p { margin: 5px 0; font-size: 14px; color: #666; } .social-links
+      { margin: 15px 0; } .social-link { display: inline-block; margin: 0 8px;
+      color: #1772c6; text-decoration: none; } /* Responsive adjustments */
+      @media screen and (max-width: 480px) { .header { padding: 20px 15px; }
+      .content { padding: 20px 15px; } .button { padding: 10px 20px; font-size:
+      15px; display: block; margin: 0 20px; } }
+    </style>
+  </head>
+  <body>
+    <div class='container'>
+      <div class='header'>
+        <h1>Bienvenue sur notre plateforme !</h1>
+      </div>
+
+      <div class='content'>
+        <h2>Bonjour {{name}},</h2>
+
+        <p>Merci de vous être inscrit(e) sur notre plateforme ! Nous sommes ravis de vous accueillir et avons hâte de vous accompagner dans l'atteinte de vos objectifs d'apprentissage.</p>
+
+        <p>Avec votre nouveau compte, vous avez désormais accès à :</p>
+
+        <div class='features'>
+          <div class='feature-item'>
+            <div class='feature-icon'>
+              <span>✓</span>
+            </div>
+            <div class='feature-text'>Quiz interactifs et ressources d'apprentissage</div>
+          </div>
+
+          <div class='feature-item'>
+            <div class='feature-icon'>
+              <span>✓</span>
+            </div>
+            <div class='feature-text'>Suivi personnalisé de vos progrès</div>
+          </div>
+
+          <div class='feature-item'>
+            <div class='feature-icon'>
+              <span>✓</span>
+            </div>
+            <div class='feature-text'>Classements et badges de réussite</div>
+          </div>
+
+          <div class='feature-item'>
+            <div class='feature-icon'>
+              <span>✓</span>
+            </div>
+            <div class='feature-text'>Contenu multilingue en français et en anglais</div>
+          </div>
+        </div>
+
+        <div class='button-container'>
+          <a href='{{loginUrl}}' class='button'>Accéder à votre tableau de bord</a>
+        </div>
+
+        <p>Si vous avez des questions ou besoin d'aide, notre équipe de support est là pour vous. Il vous suffit de répondre à cet e-mail ou de nous contacter via la plateforme.</p>
+
+        <p>Bon apprentissage !</p>
+        <p>L'équipe</p>
+      </div>
+
+      <div class='footer'>
+        <p>© 2025. Tous droits réservés.</p>
+        <p>Vous avez reçu cet e-mail car vous vous êtes inscrit(e) sur notre plateforme.</p>
+      </div>
+    </div>
+  </body>
+</html>

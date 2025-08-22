@@ -4,6 +4,8 @@ import { TContext } from '../types/context';
 import jwt from 'jsonwebtoken';
 import { Logger } from '../logger/logger';
 import { env } from 'src/conf/env';
+import { getMessage } from '../constants/messages';
+import { LanguagesEnum } from '../constants/i18n';
 
 // Supabase JWT token payload interface
 export interface ITokenPayload {
@@ -53,12 +55,12 @@ const extractToken = (
 };
 
 // Helper function to decode and verify JWT token
-const decodeAndVerifyToken = (token: string): ITokenPayload => {
+const decodeAndVerifyToken = (token: string, language: LanguagesEnum = LanguagesEnum.en): ITokenPayload => {
   const jwtSecret = env.SUPABASE_JWT_SECRET;
 
   if (!jwtSecret) {
     throw new AppError({
-      error: 'JWT secret is not configured',
+      error: getMessage('JWT_SECRET_NOT_CONFIGURED', language),
       statusCode: 500,
     });
   }
@@ -73,7 +75,7 @@ const decodeAndVerifyToken = (token: string): ITokenPayload => {
     const currentTime = Math.floor(Date.now() / 1000);
     if (decoded.exp && decoded.exp < currentTime) {
       throw new AppError({
-        error: 'JWT token has expired',
+        error: getMessage('TOKEN_EXPIRED', language),
         statusCode: 401,
       });
     }
@@ -84,7 +86,7 @@ const decodeAndVerifyToken = (token: string): ITokenPayload => {
       throw error;
     }
     throw new AppError({
-      error: 'Invalid JWT token',
+      error: getMessage('TOKEN_INVALID', language),
       statusCode: 401,
     });
   }
@@ -97,23 +99,28 @@ export const authGuard = new Elysia<string, TContext>().derive(
     console.log('🚀 ~ authGuard:');
     const { headers } = context;
 
+    // Get user's preferred language from headers (default to English)
+    const acceptLanguage = headers['accept-language'] || 'en';
+    const language = acceptLanguage.startsWith('fr') ? LanguagesEnum.fr : 
+                    acceptLanguage.startsWith('ar') ? LanguagesEnum.ar : LanguagesEnum.en;
+
     // Extract token from headers
     const token = extractToken(headers);
 
     if (!token) {
       throw new AppError({
-        error: 'Authentication token is required',
+        error: getMessage('TOKEN_REQUIRED', language),
         statusCode: 401,
       });
     }
 
     // Decode and verify the token
-    const user = decodeAndVerifyToken(token);
+    const user = decodeAndVerifyToken(token, language);
 
     // Check if user is anonymous
     if (user.is_anonymous) {
       throw new AppError({
-        error: 'Anonymous access is not allowed',
+        error: getMessage('ANONYMOUS_NOT_ALLOWED', language),
         statusCode: 401,
       });
     }

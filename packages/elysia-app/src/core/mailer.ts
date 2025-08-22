@@ -72,6 +72,14 @@ export type EmailTemplates = {
     loginUrl: string;
     name: string;
   };
+  'password-reset': {
+    resetUrl: string;
+    name: string;
+  };
+  'email-verification': {
+    verificationUrl: string;
+    name: string;
+  };
 };
 
 // Supported languages
