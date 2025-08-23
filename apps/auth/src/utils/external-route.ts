@@ -1,0 +1,1 @@
+export const studentRoute = import.meta.env.VITE_STUDENT_APP

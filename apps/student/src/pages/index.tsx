@@ -1,9 +1,11 @@
-import Profile from "./profile/profile";
+import { useEffect } from "react";
 
 const Page = () => {
-  return (
-    <Profile/>
-  );
+
+  useEffect(() => {
+    window.location.href = "/profile"
+  }, []);
+  return null
 };
 
 export default Page;

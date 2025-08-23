@@ -1,5 +1,6 @@
 import { AuthForm } from "@/components/auth-form"
 import { useAuthForm } from "../../../../../packages/auth/src/hooks/useAuth";
+import { studentRoute } from "@/utils/external-route";
 
 export default function LoginPage() {
     const {
@@ -21,7 +22,7 @@ export default function LoginPage() {
         const result = await signIn(email, password)
         if (result?.data.session) {
           console.log("Login successful:", result.data);
-          window.location.href = `${import.meta.env.VITE_STUDENT_APP}/profile`
+          window.location.href = `${studentRoute}/profile`
         }
       else {
           console.error("Login failed:", result.error);

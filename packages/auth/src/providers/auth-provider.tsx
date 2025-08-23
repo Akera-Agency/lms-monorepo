@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState, type ReactNode } from 'react';
-import { supabase } from '../../../../apps/auth/src/utils/supabase';
+import { supabase } from '../utils/supabase';
 import type { AuthError, AuthResponse, OAuthResponse, Provider, Session, User } from '@supabase/supabase-js';
+import { studentRoute } from '../utils/external-routes';
 
 export const AuthContext = createContext<{
     session: Session | null
@@ -41,7 +42,7 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
                 const { data, error } = await supabase.auth.signInWithOAuth({
                     provider,
                     options: {
-                    redirectTo: `${import.meta.env.VITE_STUDENT_APP}${redirectPath}`,
+                    redirectTo: `${studentRoute}${redirectPath}`,
                     },
                 });
 

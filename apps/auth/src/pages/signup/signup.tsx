@@ -1,5 +1,6 @@
 import { useAuthForm } from "../../../../../packages/auth/src/hooks/useAuth";
 import { AuthForm } from "@/components/auth-form"
+import { studentRoute } from "@/utils/external-route";
 
 export default function SignupPage() {
   const {
@@ -21,7 +22,7 @@ export default function SignupPage() {
       const result = await signUp(email, password)
       if (result?.data.session) {
         console.log("Signup successful:", result.data);
-        window.location.href = "/profile"
+        window.location.href = `${studentRoute}/profile`
       }
       else {
         console.error("Signup failed:", result.error);
