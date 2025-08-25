@@ -6,4 +6,11 @@ module.exports = {
     '../../packages/ui/components/**/*.{js,ts,jsx,tsx}',
     './src/**/*.{js,ts,tsx,jsx}',
   ],
+  theme: {
+    extend: {
+      colors: {
+        primaryOrange: "hsl(var(--primaryOrange))",
+      }
+    }
+  }
 };

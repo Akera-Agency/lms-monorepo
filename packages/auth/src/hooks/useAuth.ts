@@ -11,7 +11,7 @@ export const useAuthForm = () => {
     const [error, setError] = useState<string | null>(null);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const {signOut, signUp, signIn ,session, user, signInWithOAuth, resetPassword, updatePassword} = useAuth();
+    const {signOut, signUp, signIn ,session, user, signInWithOAuth, resetPassword, updatePassword, sessionLoading} = useAuth();
     const navigate = useNavigate();
     const providers = [
         {name: 'google' as Provider, 
@@ -41,6 +41,7 @@ export const useAuthForm = () => {
         session,
         user,
         navigate,
-        providers
+        providers,
+        sessionLoading,
     };
 };  

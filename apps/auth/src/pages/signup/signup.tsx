@@ -1,6 +1,6 @@
 import { useAuthForm } from "../../../../../packages/auth/src/hooks/useAuth";
 import { AuthForm } from "@/components/auth-form"
-import { studentRoute } from "@/utils/external-route";
+import { studentRoute } from "../../../../../packages/auth/src/utils/external-routes";
 
 export default function SignupPage() {
   const {

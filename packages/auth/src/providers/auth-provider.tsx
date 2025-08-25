@@ -6,8 +6,9 @@ import { studentRoute } from '../utils/external-routes';
 export const AuthContext = createContext<{
     session: Session | null
     user: User | null
+    sessionLoading: boolean
     signUp: (email: string, password: string) => Promise<AuthResponse>
-    signOut: () => Promise<void>
+    signOut: () => Promise<{ error: AuthError | null }>
     signIn: (email: string, password: string) => Promise<AuthResponse>
     signInWithOAuth: (provider: Provider, redirectPath: string) => Promise<OAuthResponse>
     resetPassword: (email: string, redirectPath: string) => Promise<{data:{}, error: AuthError | null}>
@@ -15,8 +16,9 @@ export const AuthContext = createContext<{
 }>({
     session: null,
     user: null,
+    sessionLoading: true,
     signUp: async () => ({ data: { user: null, session: null }, error: null }),
-    signOut: async () => {},
+    signOut: async () => ({error: null}),
     signIn: async () => ({ data: { user: null, session: null }, error: null }),
     signInWithOAuth: async () => ({ data: { provider: "" as Provider, url: "" }, error: null }),
     resetPassword: async () => ({data: {}, error: null}),
@@ -26,42 +28,50 @@ export const AuthContext = createContext<{
 export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
     const [session, setSession] = useState<Session | null>(null);
     const [user, setUser] = useState<User | null>(null);
+    const [sessionLoading, setSessionLoading] = useState(true);
+
 
     const signUp = async (email: string, password: string): Promise<AuthResponse> => {
         return await supabase.auth.signUp({ email, password });
     };
 
     const signIn = async (email: string, password: string): Promise<AuthResponse> => {
+        setSessionLoading(true);
         const result = await supabase.auth.signInWithPassword({ email, password });
         if (!result.error) setSession(result.data.session);
-            return result;
-        };
+        
+        setSessionLoading(false);
+        return result;
+    };
 
-        const signInWithOAuth = async (provider: Provider, redirectPath: string = "/profile" ): Promise<OAuthResponse> => {
-            try {
-                const { data, error } = await supabase.auth.signInWithOAuth({
-                    provider,
-                    options: {
-                    redirectTo: `${studentRoute}${redirectPath}`,
-                    },
-                });
+    const signInWithOAuth = async (provider: Provider, redirectPath: string = "/profile" ): Promise<OAuthResponse> => {
+        try {
+            const { data, error } = await supabase.auth.signInWithOAuth({
+                provider,
+                options: {
+                redirectTo: `${studentRoute}${redirectPath}`,
+                },
+            });
 
-                if (error) {
-                    console.error("OAuth sign-in error:", error.message);
-                    throw error;
-                }
-
-                return { data, error: null };
-            } catch (err) {
-                console.error("Unexpected error during OAuth sign-in:", err);
-                throw err;
+            if (error) {
+                console.error("OAuth sign-in error:", error.message);
+                throw error;
             }
-        };
 
-    const signOut = async () => {
-        await supabase.auth.signOut();
-            setSession(null);
-        };
+            return { data, error: null };
+        } catch (err) {
+            console.error("Unexpected error during OAuth sign-in:", err);
+            throw err;
+        }
+    };
+
+    const signOut = async (): Promise<{ error: AuthError | null }> => {
+        const { error } = await supabase.auth.signOut();
+        setSession(null);
+        setUser(null);
+        setSessionLoading(false);
+        return { error };
+    };
 
     const resetPassword = async (email: string, redirectPath= "/reset-password") => {
         try{
@@ -93,20 +103,62 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
         }
     }
 
+    // useEffect(() => {
+    //     const initAuth = async () => {
+    //         supabase.auth.getSession().then(({ data: { session } }) => {
+    //             setSession(session);
+    //         });
+    //     }
+    //     initAuth();
+
+    //     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+    //         setSession(session ??  null);
+    //         setSessionLoading(false);
+    //     });
+
+    //     return () => {
+    //         listener.subscription.unsubscribe();
+    //     };
+    // }, []);
+
     useEffect(() => {
-        supabase.auth.getSession().then(({ data: { session } }) => {
+        const restoreSessionFromUrl = async () => {
+            setSessionLoading(true); 
+            const hash = window.location.hash.slice(1);
+            if (hash) {
+                const params = new URLSearchParams(hash);
+                const access_token = params.get("access_token");
+                const refresh_token = params.get("refresh_token");
+    
+                if (access_token && refresh_token) {
+                    try {
+                        const { data, error } = await supabase.auth.setSession({ access_token, refresh_token });
+                        if (!error) setSession(data.session);
+                        window.history.replaceState({}, document.title, window.location.pathname);
+                    } catch (err) {
+                        console.error(err);
+                        setSession(null);
+                    }
+                }
+            }
+    
+            const { data: { session } } = await supabase.auth.getSession();
             setSession(session);
-        });
-
-        const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-            setSession(session ??  null);
-        });
-
-        return () => {
-            listener.subscription.unsubscribe();
+    
+            setSessionLoading(false);
         };
+    
+        restoreSessionFromUrl();
+    
+        const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+            setSession(session ?? null);
+            setSessionLoading(false);
+        });
+    
+        return () => listener.subscription.unsubscribe();
     }, []);
-
+    
+    
     useEffect(() => {
         supabase.auth.getUser().then(({ data: { user } }) => {
             if (user) {
@@ -119,8 +171,9 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
         })
     }, []);
 
+
     return (
-        <AuthContext.Provider value={{ session, signUp, signIn, signOut, user, signInWithOAuth, resetPassword, updatePassword }}>
+        <AuthContext.Provider value={{ session, user, sessionLoading, signUp, signIn, signOut, signInWithOAuth, resetPassword, updatePassword }}>
             {children}
         </AuthContext.Provider>
     );

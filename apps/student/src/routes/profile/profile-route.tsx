@@ -5,5 +5,7 @@ import Profile from '../../pages/profile/profile';
 export const profileRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/profile',
-  component: () => <Profile />,
+  component: () =>( 
+    <Profile />
+),
 });

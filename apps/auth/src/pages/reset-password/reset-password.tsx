@@ -1,12 +1,13 @@
 import { AuthForm } from "@/components/auth-form"
 import { useAuthForm } from "../../../../../packages/auth/src/hooks/useAuth";
 import { useEffect } from "react";
-import { supabase } from "@/utils/supabase";
+import { supabase } from "../../../../../packages/auth/src/utils/supabase";
 
 export default function ResetPassword() {
     const {
         navigate,
         successMessage,
+        setSuccessMessage,
         password,
         setPassword,
         loading,
@@ -39,6 +40,7 @@ export default function ResetPassword() {
             }
             if (!result?.error) {
             console.log("update successful:", result.data);
+            setSuccessMessage("Your password has been updated")
             navigate({to:"/login"})
             }
         else {

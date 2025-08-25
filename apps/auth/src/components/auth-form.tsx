@@ -4,6 +4,8 @@ import  Input  from "../../../../packages/ui/src/components/form/input"
 import type React from "react"
 import { useAuthForm } from "../../../../packages/auth/src/hooks/useAuth";
 import type { Provider } from "@supabase/supabase-js";
+import { useToast } from "../../../../packages/ui/src/hooks/use-toast"
+import { useEffect } from "react";
 
 interface AuthFormProps {
     title: string,
@@ -44,6 +46,19 @@ export function AuthForm({
     handleInputChange,
     ...props
 }: React.ComponentProps<"form"> & AuthFormProps) {
+
+    const { toast } = useToast();
+    useEffect(() => {
+        if (successMessage) {
+            toast({
+            title: "Success",
+            description: successMessage,
+            variant: "success", 
+            className:"bg-[#ECFDF5] text-white py-4 border text-[#065F46] border border-[#10B981]"
+            });
+        }
+    }, [successMessage, toast]);
+    
 
     const {
         setLoading,
@@ -116,11 +131,6 @@ export function AuthForm({
                     {error}
                 </p>
                 )}   
-                {successMessage && (
-                <p className="text-green-500 text-sm text-center -mt-2 -mb-2">
-                    {successMessage}
-                </p>
-                )}     
             </div>
             {OAuth &&(
                 <>

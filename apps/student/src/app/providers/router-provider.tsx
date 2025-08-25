@@ -3,7 +3,6 @@ import { rootRoute } from '@/routes/__root';
 import { profileRoute } from '@/routes/profile/profile-route';
 import { indexRoute } from '@/routes';
 
-
 const routeTree = rootRoute.addChildren([profileRoute,indexRoute]);
 
 const router = createRouter({

@@ -4,6 +4,7 @@
 @source "../../../../packages/ui/src/**/*.{ts,tsx,js,jsx,html}";
 
 :root {
+  --primaryOrange: oklch(0.6597 0.1999 35.08);
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -124,7 +125,7 @@
 
 body::before {
   content: "";
-  position: fixed;
+  position: absolute;
   left: 50%;
   top: -570px;
   transform: translateX(-50%);

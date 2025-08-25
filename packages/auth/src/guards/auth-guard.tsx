@@ -1,38 +1,44 @@
-// import React from "react";
-// import { useEffect } from "react";
-// import { useAuthForm } from "../hooks/useAuth";
+import React, { createContext } from "react"; 
+import { useEffect, useState } from "react"; 
+import { useAuthForm } from "../hooks/useAuth"; 
+import type { Session } from "@supabase/supabase-js"; 
+import { authRoute } from "../utils/external-routes"; 
+import { Loader } from "lucide-react";
 
-// export default function AuthGuard({ children }: { children: React.ReactNode }) {
-//     const {
-//         session,
-//         loading,
-//         navigate,
-//         setLoading,
-//     } = useAuthForm();
+export const GuardContext = createContext<{
+    session: Session | null;
+    sessionLoading: boolean; 
+}>({ 
+    session: null, 
+    sessionLoading: true,
+}); 
 
-//     const PUBLIC_PATHS = ["/login", "/signup","/"];
+export const AuthGuard = ({ children }: { children: React.ReactNode }) => {
+    const { session, sessionLoading } = useAuthForm();
+    const [shouldRender, setShouldRender] = useState(false);
+    
+    useEffect(() => {
+        if (!sessionLoading) {
+            if (!session) {
+                window.location.href = `${authRoute}/login`;
+            } else {
+                setShouldRender(true);
+            }
+        }
+    }, [session, sessionLoading]);
+    
+    if (!shouldRender) {
+        return (
+        <div className="flex items-center text-white text-2xl justify-center gap-3 mt-24">
+            <Loader className="h:7 w-7"/>
+            <p >Loading...</p>
+        </div>
+        )
+    }
 
-//   useEffect(() => {
-//     const checkAuth = async () => {
-//         if (PUBLIC_PATHS.includes(location.pathname)) {
-//             setLoading(false);
-//             return;
-//           }
-
-//       if (!session) {
-//         setLoading(false);
-//         navigate({ to: "/login" });
-//       } else {
-//         setLoading(false);
-//       }
-//     };
-
-//     checkAuth();
-//   }, []);
-
-//   if (loading) {
-//     return <div className="flex h-screen items-center justify-center">Loading...</div>;
-//   }
-
-//   return {children};
-// }
+    return ( 
+        <GuardContext.Provider value={{ session, sessionLoading }}>
+            {children} 
+        </GuardContext.Provider> 
+    ); 
+};
