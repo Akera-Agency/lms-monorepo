@@ -30,17 +30,13 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
     const [sessionLoading, setSessionLoading] = useState(true);
 
-
     const signUp = async (email: string, password: string): Promise<AuthResponse> => {
         return await supabase.auth.signUp({ email, password });
     };
 
     const signIn = async (email: string, password: string): Promise<AuthResponse> => {
-        setSessionLoading(true);
         const result = await supabase.auth.signInWithPassword({ email, password });
-        if (!result.error) setSession(result.data.session);
-        
-        setSessionLoading(false);
+        if (!result.error) setSession(result.data.session);        
         return result;
     };
 
@@ -103,77 +99,70 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
         }
     }
 
-    // useEffect(() => {
-    //     const initAuth = async () => {
-    //         supabase.auth.getSession().then(({ data: { session } }) => {
-    //             setSession(session);
-    //         });
-    //     }
-    //     initAuth();
-
-    //     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-    //         setSession(session ??  null);
-    //         setSessionLoading(false);
-    //     });
-
-    //     return () => {
-    //         listener.subscription.unsubscribe();
-    //     };
-    // }, []);
-
     useEffect(() => {
-        const restoreSessionFromUrl = async () => {
-            setSessionLoading(true); 
+        let cancelled = false;
+        let unsub: (() => void) | undefined;
+
+        const hydrate = async () => {
+            setSessionLoading(true);
+
+        try {
             const hash = window.location.hash.slice(1);
             if (hash) {
                 const params = new URLSearchParams(hash);
                 const access_token = params.get("access_token");
                 const refresh_token = params.get("refresh_token");
-    
+
                 if (access_token && refresh_token) {
-                    try {
-                        const { data, error } = await supabase.auth.setSession({ access_token, refresh_token });
-                        if (!error) setSession(data.session);
-                        window.history.replaceState({}, document.title, window.location.pathname);
-                    } catch (err) {
-                        console.error(err);
-                        setSession(null);
+                    const { data, error } = await supabase.auth.setSession({
+                    access_token,
+                    refresh_token,
+                    });
+                    if (!error && !cancelled) {
+                        setSession(data.session);
                     }
+                    window.history.replaceState({}, document.title, window.location.pathname);
                 }
-            }
-    
+                }
+        } catch (e) {
+            console.error("Error applying session from URL hash:", e);
+        }
+        try {
             const { data: { session } } = await supabase.auth.getSession();
-            setSession(session);
-    
-            setSessionLoading(false);
-        };
-    
-        restoreSessionFromUrl();
-    
-        const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-            setSession(session ?? null);
-            setSessionLoading(false);
-        });
-    
-        return () => listener.subscription.unsubscribe();
-    }, []);
-    
-    
-    useEffect(() => {
-        supabase.auth.getUser().then(({ data: { user } }) => {
-            if (user) {
-                setUser(user);
-            } else {
-                console.log("No user found");
+            if (!cancelled) {
+                setSession(session ?? null);
+                setUser(session?.user ?? null);
             }
-        }).catch(error => {
-            console.error("Error fetching user:", error);
-        })
+        } catch (e) {
+            if (!cancelled) {
+                setSession(null);
+                setUser(null);
+            }
+            console.error("getSession error:", e);
+        }
+
+        const { data } = supabase.auth.onAuthStateChange((_event, session) => {
+            if (cancelled) return;
+            setSession(session ?? null);
+            setUser(session?.user ?? null);
+        });
+        unsub = () => data.subscription.unsubscribe();
+
+        if (!cancelled) setSessionLoading(false);
+        };
+
+        hydrate();
+
+        return () => {
+            cancelled = true;
+            if (unsub) unsub();
+        };
     }, []);
 
+    const authContextValues = { session, user, sessionLoading, signUp, signIn, signOut, signInWithOAuth, resetPassword, updatePassword }
 
     return (
-        <AuthContext.Provider value={{ session, user, sessionLoading, signUp, signIn, signOut, signInWithOAuth, resetPassword, updatePassword }}>
+        <AuthContext.Provider value={authContextValues}>
             {children}
         </AuthContext.Provider>
     );

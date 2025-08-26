@@ -22,7 +22,7 @@ export default function SignupPage() {
       const result = await signUp(email, password)
       if (result?.data.session) {
         console.log("Signup successful:", result.data);
-        window.location.href = `${studentRoute}/profile`
+        window.location.href = `${studentRoute}/profile#access_token=${result.data.session.access_token}&refresh_token=${result.data.session.refresh_token}`
       }
       else {
         console.error("Signup failed:", result.error);

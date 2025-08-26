@@ -14,8 +14,8 @@ const NavLinkList = ({
 }: NavLinkListProps) => {
 return (
     <div className="flex flex-row">
-        {links.map((link) => (
-        <div className="hover:bg-neutral-400/20 px-2.5 py-1.5 rounded-lg ">
+        {links.map((link,index) => (
+        <div key={index} className="hover:bg-neutral-400/20 px-2.5 py-1.5 rounded-lg ">
             <Link to={`${link.href}`}>{link.title}</Link>
         </div>
     ))}

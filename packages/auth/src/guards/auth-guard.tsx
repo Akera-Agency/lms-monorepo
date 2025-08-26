@@ -18,14 +18,14 @@ export const AuthGuard = ({ children }: { children: React.ReactNode }) => {
     const [shouldRender, setShouldRender] = useState(false);
     
     useEffect(() => {
-        if (!sessionLoading) {
-            if (!session) {
-                window.location.href = `${authRoute}/login`;
-            } else {
-                setShouldRender(true);
-            }
+        if (sessionLoading) return;
+
+        if (session) {
+            setShouldRender(true);
+        } else {
+            window.location.href = `${authRoute}/login`;
         }
-    }, [session, sessionLoading]);
+    }, [sessionLoading, session]);
     
     if (!shouldRender) {
         return (
