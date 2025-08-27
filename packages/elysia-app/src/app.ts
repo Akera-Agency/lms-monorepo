@@ -8,25 +8,40 @@ import { Logger } from './shared/logger/logger';
 import { TContext } from './shared/types/context';
 import { seed } from './database/runners/seed';
 import { eventBusPlugin } from './plugins/event-bus.plugin';
+import { AppError, isAppError } from './shared/Errors/AppError';
+import { PostgresError, isDatabaseError } from './shared/Errors/PostgresError';
+import { EventError } from './shared/Errors/EventError';
+import { CronError } from './shared/Errors/CronError';
 
 const prefix = '/api';
 
 export const app = new Elysia<typeof prefix, TContext>({ prefix })
+  .error({ AppError, PostgresError, EventError, CronError })
   .onAfterHandle((ctx) => {
-    try {
-      ctx.store?.trx?.commit?.();
-    } catch (e) {
-      Logger.error(e);
-      ctx.store?.trx?.rollback?.();
-    }
+    ctx.store.trx.commit();
   })
   .onError((ctx) => {
     Logger.error(ctx.error);
     try {
-      ctx.store?.trx?.rollback?.();
+      ctx.store.trx.rollback();
+      if (isAppError(ctx.error)) {
+        ctx.set.status = ctx.error.statusCode;
+        return {
+          message: ctx.error.error,
+        };
+      }
+      if (isDatabaseError(ctx.error)) {
+        ctx.set.status = 500;
+        return {
+          message: ctx.error.message,
+        };
+      }
     } catch (e) {
       Logger.error(e);
     }
+    return {
+      message: 'Internal server error',
+    };
   })
   .use(cors())
   .use(eventBusPlugin)
@@ -63,19 +78,17 @@ export const app = new Elysia<typeof prefix, TContext>({ prefix })
         trx,
         ...(localStore as servicesMap),
       },
-    } as Partial<TContext>;
+    };
   });
 
 const main = async () => {
   await seed();
 
+  app.use(swagger({ path: '/docs' }));
+
   const controllers = appModules.map((module) => module.controllers);
 
-  for (const controller of controllers) {
-    app.use(controller);
-  }
-
-  app.use(swagger({ path: '/docs' }));
+  app.use(controllers.flat());
 
   app.listen(env.PORT, () => {
     Logger.info(`🚀 Elysia API running on http://localhost:${env.PORT}/api`);

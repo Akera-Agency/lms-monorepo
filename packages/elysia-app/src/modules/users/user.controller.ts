@@ -2,8 +2,16 @@ import Elysia, { t } from 'elysia';
 import { createAccessGuard } from '../../shared/guards/permission.guard';
 import { authGuard } from '../../shared/guards/auth.guard';
 import { TContext } from 'src/shared/types/context';
+import { LanguagesEnum } from 'src/shared/constants/i18n';
 
 const prefix = '/users';
+
+export const updateUserValidationSchema = t.Object({
+  email: t.String({ format: 'email' }),
+  name: t.String(),
+  language: t.Enum(LanguagesEnum),
+  avatar_url: t.String(),
+});
 
 export const userController = new Elysia<typeof prefix, TContext>({
   prefix,
@@ -12,34 +20,22 @@ export const userController = new Elysia<typeof prefix, TContext>({
   },
 })
   .use(authGuard)
-  .get(
-    '/me',
-    async (ctx) => {
-      const user = ctx.auth.user;
-      return await ctx.store.UserService.findOne({
-        id: user.sub,
-      });
-    },
-    {
-      detail: {
-        tags: ['Users', 'Me'],
-      },
-    }
-  )
+  .get('/me', async (ctx) => {
+    const user = ctx.auth.user;
+    return await ctx.store.UserService.findOne({
+      id: user.sub,
+    });
+  })
   .patch(
     '/me',
     async (ctx) => {
       const user = ctx.auth.user;
       await ctx.store.UserService.update(user.sub, {
-        email: ctx.body.email,
-        name: ctx.body.name,
+        ...ctx.body,
       });
     },
     {
-      body: t.Object({
-        email: t.String(),
-        name: t.String(),
-      }),
+      body: updateUserValidationSchema,
     }
   )
   .guard((app) =>
@@ -100,10 +96,7 @@ export const userController = new Elysia<typeof prefix, TContext>({
           params: t.Object({
             id: t.String(),
           }),
-          body: t.Object({
-            email: t.String(),
-            name: t.String(),
-          }),
+          body: updateUserValidationSchema,
         }
       )
   )

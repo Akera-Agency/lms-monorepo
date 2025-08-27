@@ -3,6 +3,7 @@ import { AppError } from '../Errors/AppError';
 import { TContext } from '../types/context';
 import jwt from 'jsonwebtoken';
 import { Logger } from '../logger/logger';
+import { env } from 'src/conf/env';
 
 // Supabase JWT token payload interface
 export interface ITokenPayload {
@@ -53,10 +54,13 @@ const extractToken = (
 
 // Helper function to decode and verify JWT token
 const decodeAndVerifyToken = (token: string): ITokenPayload => {
-  const jwtSecret = process.env.SUPABASE_JWT_SECRET;
+  const jwtSecret = env.SUPABASE_JWT_SECRET;
 
   if (!jwtSecret) {
-    throw new AppError('JWT secret is not configured');
+    throw new AppError({
+      error: 'JWT secret is not configured',
+      statusCode: 500,
+    });
   }
 
   try {
@@ -68,7 +72,10 @@ const decodeAndVerifyToken = (token: string): ITokenPayload => {
     // Check if token is expired
     const currentTime = Math.floor(Date.now() / 1000);
     if (decoded.exp && decoded.exp < currentTime) {
-      throw new AppError('JWT token has expired');
+      throw new AppError({
+        error: 'JWT token has expired',
+        statusCode: 401,
+      });
     }
 
     return decoded;
@@ -76,7 +83,10 @@ const decodeAndVerifyToken = (token: string): ITokenPayload => {
     if (error instanceof AppError) {
       throw error;
     }
-    throw new AppError('Invalid JWT token');
+    throw new AppError({
+      error: 'Invalid JWT token',
+      statusCode: 401,
+    });
   }
 };
 
@@ -84,13 +94,17 @@ const decodeAndVerifyToken = (token: string): ITokenPayload => {
 export const authGuard = new Elysia<string, TContext>().derive(
   { as: 'global' },
   async (context) => {
+    console.log('🚀 ~ authGuard:');
     const { headers } = context;
 
     // Extract token from headers
     const token = extractToken(headers);
 
     if (!token) {
-      throw new AppError('Authentication token is required');
+      throw new AppError({
+        error: 'Authentication token is required',
+        statusCode: 401,
+      });
     }
 
     // Decode and verify the token
@@ -98,7 +112,10 @@ export const authGuard = new Elysia<string, TContext>().derive(
 
     // Check if user is anonymous
     if (user.is_anonymous) {
-      throw new AppError('Anonymous access is not allowed');
+      throw new AppError({
+        error: 'Anonymous access is not allowed',
+        statusCode: 401,
+      });
     }
 
     const tenantId: string | undefined = headers[X_TENANT_ID];
@@ -117,6 +134,7 @@ export const authGuard = new Elysia<string, TContext>().derive(
 export const optionalAuthGuard = new Elysia<string, TContext>().derive(
   { as: 'global' },
   async (context) => {
+    console.log('🚀 ~ optionalAuthGuard:');
     const { headers } = context;
 
     // Extract token from headers

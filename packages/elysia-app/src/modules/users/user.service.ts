@@ -18,8 +18,11 @@ export class UserService extends BaseService {
       where: [{ column: 'id', operator: '=', value: id }],
       tenantId,
     });
-    if (!user) {
-      throw new AppError('User not found');
+    if (!user) { 
+      throw new AppError({
+        error: 'User not found',
+        statusCode: 404,
+      });
     }
     return user;
   }

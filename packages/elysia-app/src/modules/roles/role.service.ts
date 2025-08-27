@@ -25,7 +25,10 @@ export class RoleService extends BaseService {
       where: [{ column: 'id', operator: '=', value: id }],
     });
     if (!result) {
-      throw new AppError('Role not found');
+      throw new AppError({
+        error: 'Role not found',
+        statusCode: 404,
+      });
     }
     return result;
   }
@@ -42,7 +45,10 @@ export class RoleService extends BaseService {
       where: [{ column: 'name', operator: '=', value: name }],
     });
     if (!result) {
-      throw new AppError('Role not found');
+      throw new AppError({
+        error: 'Role not found',
+        statusCode: 404,
+      });
     }
     return result;
   }
@@ -61,7 +67,10 @@ export class RoleService extends BaseService {
 
   async create(data: NewRole): Promise<RoleEntity> {
     if (data.permissions && !this.validatePermissions(data.permissions)) {
-      throw new AppError('Invalid permissions structure');
+      throw new AppError({
+        error: 'Invalid permissions structure',
+        statusCode: 400,
+      });
     }
 
     return await this.roleRepository.create(data);
@@ -70,11 +79,17 @@ export class RoleService extends BaseService {
   async update(id: string, data: UpdateRole): Promise<RoleEntity> {
     const existingRole = await this.findOne(id);
     if (existingRole?.is_system_role && data.is_system_role === false) {
-      throw new AppError('Cannot modify system roles');
+      throw new AppError({
+        error: 'Cannot modify system roles',
+        statusCode: 400,
+      });
     }
 
     if (data.permissions && !this.validatePermissions(data.permissions)) {
-      throw new AppError('Invalid permissions structure');
+      throw new AppError({
+        error: 'Invalid permissions structure',
+        statusCode: 400,
+      });
     }
 
     return await this.roleRepository.update(id, data);
@@ -83,7 +98,10 @@ export class RoleService extends BaseService {
   async delete(id: string): Promise<void> {
     const existingRole = await this.findOne(id);
     if (existingRole?.is_system_role) {
-      throw new AppError('Cannot delete system roles');
+      throw new AppError({
+        error: 'Cannot delete system roles',
+        statusCode: 400,
+      });
     }
     await this.roleRepository.delete(id);
   }

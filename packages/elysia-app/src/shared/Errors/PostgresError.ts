@@ -16,7 +16,7 @@ export interface DatabaseError {
 }
 
 export function isDatabaseError(
-  exception: unknown,
+  exception: unknown
 ): exception is DatabaseError {
   return exception instanceof Error && exception.name === 'PostgresError';
 }
@@ -26,9 +26,9 @@ export class PostgresError extends Error {
   detail: string;
   column: string;
   table: string;
-  constructor(error: any) {
-    super(error.message); // Pass the message to the Error constructor
-    this.name = 'PostgresError'; // Set the name of the error
+  constructor(error: DatabaseError) {
+    super(error.message);
+    this.name = 'PostgresError';
     this.code = error.code || '';
     this.detail = error.detail || '';
     this.column = error.column || '';

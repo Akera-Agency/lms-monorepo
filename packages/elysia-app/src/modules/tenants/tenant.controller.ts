@@ -6,6 +6,39 @@ import { AppError } from 'src/shared/Errors/AppError';
 
 const prefix = '/tenants';
 
+const createTenantValidationSchema = t.Object({
+  name: t.String(),
+  description: t.Optional(t.String()),
+  logo_url: t.Optional(t.String()),
+});
+
+const updateTenantValidationSchema = t.Object({
+  name: t.Optional(t.String()),
+  description: t.Optional(t.String()),
+  logo_url: t.Optional(t.String()),
+});
+
+const createTenantRoleValidationSchema = t.Object({
+  name: t.String(),
+  permissions: t.Object({}),
+  is_default: t.Boolean(),
+  is_system_role: t.Boolean(),
+  description: t.Optional(t.String()),
+});
+
+const updateTenantRoleValidationSchema = t.Object({
+  name: t.Optional(t.String()),
+  permissions: t.Optional(t.Object({})),
+  is_default: t.Optional(t.Boolean()),
+  is_system_role: t.Optional(t.Boolean()),
+  description: t.Optional(t.String()),
+});
+
+const tenantUserRoleValidationSchema = t.Object({
+  roleId: t.String(),
+  userId: t.String(),
+});
+
 export const tenantController = new Elysia<typeof prefix, TContext>({
   prefix,
   detail: {
@@ -60,7 +93,10 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
         '/:id',
         async (ctx) => {
           if (ctx.auth.tenantId !== ctx.params.id) {
-            throw new AppError('You are not authorized to access this tenant');
+            throw new AppError({
+              error: 'You are not authorized to access this tenant',
+              statusCode: 403,
+            });
           }
           return await ctx.store.TenantService.findOne(ctx.params.id);
         },
@@ -85,11 +121,7 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
           return await ctx.store.TenantService.create(ctx.body);
         },
         {
-          body: t.Object({
-            name: t.String(),
-            description: t.Optional(t.String()),
-            logo_url: t.Optional(t.String()),
-          }),
+          body: createTenantValidationSchema,
         }
       )
   )
@@ -106,7 +138,10 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
         '/:id',
         async (ctx) => {
           if (ctx.auth.tenantId !== ctx.params.id) {
-            throw new AppError('You are not authorized to update this tenant');
+            throw new AppError({
+              error: 'You are not authorized to update this tenant',
+              statusCode: 403,
+            });
           }
           return await ctx.store.TenantService.update(ctx.params.id, ctx.body);
         },
@@ -114,11 +149,7 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
           params: t.Object({
             id: t.String(),
           }),
-          body: t.Object({
-            name: t.Optional(t.String()),
-            description: t.Optional(t.String()),
-            logo_url: t.Optional(t.String()),
-          }),
+          body: updateTenantValidationSchema,
         }
       )
   )
@@ -135,7 +166,10 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
         '/:id',
         async (ctx) => {
           if (ctx.auth.tenantId !== ctx.params.id) {
-            throw new AppError('You are not authorized to delete this tenant');
+            throw new AppError({
+              error: 'You are not authorized to delete this tenant',
+              statusCode: 403,
+            });
           }
           return await ctx.store.TenantService.delete(ctx.params.id);
         },
@@ -159,7 +193,10 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
         '/:id/roles',
         async (ctx) => {
           if (ctx.auth.tenantId !== ctx.params.id) {
-            throw new AppError('You are not authorized to access this tenant');
+            throw new AppError({
+              error: 'You are not authorized to access this tenant',
+              statusCode: 403,
+            });
           }
           return await ctx.store.TenantService.getTenantRoles(ctx.params.id);
         },
@@ -183,9 +220,10 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
         '/:id/roles',
         async (ctx) => {
           if (ctx.auth.tenantId !== ctx.params.id) {
-            throw new AppError(
-              'You are not authorized to create a role for this tenant'
-            );
+            throw new AppError({
+              error: 'You are not authorized to create a role for this tenant',
+              statusCode: 403,
+            });
           }
           const tenant = await ctx.store.TenantService.findOne(ctx.params.id);
           return await ctx.store.TenantService.createRoleForTenant({
@@ -197,13 +235,7 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
           params: t.Object({
             id: t.String(),
           }),
-          body: t.Object({
-            name: t.String(),
-            permissions: t.Object({}),
-            is_default: t.Boolean(),
-            is_system_role: t.Boolean(),
-            description: t.Optional(t.String()),
-          }),
+          body: createTenantRoleValidationSchema,
         }
       )
   )
@@ -220,9 +252,11 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
         '/:id/roles/:roleId',
         async (ctx) => {
           if (ctx.auth.tenantId !== ctx.params.id) {
-            throw new AppError(
-              'You are not authorized to update this role for this tenant'
-            );
+            throw new AppError({
+              error:
+                'You are not authorized to update this role for this tenant',
+              statusCode: 403,
+            });
           }
           return await ctx.store.TenantService.updateRoleForTenant(
             ctx.params.roleId,
@@ -234,13 +268,7 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
             id: t.String(),
             roleId: t.String(),
           }),
-          body: t.Object({
-            name: t.Optional(t.String()),
-            permissions: t.Optional(t.Object({})),
-            is_default: t.Optional(t.Boolean()),
-            is_system_role: t.Optional(t.Boolean()),
-            description: t.Optional(t.String()),
-          }),
+          body: updateTenantRoleValidationSchema,
         }
       )
   )
@@ -257,9 +285,11 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
         '/:id/roles/:roleId',
         async (ctx) => {
           if (ctx.auth.tenantId !== ctx.params.id) {
-            throw new AppError(
-              'You are not authorized to delete this role for this tenant'
-            );
+            throw new AppError({
+              error:
+                'You are not authorized to delete this role for this tenant',
+              statusCode: 403,
+            });
           }
           await ctx.store.TenantService.removeRoleFromTenant(ctx.params.roleId);
         },
@@ -284,9 +314,10 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
         '/:id/users',
         async (ctx) => {
           if (ctx.auth.tenantId !== ctx.params.id) {
-            throw new AppError(
-              'You are not authorized to assign a user to this tenant'
-            );
+            throw new AppError({
+              error: 'You are not authorized to assign a user to this tenant',
+              statusCode: 403,
+            });
           }
           return await ctx.store.TenantService.assignUserToTenant(
             ctx.params.id,
@@ -298,10 +329,7 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
           params: t.Object({
             id: t.String(),
           }),
-          body: t.Object({
-            roleId: t.String(),
-            userId: t.String(),
-          }),
+          body: tenantUserRoleValidationSchema,
         }
       )
   )
@@ -318,9 +346,10 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
         '/:id/users/:userId',
         async (ctx) => {
           if (ctx.auth.tenantId !== ctx.params.id) {
-            throw new AppError(
-              'You are not authorized to remove a user from this tenant'
-            );
+            throw new AppError({
+              error: 'You are not authorized to remove a user from this tenant',
+              statusCode: 403,
+            });
           }
           return await ctx.store.TenantService.removeUserFromTenant(
             ctx.params.id,
@@ -348,7 +377,10 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
         '/:id/users',
         async (ctx) => {
           if (ctx.auth.tenantId !== ctx.params.id) {
-            throw new AppError('You are not authorized to access this tenant');
+            throw new AppError({
+              error: 'You are not authorized to access this tenant',
+              statusCode: 403,
+            });
           }
           return await ctx.store.TenantService.getTenantUsers(ctx.params.id, {
             page: ctx.query.page,
@@ -379,9 +411,11 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
         '/:id/users/:userId/role',
         async (ctx) => {
           if (ctx.auth.tenantId !== ctx.params.id) {
-            throw new AppError(
-              'You are not authorized to update this user role for this tenant'
-            );
+            throw new AppError({
+              error:
+                'You are not authorized to update this user role for this tenant',
+              statusCode: 403,
+            });
           }
           return await ctx.store.TenantService.updateUserRoleInTenant(
             ctx.params.id,
@@ -394,9 +428,7 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
             id: t.String(),
             userId: t.String(),
           }),
-          body: t.Object({
-            roleId: t.String(),
-          }),
+          body: tenantUserRoleValidationSchema,
         }
       )
   );

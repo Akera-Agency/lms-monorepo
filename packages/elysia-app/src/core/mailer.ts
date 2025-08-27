@@ -150,12 +150,18 @@ class ResendMailer implements IMailer {
       });
 
       if (response.error) {
-        throw new AppError('GENERAL_SOMETHING_WENT_WRONG');
+        throw new AppError({
+          error: 'Failed to send email',
+          statusCode: 500,
+        });
       }
       Logger.info('Email sent successfully');
     } catch (error) {
       Logger.error('Failed to send email:', error);
-      throw new AppError('GENERAL_SOMETHING_WENT_WRONG');
+      throw new AppError({
+        error: 'Failed to send email',
+        statusCode: 500,
+      });
     }
   }
 
@@ -216,7 +222,10 @@ class ResendMailer implements IMailer {
           `Failed to load email template ${templateName} for language ${language}:`,
           err
         );
-        throw new AppError('GENERAL_NOT_FOUND');
+        throw new AppError({
+          error: 'Failed to load email template',
+          statusCode: 500,
+        });
       }
 
       // Remove the subject comment from the HTML
@@ -228,7 +237,10 @@ class ResendMailer implements IMailer {
         `Failed to load email template ${templateName} for language ${language}:`,
         error
       );
-      throw new AppError('GENERAL_NOT_FOUND');
+      throw new AppError({
+        error: 'Failed to load email template',
+        statusCode: 500,
+      });
     }
   }
 }

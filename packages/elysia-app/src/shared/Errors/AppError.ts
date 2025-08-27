@@ -1,5 +1,6 @@
 export interface IAppError {
-  error: Error;
+  error: string;
+  statusCode?: number;
 }
 
 export function isAppError(exception: unknown): exception is IAppError {
@@ -7,12 +8,14 @@ export function isAppError(exception: unknown): exception is IAppError {
 }
 
 export class AppError extends Error {
-  public error: Error;
+  public error: string;
+  public statusCode: number;
 
-  constructor(error: any) {
+  constructor({ error, statusCode = 500 }: IAppError) {
     super(error);
     this.name = 'AppError';
     this.error = error;
+    this.statusCode = statusCode;
     Error.captureStackTrace(this, this.constructor);
   }
 }
