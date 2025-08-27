@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
 export default function useWindowSize() {
   const [windowSize, setWindowSize] = useState<{
@@ -17,22 +17,22 @@ export default function useWindowSize() {
       });
     }
 
-    window.addEventListener("resize", handleResize);
+    window.addEventListener('resize', handleResize);
 
     handleResize();
 
-    return () => window.removeEventListener("resize", handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   return {
     windowSize,
-    isMobile: typeof windowSize?.width === "number" && windowSize?.width < 768,
+    isMobile: typeof windowSize?.width === 'number' && windowSize?.width < 768,
     isTablet:
-      typeof windowSize?.width === "number" &&
+      typeof windowSize?.width === 'number' &&
       windowSize?.width >= 768 &&
       windowSize?.width < 1024,
     isDesktop:
-    // desktop and laptop
-      typeof windowSize?.width === "number" && windowSize?.width >= 1024,
+      // desktop and laptop
+      typeof windowSize?.width === 'number' && windowSize?.width >= 1024,
   };
 }

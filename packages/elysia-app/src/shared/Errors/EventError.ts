@@ -9,7 +9,7 @@ export function isEventError(exception: unknown): exception is IEventError {
 export class EventError extends Error {
   public error: Error;
 
-  constructor(error: Error) {
+  constructor(error: any) {
     super(error.message);
     this.name = 'EventError';
     this.error = error;

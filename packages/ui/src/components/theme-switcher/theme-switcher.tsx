@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
-import { useTheme } from "next-themes";
-import { Moon, Sun } from "lucide-react";
+import { useEffect, useState } from 'react';
+import { useTheme } from 'next-themes';
+import { Moon, Sun } from 'lucide-react';
 
 function ThemeSwitcher() {
   const { theme, setTheme } = useTheme();
@@ -17,7 +17,7 @@ function ThemeSwitcher() {
 
   return (
     <button
-      onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+      onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
       className={`
         relative h-10 w-10 rounded-full cursor-pointer
         bg-gradient-to-b from-orange-100 to-orange-300
@@ -28,7 +28,7 @@ function ThemeSwitcher() {
         shadow-lg hover:shadow-orange-500/25 dark:hover:shadow-primary/25
       `}
     >
-      {theme === "light" ? (
+      {theme === 'light' ? (
         <Sun
           key="sun"
           className="

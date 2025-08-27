@@ -1,11 +1,17 @@
 import { TanstackRouterProvider } from './providers/router-provider';
-// import { ThemeProvider } from './providers/theme-provider';
+import {
+  ToastProvider,
+  ToastViewport,
+} from '../../../../packages/ui/src/components/toast/toast';
+import { Toaster } from '../../../../packages/ui/src/components/toast/toaster';
 
 function App() {
   return (
-    // <ThemeProvider>
-    <TanstackRouterProvider />
-    // </ThemeProvider>
+    <ToastProvider>
+      <ToastViewport />
+      <TanstackRouterProvider />
+      <Toaster />
+    </ToastProvider>
   );
 }
 

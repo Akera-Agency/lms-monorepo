@@ -1,7 +1,7 @@
-import { Switch as ShadSwitch } from "../shadcn/switch";
-import Label from "../label/label";
-import { cn } from "../../lib/utils";
-import { type UseFormRegisterReturn } from "react-hook-form";
+import { Switch as ShadSwitch } from '../shadcn/switch';
+import Label from '../label/label';
+import { cn } from '../../lib/utils';
+import { type UseFormRegisterReturn } from 'react-hook-form';
 
 type SwitchProps = {
   id?: string;
@@ -27,7 +27,7 @@ const Switch = ({
       <ShadSwitch
         checked={checked}
         onCheckedChange={onCheckedChange}
-        className={cn("", className)}
+        className={cn('', className)}
         about={thumbClassName}
         id={id}
         {...register}

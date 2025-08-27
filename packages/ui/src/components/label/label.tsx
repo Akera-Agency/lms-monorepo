@@ -1,7 +1,7 @@
-import * as React from "react";
-import { Badge } from "../badge/badge";
-import { cn } from "../../lib/utils";
-import type { LucideProps } from "lucide-react";
+import * as React from 'react';
+import { Badge } from '../badge/badge';
+import { cn } from '../../lib/utils';
+import type { LucideProps } from 'lucide-react';
 
 export interface LabelProps
   extends React.LabelHTMLAttributes<HTMLLabelElement> {
@@ -9,10 +9,10 @@ export interface LabelProps
   required?: boolean;
   helperText?: string;
   icon?: React.ForwardRefExoticComponent<
-    Omit<LucideProps, "ref"> & React.RefAttributes<SVGSVGElement>
+    Omit<LucideProps, 'ref'> & React.RefAttributes<SVGSVGElement>
   >;
   badge?: string;
-  badgeVariant?: "solid" | "outline" | "soft" | "surface";
+  badgeVariant?: 'solid' | 'outline' | 'soft' | 'surface';
   wrapperClassName?: string;
 }
 
@@ -22,16 +22,16 @@ export default function Label({
   helperText,
   icon: Icon,
   badge,
-  badgeVariant = "outline",
+  badgeVariant = 'outline',
   wrapperClassName,
   className,
   ...props
 }: LabelProps) {
   return (
-    <div className={cn("flex flex-col gap-1", wrapperClassName)}>
+    <div className={cn('flex flex-col gap-1', wrapperClassName)}>
       <label
         className={cn(
-          "text-sm font-medium text-neutral-800 dark:text-white",
+          'text-sm font-medium text-neutral-800 dark:text-white',
           className
         )}
         {...props}
@@ -41,7 +41,7 @@ export default function Label({
           {required && <span className="text-destructive">*</span>}
           {Icon && <Icon className="ml-1 h-4 w-4 text-secondary-text" />}
           {badge && (
-            <Badge variant={badgeVariant} size={"small"} className="ml-1">
+            <Badge variant={badgeVariant} size={'small'} className="ml-1">
               {badge}
             </Badge>
           )}

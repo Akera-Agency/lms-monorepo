@@ -1,7 +1,7 @@
-import Input from "../form/input";
-import { Search } from "lucide-react";
+import Input from '../form/input';
+import { Search } from 'lucide-react';
 
-const SearchBar = ({ placeholder = "Search" }: { placeholder?: string }) => {
+const SearchBar = ({ placeholder = 'Search' }: { placeholder?: string }) => {
   return (
     <div className="relative hidden w-80 md:block">
       <Input

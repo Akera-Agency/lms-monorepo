@@ -11,32 +11,32 @@ import {
   Type,
   Underline,
   Undo,
-} from 'lucide-react'
-import { Toggle } from '../shadcn/toggle'
-import { ColorSelect } from './color-select'
-import { Editor } from '@tiptap/react'
-import { Select } from '../form/select'
-import TableSelect from './table-select'
+} from 'lucide-react';
+import { Toggle } from '../shadcn/toggle';
+import { ColorSelect } from './color-select';
+import { Editor } from '@tiptap/react';
+import { Select } from '../form/select';
+import TableSelect from './table-select';
 
 type ToolbarProps = {
-  editor: Editor | null
-  content: string
-}
+  editor: Editor | null;
+  content: string;
+};
 
 const Toolbar = ({ editor }: ToolbarProps) => {
   if (!editor) {
-    return null
+    return null;
   }
 
   const handleFontSizeChange = (value: string) => {
-    if (!editor) return
+    if (!editor) return;
 
     if (value === 'unset') {
-      editor.chain().focus().unsetFontSize().run()
+      editor.chain().focus().unsetFontSize().run();
     } else {
-      editor.chain().focus().setFontSize(value).run()
+      editor.chain().focus().setFontSize(value).run();
     }
-  }
+  };
 
   return (
     <div className="flex w-full flex-wrap items-start justify-between rounded-tl-xl rounded-tr-xl border bg-tooltip-background px-2 py-0">
@@ -138,17 +138,24 @@ const Toolbar = ({ editor }: ToolbarProps) => {
           <Paperclip className="h-4 w-4" />
         </Toggle> */}
 
-        <Toggle pressed={false} onClick={() => editor.chain().focus().undo().run()}>
+        <Toggle
+          pressed={false}
+          onClick={() => editor.chain().focus().undo().run()}
+        >
           <Undo className="h-4 w-4" />
         </Toggle>
 
-        <Toggle pressed={false} onClick={() => editor.chain().focus().redo().run()} className="">
+        <Toggle
+          pressed={false}
+          onClick={() => editor.chain().focus().redo().run()}
+          className=""
+        >
           <Redo className="h-4 w-4" />
         </Toggle>
         <TableSelect editor={editor} />
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Toolbar
+export default Toolbar;

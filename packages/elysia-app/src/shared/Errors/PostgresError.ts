@@ -26,7 +26,7 @@ export class PostgresError extends Error {
   detail: string;
   column: string;
   table: string;
-  constructor(error: DatabaseError) {
+  constructor(error: any) {
     super(error.message);
     this.name = 'PostgresError';
     this.code = error.code || '';
