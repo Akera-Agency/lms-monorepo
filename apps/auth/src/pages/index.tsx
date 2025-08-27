@@ -1,13 +1,11 @@
-import { Button } from '@ui/components/button/button';
+import { useEffect } from "react";
 
 const Page = () => {
-  return (
-    <div className="flex h-screen w-screen items-center justify-center">
-      <Button variant="default" size={'lg'} className="rounded-full">
-        Click me
-      </Button>
-    </div>
-  );
+
+  useEffect(() => {
+    window.location.href = "/login"
+  }, []);
+  return null
 };
 
 export default Page;
