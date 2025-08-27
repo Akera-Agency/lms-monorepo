@@ -1,8 +1,8 @@
-import { useRef } from "react";
-import { cn } from "../../lib/utils";
-import { Input, type InputProps } from "../shadcn/input";
+import { useRef } from 'react';
+import { cn } from '../../lib/utils';
+import { Input, type InputProps } from '../shadcn/input';
 
-interface LinkInputProps extends Omit<InputProps, "value" | "onChange"> {
+interface LinkInputProps extends Omit<InputProps, 'value' | 'onChange'> {
   value: string;
   onChange: (value: string) => void;
 }
@@ -14,9 +14,9 @@ const LinkInput = ({
   ...props
 }: LinkInputProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const prefix = "http://";
+  const prefix = 'http://';
 
-  const cleanUrl = (url: string) => url.replace(/^(https?:\/\/)/, "");
+  const cleanUrl = (url: string) => url.replace(/^(https?:\/\/)/, '');
 
   const displayValue = cleanUrl(value);
 
@@ -36,7 +36,7 @@ const LinkInput = ({
         ref={inputRef}
         value={displayValue}
         onChange={handleChange}
-        className={cn("pl-[4.5rem]", className)}
+        className={cn('pl-[4.5rem]', className)}
       />
     </div>
   );

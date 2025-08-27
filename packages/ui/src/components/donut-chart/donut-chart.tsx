@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
-import { cn } from "../../lib/utils";
-import Counter from "../text/count";
+import { useEffect, useState } from 'react';
+import { cn } from '../../lib/utils';
+import Counter from '../text/count';
 
 type DonutChartProps = {
   size?: number;
@@ -19,8 +19,8 @@ export default function DonutChart({
   size = 120,
   progress,
   total,
-  progressClassName = "text-track-color",
-  trackClassName = "text-track-color dark:text-white/10",
+  progressClassName = 'text-track-color',
+  trackClassName = 'text-track-color dark:text-white/10',
   circleWidth = 10,
   progressWidth = 10,
   rounded = true,
@@ -44,7 +44,7 @@ export default function DonutChart({
 
   return (
     <div
-      className={cn("flex relative justify-center items-center", className)}
+      className={cn('flex relative justify-center items-center', className)}
       style={{ width: size, height: size }}
     >
       <svg
@@ -53,7 +53,7 @@ export default function DonutChart({
         viewBox={`0 0 ${size} ${size}`}
         version="1.1"
         xmlns="http://www.w3.org/2000/svg"
-        style={{ transform: "rotate(-90deg)" }}
+        style={{ transform: 'rotate(-90deg)' }}
       >
         {/* define a gradient for the fading effect */}
         <defs>
@@ -75,9 +75,9 @@ export default function DonutChart({
           fill="transparent"
           stroke="currentColor"
           strokeWidth={`${circleWidth}px`}
-          strokeDasharray={"10px 0"}
+          strokeDasharray={'10px 0'}
           strokeDashoffset="0px"
-          className={cn("duration-500", trackClassName)}
+          className={cn('duration-500', trackClassName)}
         />
 
         {/* progress circle */}
@@ -86,12 +86,12 @@ export default function DonutChart({
           cx={size / 2}
           cy={size / 2}
           className={cn(
-            "duration-500",
+            'duration-500',
             progressClassName,
-            "stroke-[url(#lightGradient)] dark:stroke-[url(#darkGradient)]",
+            'stroke-[url(#lightGradient)] dark:stroke-[url(#darkGradient)]'
           )}
           strokeWidth={`${progressWidth}px`}
-          strokeLinecap={rounded ? "round" : "butt"}
+          strokeLinecap={rounded ? 'round' : 'butt'}
           fill="transparent"
           strokeDasharray={`${circumference}px`}
           strokeDashoffset={`${percentage}px`}
@@ -108,7 +108,7 @@ export default function DonutChart({
 export const ProgressiveDonutChart = ({
   total,
   ...props
-}: Omit<DonutChartProps, "children">) => {
+}: Omit<DonutChartProps, 'children'>) => {
   return (
     <DonutChart
       total={total}
@@ -121,7 +121,7 @@ export const ProgressiveDonutChart = ({
         className="text-center text-[32px] font-medium dark:text-white"
       />
       <span className="text-sm font-normal text-neutral-500 dark:text-zinc-400">
-        of{" "}
+        of{' '}
         <Counter
           targetValue={total}
           className="text-sm font-normal text-neutral-500 dark:text-zinc-400"
@@ -133,7 +133,7 @@ export const ProgressiveDonutChart = ({
 
 export const PercentageDonutChart = ({
   ...props
-}: Omit<DonutChartProps, "children">) => {
+}: Omit<DonutChartProps, 'children'>) => {
   return (
     <DonutChart
       {...props}
@@ -155,7 +155,7 @@ export const PercentageDonutChart = ({
 
 export const StreakDonutChart = ({
   ...props
-}: Omit<DonutChartProps, "children">) => {
+}: Omit<DonutChartProps, 'children'>) => {
   return (
     <DonutChart
       {...props}

@@ -1,8 +1,8 @@
-import { type Column } from "@tanstack/react-table";
-import { Button } from "../button/button";
-import { cn } from "../../lib/utils";
-import { DropdownMenu } from "../dropdown/dropdown-menu";
-import { ChevronsUpDown } from "lucide-react";
+import { type Column } from '@tanstack/react-table';
+import { Button } from '../button/button';
+import { cn } from '../../lib/utils';
+import { DropdownMenu } from '../dropdown/dropdown-menu';
+import { ChevronsUpDown } from 'lucide-react';
 
 interface DataTableColumnHeaderProps<TData, TValue>
   extends React.HTMLAttributes<HTMLDivElement> {
@@ -17,30 +17,30 @@ export function DataTableColumnHeader<TData, TValue>({
 }: DataTableColumnHeaderProps<TData, TValue>) {
   if (!column.getCanSort()) {
     return (
-      <div className={cn("text-sm font-bold text-secondary-text", className)}>
+      <div className={cn('text-sm font-bold text-secondary-text', className)}>
         {title}
       </div>
     );
   }
 
   const options = [
-    { label: "Asc", value: "asc" },
-    { label: "Desc", value: "desc" },
+    { label: 'Asc', value: 'asc' },
+    { label: 'Desc', value: 'desc' },
     // { label: "Hide", value: "hide" },
   ];
 
   const handleSelect = (value: string) => {
-    if (value === "asc") {
+    if (value === 'asc') {
       column.toggleSorting(false);
-    } else if (value === "desc") {
+    } else if (value === 'desc') {
       column.toggleSorting(true);
-    } else if (value === "hide") {
+    } else if (value === 'hide') {
       column.toggleVisibility(false);
     }
   };
 
   return (
-    <div className={cn("flex items-center space-x-2", className)}>
+    <div className={cn('flex items-center space-x-2', className)}>
       <DropdownMenu options={options} onSelect={handleSelect} align="start">
         <Button
           variant="ghost"

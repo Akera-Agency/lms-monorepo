@@ -6,7 +6,13 @@ import { loginRoute } from '@/routes/login/login-route';
 import { forgotPasswordRoute } from '@/routes/forget-password/forgot-password-route';
 import { resetPasswordRoute } from '@/routes/reset-password/reset-password-route';
 
-const routeTree = rootRoute.addChildren([indexRoute, signupRoute, loginRoute, forgotPasswordRoute, resetPasswordRoute]);
+const routeTree = rootRoute.addChildren([
+  indexRoute,
+  signupRoute,
+  loginRoute,
+  forgotPasswordRoute,
+  resetPasswordRoute,
+]);
 
 const router = createRouter({
   routeTree,

@@ -1,13 +1,13 @@
-import { cn } from '../../lib/utils'
+import { cn } from '../../lib/utils';
 
 type RadioProps = {
-  title?: string
-  description?: string
-  disabled?: boolean
-  checked?: boolean
-  className?: string
-  onCheckedChange?: (checked: boolean) => void
-}
+  title?: string;
+  description?: string;
+  disabled?: boolean;
+  checked?: boolean;
+  className?: string;
+  onCheckedChange?: (checked: boolean) => void;
+};
 
 const Radio = ({
   title,
@@ -19,9 +19,9 @@ const Radio = ({
 }: RadioProps) => {
   const handleCheck = () => {
     if (!disabled && onCheckedChange) {
-      onCheckedChange(!checked)
+      onCheckedChange(!checked);
     }
-  }
+  };
 
   return (
     <div
@@ -29,7 +29,7 @@ const Radio = ({
       className={cn(
         'relative flex select-none items-start',
 
-        disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer',
+        disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
       )}
     >
       <span
@@ -39,7 +39,7 @@ const Radio = ({
           checked && !disabled
             ? 'border-primary bg-primary'
             : 'border-neutral-300 bg-primary-foreground',
-          disabled && 'border-neutral-200 bg-neutral-100',
+          disabled && 'border-neutral-200 bg-neutral-100'
         )}
       >
         {checked && !disabled && (
@@ -51,7 +51,7 @@ const Radio = ({
         <p className="text-sm text-secondary-text">{description}</p>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Radio
+export default Radio;

@@ -1,13 +1,13 @@
-import React from "react";
-import { format } from "date-fns";
-import { type UseFormRegisterReturn } from "react-hook-form";
-import Label from "../label/label";
-import { cn } from "../../lib/utils";
-import { Popover, PopoverContent, PopoverTrigger } from "../shadcn/popover";
-import { CalendarIcon } from "lucide-react";
-import { Button } from "../shadcn/button";
-import Input from "../form/input";
-import DatePicker from "./date-picker";
+import React from 'react';
+import { format } from 'date-fns';
+import { type UseFormRegisterReturn } from 'react-hook-form';
+import Label from '../label/label';
+import { cn } from '../../lib/utils';
+import { Popover, PopoverContent, PopoverTrigger } from '../shadcn/popover';
+import { CalendarIcon } from 'lucide-react';
+import { Button } from '../shadcn/button';
+import Input from '../form/input';
+import DatePicker from './date-picker';
 
 type DateTimePickerProps = {
   label?: string;
@@ -22,7 +22,7 @@ type DateTimePickerProps = {
   timeFormat?: string;
   register?: UseFormRegisterReturn;
   icon?: boolean;
-  align?: "start" | "end" | "center" | undefined;
+  align?: 'start' | 'end' | 'center' | undefined;
   contentStyle?: string;
   placeholder?: string;
   labelRequired?: boolean;
@@ -36,13 +36,13 @@ const DateTimePicker = ({
   setTime,
   error,
   icon = false,
-  align = "start",
+  align = 'start',
   disabled = false,
   className,
   contentStyle,
-  dateFormat = "dd/MM/yyyy",
-  timeFormat = "HH:mm",
-  placeholder = "Pick a date",
+  dateFormat = 'dd/MM/yyyy',
+  timeFormat = 'HH:mm',
+  placeholder = 'Pick a date',
   register,
   labelRequired = false,
 }: DateTimePickerProps) => {
@@ -54,7 +54,7 @@ const DateTimePicker = ({
     const target = e.target as HTMLInputElement;
     const value = target.value;
     if (value) {
-      const [hours, minutes] = value.split(":");
+      const [hours, minutes] = value.split(':');
       const newTime = new Date();
       newTime.setHours(parseInt(hours, 10));
       newTime.setMinutes(parseInt(minutes, 10));
@@ -71,22 +71,22 @@ const DateTimePicker = ({
           label={label}
           required={labelRequired}
           className={cn(
-            "text-heading-color text-sm font-semibold",
-            hasError && "text-destructive"
+            'text-heading-color text-sm font-semibold',
+            hasError && 'text-destructive'
           )}
         />
       )}
       <Popover>
         <PopoverTrigger
-          className={cn(disabled && "pointer-events-none")}
+          className={cn(disabled && 'pointer-events-none')}
           asChild
         >
           <div className="relative w-full cursor-pointer">
             {icon && (
               <div
                 className={cn(
-                  "absolute inset-y-0 left-0 flex items-center pl-3",
-                  disabled && "opacity-50"
+                  'absolute inset-y-0 left-0 flex items-center pl-3',
+                  disabled && 'opacity-50'
                 )}
               >
                 <CalendarIcon className="h-4 w-4" />
@@ -94,18 +94,18 @@ const DateTimePicker = ({
             )}
             <Button
               type="button"
-              variant={"outline"}
+              variant={'outline'}
               disabled={disabled}
               className={cn(
-                "h-[2.5rem] w-full items-center justify-between border-neutral-300 text-left text-sm font-medium shadow-none",
-                !date && "text-muted-foreground",
-                hasError && "border-red-500",
-                icon && "pl-8",
+                'h-[2.5rem] w-full items-center justify-between border-neutral-300 text-left text-sm font-medium shadow-none',
+                !date && 'text-muted-foreground',
+                hasError && 'border-red-500',
+                icon && 'pl-8',
                 className
               )}
             >
               {date && time ? (
-                format(date, dateFormat) + "  " + format(time, timeFormat)
+                format(date, dateFormat) + '  ' + format(time, timeFormat)
               ) : (
                 <span>{placeholder}</span>
               )}
@@ -117,7 +117,7 @@ const DateTimePicker = ({
         </PopoverTrigger>
         <PopoverContent
           className={cn(
-            "dark:bg-dark-primary w-96 px-3 py-2 shadow-lg dark:border-0",
+            'dark:bg-dark-primary w-96 px-3 py-2 shadow-lg dark:border-0',
             contentStyle
           )}
           align={align}
@@ -131,7 +131,7 @@ const DateTimePicker = ({
             <div className="relative">
               <Input
                 placeholder="Time (Optional)"
-                value={time ? format(time, timeFormat) : ""}
+                value={time ? format(time, timeFormat) : ''}
                 register={register}
                 onChange={handleChangeTime}
                 type="time"

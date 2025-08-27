@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { Avatar, AvatarFallback, AvatarImage } from "../shadcn/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from '../shadcn/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,12 +9,12 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "../shadcn/dropdown-menu";
-import { motion, useAnimationControls } from "framer-motion";
+} from '../shadcn/dropdown-menu';
+import { motion, useAnimationControls } from 'framer-motion';
 // import { useLogout } from "../../auth/src/api/use-logout";
 // import { useGetUser } from "../../auth/src/api/use-get-user";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
 export const svgVariants = {
   close: {
@@ -33,9 +33,9 @@ const UserDropdown = ({ user }: { user: any }) => {
 
   useEffect(() => {
     if (isCollapsed) {
-      svgControls.start("open");
+      svgControls.start('open');
     } else {
-      svgControls.start("close");
+      svgControls.start('close');
     }
   }, [isCollapsed, svgControls]);
 
@@ -55,7 +55,7 @@ const UserDropdown = ({ user }: { user: any }) => {
             <AvatarImage
               loading="lazy"
               className="h-10 w-10"
-              src={""}
+              src={''}
               width={200}
               height={200}
             />
@@ -82,7 +82,7 @@ const UserDropdown = ({ user }: { user: any }) => {
             initial="close"
             transition={{
               duration: 0.25,
-              ease: "easeInOut",
+              ease: 'easeInOut',
             }}
           >
             <path
@@ -112,14 +112,14 @@ const UserDropdown = ({ user }: { user: any }) => {
         </DropdownMenuLabel>
         <DropdownMenuSeparator className="bg-neutral-200 dark:bg-white/20" />
         <DropdownMenuGroup>
-          {user && user?.role === "student" && (
+          {user && user?.role === 'student' && (
             <a href="/settings/profile">
               <DropdownMenuItem className="text-sm font-medium text-neutral-800 hover:bg-muted dark:text-white dark:hover:bg-white/10">
                 Profile
               </DropdownMenuItem>
             </a>
           )}
-          <a href={user?.role === "student" ? "settings/profile" : "settings"}>
+          <a href={user?.role === 'student' ? 'settings/profile' : 'settings'}>
             <DropdownMenuItem className="text-sm font-medium text-neutral-800 hover:bg-muted dark:text-white dark:hover:bg-white/10">
               Settings
             </DropdownMenuItem>

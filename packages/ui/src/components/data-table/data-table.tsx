@@ -2,7 +2,7 @@ import {
   type ColumnDef,
   flexRender,
   type Table as TTable,
-} from "@tanstack/react-table";
+} from '@tanstack/react-table';
 
 import {
   Table,
@@ -11,10 +11,10 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../shadcn/table";
+} from '../shadcn/table';
 
-import { DataTablePagination } from "./data-table-pagination";
-import TableRowSkeleton from "./skeletons/table-skeleton";
+import { DataTablePagination } from './data-table-pagination';
+import TableRowSkeleton from './skeletons/table-skeleton';
 
 interface DataTableProps<TData, TValue> {
   table: TTable<TData>;
@@ -67,7 +67,7 @@ export function DataTable<TData, TValue>({
                 <TableRow
                   className="hover:bg-primary-100 data-[state=selected]:bg-primary-100"
                   key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
+                  data-state={row.getIsSelected() && 'selected'}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
