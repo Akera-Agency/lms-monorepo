@@ -1,23 +1,23 @@
-import { cn } from "../../lib/utils";
+import { cn } from '../../lib/utils';
 
 interface SkeletonProps extends React.HTMLAttributes<HTMLDivElement> {
-  variant?: "background" | "foreground";
+  variant?: 'background' | 'foreground';
 }
 
 function Skeleton({
   className,
-  variant = "background",
+  variant = 'background',
   ...props
 }: SkeletonProps) {
   return (
     <div
       className={cn(
-        "bg-skeleton-background animate-pulse rounded-md",
+        'bg-skeleton-background animate-pulse rounded-md',
         className,
         {
-          "bg-skeleton-background": variant === "background",
-          "bg-skeleton-foreground": variant === "foreground",
-        },
+          'bg-skeleton-background': variant === 'background',
+          'bg-skeleton-foreground': variant === 'foreground',
+        }
       )}
       {...props}
     />

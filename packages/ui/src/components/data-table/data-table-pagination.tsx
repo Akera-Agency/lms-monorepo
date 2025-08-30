@@ -1,8 +1,8 @@
-import { Button } from "../button/button";
-import { cn } from "../../lib/utils";
+import { Button } from '../button/button';
+import { cn } from '../../lib/utils';
 
-import { type Table } from "@tanstack/react-table";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { type Table } from '@tanstack/react-table';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 type DataTablePaginationProps<TData> = {
   table: Table<TData>;
@@ -32,13 +32,13 @@ export function DataTablePagination<TData>({
     if (pageIndex < pagesToShow) {
       pageNumbers.push(
         ...Array.from({ length: pagesToShow }, (_, i) => i + 1),
-        "...",
+        '...',
         totalPages
       );
     } else if (pageIndex >= totalPages - pagesToShow) {
       pageNumbers.push(
         1,
-        "...",
+        '...',
         ...Array.from(
           { length: pagesToShow },
           (_, i) => totalPages - pagesToShow + i + 1
@@ -47,11 +47,11 @@ export function DataTablePagination<TData>({
     } else {
       pageNumbers.push(
         1,
-        "...",
+        '...',
         pageIndex,
         pageIndex + 1,
         pageIndex + 2,
-        "...",
+        '...',
         totalPages
       );
     }
@@ -65,7 +65,7 @@ export function DataTablePagination<TData>({
     <div className="flex items-center justify-between rounded-b-2xl border-t bg-white px-4 py-3">
       <div>
         <span className="text-sm font-normal text-neutral-800">
-          Showing{" "}
+          Showing{' '}
           {table.getState().pagination.pageIndex *
             table.getState().pagination.pageSize +
             1}
@@ -74,7 +74,7 @@ export function DataTablePagination<TData>({
             (table.getState().pagination.pageIndex + 1) *
               table.getState().pagination.pageSize,
             totalCount
-          )}{" "}
+          )}{' '}
           of
           {totalCount} results
         </span>
@@ -92,7 +92,7 @@ export function DataTablePagination<TData>({
 
         <div className="flex items-center space-x-1">
           {getPageNumbers().map((page, index) =>
-            typeof page === "string" ? (
+            typeof page === 'string' ? (
               <span key={index} className="text-sm font-bold">
                 ...
               </span>
@@ -102,10 +102,10 @@ export function DataTablePagination<TData>({
                 variant="ghost"
                 onClick={() => table.setPageIndex(page - 1)}
                 className={cn(
-                  "h-9 w-9 p-0 text-sm transition-colors",
+                  'h-9 w-9 p-0 text-sm transition-colors',
                   pageIndex === page - 1
-                    ? "bg-primary text-white hover:bg-primary"
-                    : "text-neutral-800"
+                    ? 'bg-primary text-white hover:bg-primary'
+                    : 'text-neutral-800'
                 )}
               >
                 {page}

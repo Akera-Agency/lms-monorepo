@@ -1,7 +1,7 @@
-import { cn } from "../../lib/utils";
-import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
-import { motion } from "framer-motion";
-import * as React from "react";
+import { cn } from '../../lib/utils';
+import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
+import { motion } from 'framer-motion';
+import * as React from 'react';
 
 type DropdownRadioOption = {
   label: string;
@@ -16,7 +16,7 @@ type IDropdownRadioProps = {
   className?: string;
   label?: string;
   defaultValue?: string;
-  align?: "start" | "end";
+  align?: 'start' | 'end';
 };
 
 const DropdownRadio = ({
@@ -26,7 +26,7 @@ const DropdownRadio = ({
   className,
   label,
   defaultValue,
-  align = "start",
+  align = 'start',
 }: IDropdownRadioProps) => {
   const [value, setValue] = React.useState(defaultValue);
 
@@ -51,8 +51,8 @@ const DropdownRadio = ({
         >
           <DropdownMenuPrimitive.Content
             className={cn(
-              "z-50 min-w-[8rem] rounded-md border bg-white px-2 py-1 text-popover-foreground shadow-lg",
-              className,
+              'z-50 min-w-[8rem] rounded-md border bg-white px-2 py-1 text-popover-foreground shadow-lg',
+              className
             )}
             sideOffset={4}
             align={align}
@@ -72,16 +72,16 @@ const DropdownRadio = ({
                   value={option.value}
                   disabled={option.disabled}
                   className={cn(
-                    "relative flex cursor-default select-none items-center rounded-sm py-1.5 text-sm font-medium outline-none transition-colors focus:bg-accent",
-                    option.disabled && "pointer-events-none opacity-50",
+                    'relative flex cursor-default select-none items-center rounded-sm py-1.5 text-sm font-medium outline-none transition-colors focus:bg-accent',
+                    option.disabled && 'pointer-events-none opacity-50'
                   )}
                 >
                   <span
                     className={cn(
-                      "relative flex h-4 w-4 items-center justify-center rounded-full border-2 transition-all",
+                      'relative flex h-4 w-4 items-center justify-center rounded-full border-2 transition-all',
                       value === option.value
-                        ? "border-secondary-foreground bg-primary"
-                        : "bg-white",
+                        ? 'border-secondary-foreground bg-primary'
+                        : 'bg-white'
                     )}
                   >
                     {value === option.value && (
@@ -99,6 +99,6 @@ const DropdownRadio = ({
   );
 };
 
-DropdownRadio.displayName = "DropdownRadio";
+DropdownRadio.displayName = 'DropdownRadio';
 
 export { DropdownRadio };

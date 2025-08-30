@@ -1,8 +1,8 @@
-import { Check, ChevronsUpDown, TriangleAlert } from 'lucide-react'
-import { useState } from 'react'
+import { Check, ChevronsUpDown, TriangleAlert } from 'lucide-react';
+import { useState } from 'react';
 
-import { cn } from '../../lib/utils'
-import { Button } from '../button/button'
+import { cn } from '../../lib/utils';
+import { Button } from '../button/button';
 import {
   Command,
   CommandEmpty,
@@ -10,29 +10,29 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from '../shadcn/command'
-import { Popover, PopoverContent, PopoverTrigger } from '../shadcn/popover'
-import Label from '../label/label'
-import { Skeleton } from '../skeleton/skeleton'
+} from '../shadcn/command';
+import { Popover, PopoverContent, PopoverTrigger } from '../shadcn/popover';
+import Label from '../label/label';
+import { Skeleton } from '../skeleton/skeleton';
 
 type ComboboxItem = {
-  label: string
-  value: string | number
-}
+  label: string;
+  value: string | number;
+};
 
 type ComboboxProps = {
-  items: ComboboxItem[]
-  value?: string | number
-  placeholder?: string
-  buttonClassName?: string
-  commandClassName?: string
-  onSelect?: (value: string | number) => void
-  label?: string
-  required?: boolean
-  error?: string
-  align?: 'start' | 'center' | 'end'
-  isLoading?: boolean
-}
+  items: ComboboxItem[];
+  value?: string | number;
+  placeholder?: string;
+  buttonClassName?: string;
+  commandClassName?: string;
+  onSelect?: (value: string | number) => void;
+  label?: string;
+  required?: boolean;
+  error?: string;
+  align?: 'start' | 'center' | 'end';
+  isLoading?: boolean;
+};
 
 const Combobox: React.FC<ComboboxProps> = ({
   items,
@@ -47,16 +47,16 @@ const Combobox: React.FC<ComboboxProps> = ({
   align = 'center',
   isLoading = false,
 }) => {
-  const hasError = !!error
-  const [open, setOpen] = useState(false)
+  const hasError = !!error;
+  const [open, setOpen] = useState(false);
 
   const handleSelect = (selectedLabel: string) => {
-    const selectedItem = items.find((item) => item.label === selectedLabel)
-    if (!selectedItem) return
-    const newValue = selectedItem.value === value ? '' : selectedItem.value
-    onSelect?.(newValue)
-    setOpen(false)
-  }
+    const selectedItem = items.find((item) => item.label === selectedLabel);
+    if (!selectedItem) return;
+    const newValue = selectedItem.value === value ? '' : selectedItem.value;
+    onSelect?.(newValue);
+    setOpen(false);
+  };
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -69,7 +69,7 @@ const Combobox: React.FC<ComboboxProps> = ({
           className={cn(
             'min-w-[250px] justify-between shadow-sm truncate',
             buttonClassName,
-            hasError && 'border-destructive',
+            hasError && 'border-destructive'
           )}
         >
           {isLoading ? (
@@ -88,7 +88,10 @@ const Combobox: React.FC<ComboboxProps> = ({
           {error}
         </p>
       )}
-      <PopoverContent align={align} className={cn('min-w-[250px] p-0', commandClassName)}>
+      <PopoverContent
+        align={align}
+        className={cn('min-w-[250px] p-0', commandClassName)}
+      >
         <Command>
           <CommandInput placeholder={`${placeholder}...`} />
           <CommandList>
@@ -105,7 +108,10 @@ const Combobox: React.FC<ComboboxProps> = ({
               {isLoading
                 ? Array.from({ length: 5 }).map((_, index) => (
                     <CommandItem key={index} className="justify-between">
-                      <Skeleton variant="foreground" className="h-4 w-[100px]" />
+                      <Skeleton
+                        variant="foreground"
+                        className="h-4 w-[100px]"
+                      />
                       <Skeleton variant="foreground" className="h-4 w-4" />
                     </CommandItem>
                   ))
@@ -121,7 +127,7 @@ const Combobox: React.FC<ComboboxProps> = ({
                       <Check
                         className={cn(
                           'mr-2 h-4 w-4',
-                          value === item.value ? 'opacity-100' : 'opacity-0',
+                          value === item.value ? 'opacity-100' : 'opacity-0'
                         )}
                       />
                     </CommandItem>
@@ -131,7 +137,7 @@ const Combobox: React.FC<ComboboxProps> = ({
         </Command>
       </PopoverContent>
     </Popover>
-  )
-}
+  );
+};
 
-export default Combobox
+export default Combobox;

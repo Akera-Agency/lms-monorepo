@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo } from 'react';
 
 type GetInitialsProps = {
   firstName?: string;
@@ -10,8 +10,8 @@ export const useGetInitials = ({
   lastName,
 }: GetInitialsProps): string => {
   return useMemo(() => {
-    const initials = `${firstName?.charAt(0).toUpperCase() || ""}${
-      lastName?.charAt(0).toUpperCase() || ""
+    const initials = `${firstName?.charAt(0).toUpperCase() || ''}${
+      lastName?.charAt(0).toUpperCase() || ''
     }`;
     return initials;
   }, [firstName, lastName]);

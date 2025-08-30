@@ -1,5 +1,5 @@
-import { Kysely } from "kysely";
-import { ITransaction } from "../types/transaction";
+import { Kysely } from 'kysely';
+import { ITransaction } from '../types/transaction';
 
 export async function beginTransaction<T>(
   db: Kysely<T>

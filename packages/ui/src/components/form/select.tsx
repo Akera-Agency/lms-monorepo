@@ -1,7 +1,7 @@
-import Label from "../label/label";
-import { cn } from "../../lib/utils";
-import { TriangleAlert } from "lucide-react";
-import type { UseFormRegisterReturn } from "react-hook-form";
+import Label from '../label/label';
+import { cn } from '../../lib/utils';
+import { TriangleAlert } from 'lucide-react';
+import type { UseFormRegisterReturn } from 'react-hook-form';
 
 import {
   SelectContent,
@@ -11,7 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
   Select as ShadSelect,
-} from "../shadcn/select";
+} from '../shadcn/select';
 
 export type SelectItemType = {
   label: string;
@@ -60,14 +60,14 @@ const Select = ({
   };
 
   const groupedItems = items.reduce((acc, item) => {
-    const group = item.group || "Ungrouped";
+    const group = item.group || 'Ungrouped';
     if (!acc[group]) acc[group] = [];
     acc[group].push(item);
     return acc;
   }, {} as Record<string, SelectItemType[]>);
 
   return (
-    <div className={cn("space-y-1.5", className)}>
+    <div className={cn('space-y-1.5', className)}>
       {label && <Label label={label} required={required} />}
       <ShadSelect
         disabled={disabled}
@@ -79,21 +79,21 @@ const Select = ({
         <SelectTrigger
           aria-label="select"
           className={cn(
-            "border p-4 text-sm ring-0 ring-offset-background placeholder:text-sm placeholder:font-normal placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+            'border p-4 text-sm ring-0 ring-offset-background placeholder:text-sm placeholder:font-normal placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
             className,
-            hasError && "border-destructive",
-            disabled && "bg-neutral-100"
+            hasError && 'border-destructive',
+            disabled && 'bg-neutral-100'
           )}
         >
           <SelectValue
             placeholder={placeholder}
-            className={cn("text-sm", !defaultValue && "text-zinc-400")}
+            className={cn('text-sm', !defaultValue && 'text-zinc-400')}
           />
         </SelectTrigger>
         <SelectContent className={contentStyle}>
           {Object.entries(groupedItems).map(([group, groupItems]) => (
             <SelectGroup key={group}>
-              {group !== "Ungrouped" && <SelectLabel>{group}</SelectLabel>}
+              {group !== 'Ungrouped' && <SelectLabel>{group}</SelectLabel>}
               {groupItems.map((item) => (
                 <SelectItem key={item.value} value={item.value}>
                   {item.icon}
@@ -114,6 +114,6 @@ const Select = ({
   );
 };
 
-Select.displayName = "Select";
+Select.displayName = 'Select';
 
 export { Select };

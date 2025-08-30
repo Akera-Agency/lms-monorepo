@@ -1,4 +1,4 @@
-import { type NavigationLink } from "../types/navigation";
+import { type NavigationLink } from '../types/navigation';
 
 // Utility to group navigation links by label
 export const groupLinksByLabel = (links: NavigationLink[]) => {
@@ -10,10 +10,10 @@ export const groupLinksByLabel = (links: NavigationLink[]) => {
       groupedLinks[link.label] = link.items || [];
     } else if (link.title) {
       // If the link has no label but has a title, add it to "Ungrouped" section
-      if (!groupedLinks["Ungrouped"]) {
-        groupedLinks["Ungrouped"] = [];
+      if (!groupedLinks['Ungrouped']) {
+        groupedLinks['Ungrouped'] = [];
       }
-      groupedLinks["Ungrouped"].push(link);
+      groupedLinks['Ungrouped'].push(link);
     }
   });
 

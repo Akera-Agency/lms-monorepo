@@ -1,34 +1,34 @@
-import * as React from "react";
-import { cva, type VariantProps } from "class-variance-authority";
-import { cn } from "../../lib/utils";
+import * as React from 'react';
+import { cva, type VariantProps } from 'class-variance-authority';
+import { cn } from '../../lib/utils';
 
 const badgeVariants = cva(
-  "rounded-md inline-flex justify-start items-center w-fit font-medium transition-colors",
+  'rounded-md inline-flex justify-start items-center w-fit font-medium transition-colors',
   {
     variants: {
       variant: {
-        solid: "text-primary-foreground bg-primary ",
-        soft: "text-primary bg-badge-soft",
-        secondary: "text-neutral-800 bg-badge-secondary dark:text-white",
+        solid: 'text-primary-foreground bg-primary ',
+        soft: 'text-primary bg-badge-soft',
+        secondary: 'text-neutral-800 bg-badge-secondary dark:text-white',
         outline:
-          "border border-badge-outline-border  bg-transparent text-badge-outline-foreground",
+          'border border-badge-outline-border  bg-transparent text-badge-outline-foreground',
         surface:
-          "border border-badge-surface-border bg-badge-surface text-badge-surface-foreground",
-        success: "text-badge-success-foreground bg-badge-success",
-        destructive: "text-destructive bg-destructive/10",
-        warning: "text-[#ea580c] bg-[#fff2e2]",
+          'border border-badge-surface-border bg-badge-surface text-badge-surface-foreground',
+        success: 'text-badge-success-foreground bg-badge-success',
+        destructive: 'text-destructive bg-destructive/10',
+        warning: 'text-[#ea580c] bg-[#fff2e2]',
       },
       size: {
-        small: "h-5 px-2 py-0.5 text-xs",
-        medium: "px-2 py-0.5 text-sm",
-        large: "h-[1.625rem] px-3 py-1 text-sm",
+        small: 'h-5 px-2 py-0.5 text-xs',
+        medium: 'px-2 py-0.5 text-sm',
+        large: 'h-[1.625rem] px-3 py-1 text-sm',
       },
     },
     defaultVariants: {
-      variant: "solid",
-      size: "medium",
+      variant: 'solid',
+      size: 'medium',
     },
-  },
+  }
 );
 
 export interface BadgeProps

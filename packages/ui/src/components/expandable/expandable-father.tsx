@@ -1,7 +1,7 @@
-import { AnimatePresence, motion } from "framer-motion";
-import { Check, ChevronDown } from "lucide-react";
-import { useState } from "react";
-import { cn } from "../../lib/utils";
+import { AnimatePresence, motion } from 'framer-motion';
+import { Check, ChevronDown } from 'lucide-react';
+import { useState } from 'react';
+import { cn } from '../../lib/utils';
 
 type ExpandableProps = {
   id: number;
@@ -21,7 +21,7 @@ const Expandable = ({
   description,
   children,
   isOpen,
-  triggerStyle = "",
+  triggerStyle = '',
   keysProgress,
   showCheck,
   onToggleExpanded,
@@ -39,8 +39,8 @@ const Expandable = ({
     <div className="w-full overflow-hidden rounded-lg">
       <div
         className={cn(
-          "h-13 bg-custom-gray-blue/10 flex w-full cursor-pointer items-start justify-between p-4",
-          triggerStyle,
+          'h-13 bg-custom-gray-blue/10 flex w-full cursor-pointer items-start justify-between p-4',
+          triggerStyle
         )}
         onClick={handleToggle}
       >
@@ -48,7 +48,7 @@ const Expandable = ({
           <div className="flex flex-col gap-2">
             <h3 className="text-primary-text text-base font-semibold">
               {title}
-            </h3>{" "}
+            </h3>{' '}
             {keysProgress ? (
               <div className="flex items-center justify-items-start gap-2">
                 {showCheck && (
@@ -68,7 +68,7 @@ const Expandable = ({
                 </div>
               </div>
             ) : (
-              ""
+              ''
             )}
           </div>
           {/* {isFather && (
@@ -115,7 +115,7 @@ const Expandable = ({
           <motion.div
             key="30"
             initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
+            animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.3 }}
             className="overflow-hidden p-2"

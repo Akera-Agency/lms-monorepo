@@ -1,16 +1,16 @@
-import * as React from "react";
-import { Input } from "../shadcn/input";
-import { Button } from "../button/button";
+import * as React from 'react';
+import { Input } from '../shadcn/input';
+import { Button } from '../button/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "../shadcn/dropdown-menu";
-import { ChevronDown } from "lucide-react";
+} from '../shadcn/dropdown-menu';
+import { ChevronDown } from 'lucide-react';
 
 interface TimeInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  onTimeChange?: (time: string, period: "AM" | "PM") => void;
+  onTimeChange?: (time: string, period: 'AM' | 'PM') => void;
 }
 
 const TimeInput = ({
@@ -21,20 +21,22 @@ const TimeInput = ({
 }: TimeInputProps) => {
   const [time, setTime] = React.useState(() => {
     const now = new Date();
-    return now.toLocaleTimeString("en-US", {
-      hour: "2-digit",
-      minute: "2-digit",
+    return now.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
       hour12: false,
     });
   });
 
-  const [period, setPeriod] = React.useState<"AM" | "PM">(() =>
-    new Date().getHours() >= 12 ? "PM" : "AM",
+  const [period, setPeriod] = React.useState<'AM' | 'PM'>(() =>
+    new Date().getHours() >= 12 ? 'PM' : 'AM'
   );
 
   const formatTime = React.useCallback((input: string): string => {
-    const [hours, minutes] = input.split(":");
-    return `${hours?.padStart(2, "0") || "00"}:${minutes?.padStart(2, "0") || "00"}`;
+    const [hours, minutes] = input.split(':');
+    return `${hours?.padStart(2, '0') || '00'}:${
+      minutes?.padStart(2, '0') || '00'
+    }`;
   }, []);
 
   const handleTimeChange = React.useCallback(
@@ -43,15 +45,15 @@ const TimeInput = ({
       setTime(newValue);
       onTimeChange?.(newValue, period);
     },
-    [onTimeChange, period],
+    [onTimeChange, period]
   );
 
   const handlePeriodChange = React.useCallback(
-    (newPeriod: "AM" | "PM") => {
+    (newPeriod: 'AM' | 'PM') => {
       setPeriod(newPeriod);
       onTimeChange?.(time, newPeriod);
     },
-    [onTimeChange, time],
+    [onTimeChange, time]
   );
 
   const handleBlur = React.useCallback(() => {
@@ -85,10 +87,10 @@ const TimeInput = ({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start">
-          <DropdownMenuItem onClick={() => handlePeriodChange("AM")}>
+          <DropdownMenuItem onClick={() => handlePeriodChange('AM')}>
             AM
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => handlePeriodChange("PM")}>
+          <DropdownMenuItem onClick={() => handlePeriodChange('PM')}>
             PM
           </DropdownMenuItem>
         </DropdownMenuContent>

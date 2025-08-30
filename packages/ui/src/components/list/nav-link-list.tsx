@@ -1,26 +1,27 @@
-import { Link } from "@tanstack/react-router";
+import { Link } from '@tanstack/react-router';
 
 type NavLinkListOption = {
-    title: string;
-    href: string
+  title: string;
+  href: string;
 };
 
 type NavLinkListProps = {
-    links: NavLinkListOption[];
+  links: NavLinkListOption[];
 };
 
-const NavLinkList = ({
-    links
-}: NavLinkListProps) => {
-return (
+const NavLinkList = ({ links }: NavLinkListProps) => {
+  return (
     <div className="flex flex-row">
-        {links.map((link,index) => (
-        <div key={index} className="hover:bg-neutral-400/20 px-2.5 py-1.5 rounded-lg ">
-            <Link to={`${link.href}`}>{link.title}</Link>
+      {links.map((link, index) => (
+        <div
+          key={index}
+          className="hover:bg-neutral-400/20 px-2.5 py-1.5 rounded-lg "
+        >
+          <Link to={`${link.href}`}>{link.title}</Link>
         </div>
-    ))}
+      ))}
     </div>
-);
+  );
 };
 
 export default NavLinkList;

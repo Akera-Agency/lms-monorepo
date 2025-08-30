@@ -9,8 +9,8 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primaryOrange: "hsl(var(--primaryOrange))",
-      }
-    }
-  }
+        primaryOrange: 'hsl(var(--primaryOrange))',
+      },
+    },
+  },
 };

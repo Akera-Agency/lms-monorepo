@@ -1,13 +1,13 @@
-import { TableCell, TableRow } from '../../shadcn/table'
-import useUniqueId from '../../../hooks/use-unique-id'
-import { Skeleton } from '../../skeleton/skeleton'
+import { TableCell, TableRow } from '../../shadcn/table';
+import useUniqueId from '../../../hooks/use-unique-id';
+import { Skeleton } from '../../skeleton/skeleton';
 
 type TTableRowSkeletonProps = {
-  columnCount?: number
-}
+  columnCount?: number;
+};
 
 const TableRowSkeleton = ({ columnCount = 10 }: TTableRowSkeletonProps) => {
-  const uniqueIds = useUniqueId(columnCount - 2)
+  const uniqueIds = useUniqueId(columnCount - 2);
 
   return (
     <TableRow>
@@ -16,7 +16,10 @@ const TableRowSkeleton = ({ columnCount = 10 }: TTableRowSkeletonProps) => {
       </TableCell>
       {uniqueIds.map((id) => (
         <TableCell key={id}>
-          <Skeleton variant="foreground" className="h-8 w-full max-w-32 rounded-md" />
+          <Skeleton
+            variant="foreground"
+            className="h-8 w-full max-w-32 rounded-md"
+          />
         </TableCell>
       ))}
       <TableCell>
@@ -27,7 +30,7 @@ const TableRowSkeleton = ({ columnCount = 10 }: TTableRowSkeletonProps) => {
         </div>
       </TableCell>
     </TableRow>
-  )
-}
+  );
+};
 
-export default TableRowSkeleton
+export default TableRowSkeleton;

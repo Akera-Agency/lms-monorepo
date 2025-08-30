@@ -1,8 +1,8 @@
-import { useEffect, useState, useCallback, useMemo } from "react";
-import videojs from "video.js";
+import { useEffect, useState, useCallback, useMemo } from 'react';
+import videojs from 'video.js';
 
-import "video.js/dist/video-js.css";
-import "./video-player.css";
+import 'video.js/dist/video-js.css';
+import './video-player.css';
 
 type VideoPlayerProps = {
   techOrder: string[];
@@ -25,7 +25,7 @@ const VideoPlayer = (props: VideoPlayerProps) => {
       ...props,
       fluid: true,
     }),
-    [props],
+    [props]
   );
 
   const onVideo = useCallback((el: HTMLVideoElement) => {
@@ -53,8 +53,8 @@ const VideoPlayer = (props: VideoPlayerProps) => {
     };
 
     // player.on('loadstart', handleVideoStart);
-    player.on("ended", handleVideoEnd);
-    player.on("timeupdate", handleReachedHalf);
+    player.on('ended', handleVideoEnd);
+    player.on('timeupdate', handleReachedHalf);
 
     return () => {
       // props.onExitPlayer?.(player.currentTime() || 0);

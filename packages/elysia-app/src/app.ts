@@ -45,10 +45,8 @@ export const app = new Elysia<typeof prefix, TContext>({ prefix })
   })
   .use(cors())
   .use(eventBusPlugin)
-  .derive(async (ctx) => {
-    const trx = await transactionDerive({
-      request: ctx.request,
-    });
+  .derive(async () => {
+    const trx = await transactionDerive();
 
     const localStore: Record<string, unknown> = {};
     const repos = appModules.map((module) => module.repositories);

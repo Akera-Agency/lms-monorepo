@@ -5,22 +5,22 @@ import {
   type FormEvent,
   useEffect,
   useCallback,
-} from "react";
-import { CloudUpload, File, Trash2 } from "lucide-react";
-import { Input } from "../shadcn/input";
-import { Button } from "../button/button";
-import { Progress } from "../shadcn/progress";
-import { cva } from "class-variance-authority";
+} from 'react';
+import { CloudUpload, File, Trash2 } from 'lucide-react';
+import { Input } from '../shadcn/input';
+import { Button } from '../button/button';
+import { Progress } from '../shadcn/progress';
+import { cva } from 'class-variance-authority';
 
 const variants = {
-  default: "block ",
+  default: 'block ',
 };
-const fileUploaderVariants = cva("block", {
+const fileUploaderVariants = cva('block', {
   variants: {
     variant: variants,
   },
   defaultVariants: {
-    variant: "default",
+    variant: 'default',
   },
 });
 
@@ -40,8 +40,8 @@ type FileUploaderProps = {
 
 const FileUploader = ({
   multiple = false,
-  acceptedFileTypes = ".pdf",
-  description = "PDF file (max. 800x400px)",
+  acceptedFileTypes = '.pdf',
+  description = 'PDF file (max. 800x400px)',
   onChange,
 }: FileUploaderProps) => {
   const [files, setFiles] = useState<InputFile[]>([]);
@@ -130,7 +130,7 @@ const FileUploader = ({
               onClick={() => inputFileRef.current?.click()}
             >
               Click to upload
-            </span>{" "}
+            </span>{' '}
             or drag and drop
           </p>
           <p className="text-secondary-text mt-1 text-xs">{description}</p>
@@ -190,5 +190,5 @@ const FileUploader = ({
   );
 };
 
-FileUploader.displayName = "FileUploader";
+FileUploader.displayName = 'FileUploader';
 export { FileUploader, fileUploaderVariants, variants };

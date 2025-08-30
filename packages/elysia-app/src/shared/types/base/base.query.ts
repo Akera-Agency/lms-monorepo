@@ -1,5 +1,5 @@
-import { COMPARISON_OPERATORS, Selectable } from "kysely";
-import { IDb } from "../../../database/types/IDb";
+import { COMPARISON_OPERATORS, Selectable } from 'kysely';
+import { IDb } from '../../../database/types/IDb';
 
 type FindArgs<TEntity> = {
   column: keyof TEntity;
@@ -12,7 +12,7 @@ export interface BaseQuery<TEntity extends IDb[keyof IDb]> {
   orderBy?: FindArgs<Selectable<TEntity>>[];
   sort?: {
     orderBy: keyof TEntity;
-    sort: "asc" | "desc";
+    sort: 'asc' | 'desc';
   }[];
   page?: number;
   limit?: number;

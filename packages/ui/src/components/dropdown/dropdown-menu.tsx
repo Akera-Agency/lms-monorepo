@@ -1,7 +1,7 @@
-import { cn } from "../../lib/utils";
-import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
-import { motion } from "framer-motion";
-import { ChevronRight } from "lucide-react";
+import { cn } from '../../lib/utils';
+import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
+import { motion } from 'framer-motion';
+import { ChevronRight } from 'lucide-react';
 
 type DropdownMenuOption = {
   label: string;
@@ -19,7 +19,7 @@ type IDropdownMenuProps = {
   className?: string;
   label?: string;
   showChevronIcon?: boolean;
-  align?: "start" | "center" | "end";
+  align?: 'start' | 'center' | 'end';
 };
 
 const DropdownMenu = ({
@@ -29,7 +29,7 @@ const DropdownMenu = ({
   className,
   label,
   showChevronIcon = false,
-  align = "center",
+  align = 'center',
 }: IDropdownMenuProps) => {
   return (
     <DropdownMenuPrimitive.Root>
@@ -45,8 +45,8 @@ const DropdownMenu = ({
         >
           <DropdownMenuPrimitive.Content
             className={cn(
-              "z-50 min-w-[8rem] rounded-md border bg-white p-0 text-popover-foreground shadow",
-              className,
+              'z-50 min-w-[8rem] rounded-md border bg-white p-0 text-popover-foreground shadow',
+              className
             )}
             sideOffset={4}
             align={align}
@@ -69,9 +69,9 @@ const DropdownMenu = ({
                   }
                 }}
                 className={cn(
-                  "relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm font-normal outline-none transition-colors focus:bg-accent",
-                  option.disabled && "pointer-events-none opacity-50",
-                  option.icon && "pl-3",
+                  'relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm font-normal outline-none transition-colors focus:bg-accent',
+                  option.disabled && 'pointer-events-none opacity-50',
+                  option.icon && 'pl-3'
                 )}
               >
                 {option.icon && <span className="mr-2">{option.icon}</span>}
@@ -88,6 +88,6 @@ const DropdownMenu = ({
   );
 };
 
-DropdownMenu.displayName = "DropdownMenu";
+DropdownMenu.displayName = 'DropdownMenu';
 
 export { DropdownMenu };
