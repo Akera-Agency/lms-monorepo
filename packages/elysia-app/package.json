@@ -13,6 +13,7 @@
     "migration:run": "bun run --bun src/database/runners/runMigrations.ts",
     "migration:create": "bun run --bun src/database/runners/create-migration.ts",
     "migration:to": "bun run --bun src/database/runners/migrateTo.ts",
-    "migration:list": "bun run --bun src/database/runners/listAppliedMigrations.ts"
+    "migration:list": "bun run --bun src/database/runners/listAppliedMigrations.ts",
+    "seed": "bun run --bun src/database/runners/seed.ts"
   }
 }
