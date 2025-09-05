@@ -10,7 +10,7 @@ import { env } from 'src/conf/env';
 import { Logger } from 'src/shared/logger/logger';
 
 const connectionString = `postgresql://${env.POSTGRES_USER}.${env.POOLER_TENANT_ID}:${env.POSTGRES_PASSWORD}@${env.POSTGRES_HOST}:${env.POSTGRES_PORT}/${env.POSTGRES_DB}`;
-console.log('connectionString', connectionString);
+
 export const database = new Kysely<IDb>({
   plugins: [new ParseJSONResultsPlugin()],
   dialect: new PostgresDialect({

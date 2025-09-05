@@ -7,17 +7,20 @@ type NavLinkListOption = {
 
 type NavLinkListProps = {
   links: NavLinkListOption[];
+  containerStyle?: string;
+  linkStyle?: string;
+  openLink: string;
 };
 
-const NavLinkList = ({ links }: NavLinkListProps) => {
+const NavLinkList = ({ links, containerStyle, linkStyle, openLink }: NavLinkListProps) => {
   return (
-    <div className="flex flex-row">
+    <div className={containerStyle}>
       {links.map((link, index) => (
         <div
           key={index}
-          className="hover:bg-neutral-400/20 px-2.5 py-1.5 rounded-lg "
+          className={linkStyle}
         >
-          <Link to={`${link.href}`}>{link.title}</Link>
+          <Link to={`${link.href}`} className={openLink === link.href ? "text-[#F3562E]" : "font-normal"}>{link.title}</Link>
         </div>
       ))}
     </div>

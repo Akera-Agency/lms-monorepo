@@ -13,9 +13,21 @@ import { PostgresError, isDatabaseError } from './shared/Errors/PostgresError';
 import { EventError } from './shared/Errors/EventError';
 import { CronError } from './shared/Errors/CronError';
 
+import { roleController } from './modules/roles/role.controller';
+import { userController } from './modules/users/user.controller';
+import { tenantController } from './modules/tenants/tenant.controller';
+import { notificationController } from './modules/notifications/notification.controller';
+
+
 const prefix = '/api';
 
 export const app = new Elysia<typeof prefix, TContext>({ prefix })
+.use(cors({
+  origin: 'http://localhost:5176',         
+  credentials: true,
+  allowedHeaders: ['Content-Type', 'Authorization'], 
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+}))
   .error({ AppError, PostgresError, EventError, CronError })
   .onAfterHandle((ctx) => {
     ctx.store.trx.commit();
@@ -43,8 +55,9 @@ export const app = new Elysia<typeof prefix, TContext>({ prefix })
       message: 'Internal server error',
     };
   })
-  .use(cors())
+  
   .use(eventBusPlugin)
+  .use(swagger({ path: '/docs' }))
   .derive(async () => {
     const trx = await transactionDerive();
 
@@ -77,16 +90,21 @@ export const app = new Elysia<typeof prefix, TContext>({ prefix })
         ...(localStore as servicesMap),
       },
     };
-  });
+  })
+
+  .use(roleController)
+  .use(userController)
+  .use(tenantController)
+  .use(notificationController);
+
+export type App = typeof app;
+
+export type Role = typeof roleController;
+
+export type User = typeof userController;
 
 const main = async () => {
   await seed();
-
-  app.use(swagger({ path: '/docs' }));
-
-  const controllers = appModules.map((module) => module.controllers);
-
-  app.use(controllers.flat());
 
   app.listen(env.PORT, () => {
     Logger.info(`🚀 Elysia API running on http://localhost:${env.PORT}/api`);

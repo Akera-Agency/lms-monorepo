@@ -1,5 +1,5 @@
 import { AuthForm } from '@/components/auth-form';
-import { useAuthForm } from '../../../../../packages/auth/src/hooks/useAuth';
+import { useAuthForm } from '../../../../../packages/auth/src/hooks/use.auth';
 
 export default function ForgotPassword() {
   const {
@@ -54,7 +54,7 @@ export default function ForgotPassword() {
         <div className="flex flex-1 items-center justify-center">
           <div className="w-full max-w-xs text-white">
             <AuthForm
-              title="Forgot your password?"
+              title="Update your password"
               subtitle="Enter your email below to get a reset link "
               forgotPassword={false}
               submitText="Send"

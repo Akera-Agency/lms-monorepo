@@ -21,7 +21,7 @@ export class RoleRepository extends BaseRepo<KyselyRoleEntity> {
       const res = await this.trx
         .selectFrom('roles')
         .selectAll()
-        .where('deleted_at', 'is', null)
+        .where('roles.deleted_at', 'is', null)
         .where((eb) =>
           eb.and(
             args.where.map((arg) => {
@@ -92,7 +92,7 @@ export class RoleRepository extends BaseRepo<KyselyRoleEntity> {
       const res = await this.trx
         .selectFrom('roles')
         .selectAll()
-        .where('deleted_at', 'is', null)
+        .where('roles.deleted_at', 'is', null)
         .where((eb) =>
           eb.and(
             args.where.map((arg) => {
@@ -122,7 +122,7 @@ export class RoleRepository extends BaseRepo<KyselyRoleEntity> {
           'x_tenant_users.tenant_role_id',
           'tenant_roles.id'
         )
-        .where('deleted_at', 'is', null)
+        .where('tenant_roles.deleted_at', 'is', null)
         .selectAll(['tenant_roles'])
         .execute();
 

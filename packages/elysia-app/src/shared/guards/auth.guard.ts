@@ -118,8 +118,9 @@ export const authGuard = new Elysia<string, TContext>().derive(
       });
     }
 
-    const tenantId: string | undefined = headers[X_TENANT_ID];
-
+    // const tenantId: string | undefined = headers[X_TENANT_ID];
+    const tenantId: string | undefined = user.sub;
+    console.log(headers)
     return {
       auth: {
         user,

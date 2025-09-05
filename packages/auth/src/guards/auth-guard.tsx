@@ -1,8 +1,7 @@
 import React, { createContext } from 'react';
 import { useEffect, useState } from 'react';
-import { useAuthForm } from '../hooks/useAuth';
+import { useAuthForm } from '../hooks/use.auth';
 import type { Session } from '@supabase/supabase-js';
-import { authRoute } from '../utils/external-routes';
 import { Loader } from 'lucide-react';
 
 export const GuardContext = createContext<{
@@ -23,7 +22,7 @@ export const AuthGuard = ({ children }: { children: React.ReactNode }) => {
     if (session) {
       setShouldRender(true);
     } else {
-      window.location.href = `${authRoute}/login`;
+      window.history.back();
     }
   }, [sessionLoading, session]);
 
