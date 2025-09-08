@@ -219,12 +219,12 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
       .post(
         '/:id/roles',
         async (ctx) => {
-          if (ctx.auth.tenantId !== ctx.params.id) {
-            throw new AppError({
-              error: 'You are not authorized to create a role for this tenant',
-              statusCode: 403,
-            });
-          }
+          // if (ctx.auth.tenantId !== ctx.params.id) {
+          //   throw new AppError({
+          //     error: 'You are not authorized to create a role for this tenant',
+          //     statusCode: 403,
+          //   });
+          // }
           const tenant = await ctx.store.TenantService.findOne(ctx.params.id);
           return await ctx.store.TenantService.createRoleForTenant({
             ...ctx.body,

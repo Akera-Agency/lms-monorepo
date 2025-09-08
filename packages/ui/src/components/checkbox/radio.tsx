@@ -37,8 +37,8 @@ const Radio = ({
           'relative mt-1 flex h-4 min-h-4 w-4 min-w-4 items-center justify-center rounded-full border transition-all focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
           className,
           checked && !disabled
-            ? 'border-primary bg-primary'
-            : 'border-neutral-300 bg-primary-foreground',
+            ? 'bg-[#F3562E] border-[#F3562E]'
+            : 'border-neutral-300 bg-primary-foreground ',
           disabled && 'border-neutral-200 bg-neutral-100'
         )}
       >

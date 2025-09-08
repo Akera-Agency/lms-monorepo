@@ -23,7 +23,7 @@ const prefix = '/api';
 
 export const app = new Elysia<typeof prefix, TContext>({ prefix })
 .use(cors({
-  origin: 'http://localhost:5176',         
+  origin: ['http://localhost:5176', 'http://localhost:5174', 'http://localhost:5175', 'http://localhost:5173'],         
   credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization'], 
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -92,9 +92,9 @@ export const app = new Elysia<typeof prefix, TContext>({ prefix })
     };
   })
 
+  .use(tenantController)
   .use(roleController)
   .use(userController)
-  .use(tenantController)
   .use(notificationController);
 
 export type App = typeof app;

@@ -23,6 +23,7 @@ export const ENTITIES: (keyof IDb)[] = [
 
 // Role definitions aligned with the guard system
 export enum ROLES {
+  SUPER_ADMIN = 'super_admin',
   ADMIN = 'admin',
   STUDENT = 'student',
   TEACHER = 'teacher',
@@ -30,6 +31,16 @@ export enum ROLES {
 
 // Default role permissions mapping - aligned with the guard system
 export const DEFAULT_ROLE_PERMISSIONS = {
+  [ROLES.SUPER_ADMIN]: {
+    users: ['create', 'read', 'update', 'delete'],
+    tenants: ['create', 'read', 'update', 'delete'],
+    roles: ['create', 'read', 'update', 'delete'],
+    tenant_roles: ['create', 'read', 'update', 'delete'],
+    tenant_users: ['create', 'read', 'update', 'delete'],
+    notifications: ['create', 'read', 'update', 'delete'],
+    notification_logs: ['create', 'read', 'update', 'delete'],
+    notification_preferences: ['create', 'read', 'update', 'delete'],
+  },
   [ROLES.ADMIN]: {
     users: ['create', 'read', 'update', 'delete'],
     tenants: ['create', 'read', 'update', 'delete'],

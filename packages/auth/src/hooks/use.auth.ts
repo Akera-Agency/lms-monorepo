@@ -44,6 +44,7 @@ export const useAuthForm = () => {
     resetPassword,
     updatePassword,
   } = useAuth();
+
   const navigate = useNavigate();
   
   return {

@@ -32,11 +32,11 @@ import {
   TableRow,
 } from "../../../../packages/ui/src/components/table/table";
 import { Skeleton } from "../../../../packages/ui/src/components/skeleton/skeleton";
-import type { User } from "@supabase/supabase-js";
+// import type { User } from "@supabase/supabase-js";
 import { ConfirmDeleteDialog } from "../../../../packages/ui/src/components/dialog/confirm-dialog";
 import { EmptyState } from "../../../../packages/ui/src/components/empty-states/empty-state";
 import type { Table as TanstackTable } from "@tanstack/react-table";
-import { RolesDialog } from "./roles-dialog";
+import { showRolesDialog } from "@/utils/roles-dialog";
 
 export default function DataTable() {
   const { users, loading, setUsers, deleteUser } = useTenant();
@@ -50,7 +50,7 @@ export default function DataTable() {
     pageSize: 6,
   });
 
-  const columns = useMemo<ColumnDef<User>[]>(() => getColumns(setUsers, deleteUser), [setUsers, deleteUser]);
+  const columns = useMemo<ColumnDef<any>[]>(() => getColumns(setUsers, deleteUser), [setUsers, deleteUser]);
 
   const table = useReactTable({
     data: users,
@@ -168,7 +168,7 @@ export default function DataTable() {
 function LoadingSkeleton() {
   return (
     <>
-      <div className="py-4 z-50 justify-end flex gap-7 mt-6">
+      <div className="py-4 justify-end flex gap-7 mt-6">
         <Skeleton className="h-7 w-1/3 rounded-md bg-neutral-800" />
       </div>
       {[...Array(4)].map((_, i) => (
@@ -178,7 +178,7 @@ function LoadingSkeleton() {
   );
 }
 
-function PaginationControls({ table }: { table: TanstackTable<User> }) {
+function PaginationControls({ table }: { table: TanstackTable<any> }) {
   return (
     <div className="flex items-center space-x-2">
       <p className="sm:text-sm text-xs text-neutral-400">
@@ -213,9 +213,9 @@ function PaginationControls({ table }: { table: TanstackTable<User> }) {
 }
 
 function getColumns(
-  setUsers: React.Dispatch<React.SetStateAction<User[]>>,
+  setUsers: React.Dispatch<React.SetStateAction<any[]>>,
   deleteUser: (id: string) => Promise<void>
-  ): ColumnDef<User>[] {
+  ): ColumnDef<any>[] {
   return [
     {
       id: "select",
@@ -239,7 +239,7 @@ function getColumns(
       enableHiding: false,
     },
     {
-      accessorFn: (row) => row.user_metadata?.name,
+      accessorKey: "name",
       id: "name",
       header: "Name",
       cell: ({ getValue }) => <div className="capitalize">{getValue<string>()}</div>,
@@ -281,26 +281,16 @@ function getColumns(
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="border bg-neutral-900 border-neutral-800 text-neutral-400">
-          <RolesDialog
-            trigger={
-              <DropdownMenuItem
-                onSelect={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                }}    
-                className="cursor-pointer focus:bg-neutral-800 focus:text-white"
-              >
-                Change role
-              </DropdownMenuItem>
-            }
-            user_role={row.original.user_metadata?.role || "user"}
-            closeText="Cancel"
-            confirmText="Change"
-            user_name={row.original.user_metadata?.name || "User"}
-            onConfirm={async (role) => {
-            console.log("Change role to:", role);
-            }}
-            />
+          <DropdownMenuItem
+                        onSelect={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          showRolesDialog(row.original.name,row.original.role);
+                        }}
+                        className="cursor-pointer focus:bg-neutral-800 focus:text-white"
+                      >
+                        Edit
+                      </DropdownMenuItem>
 
             <ConfirmDeleteDialog
               trigger={

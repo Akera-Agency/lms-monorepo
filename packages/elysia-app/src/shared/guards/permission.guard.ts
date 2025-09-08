@@ -87,7 +87,7 @@ export const createAccessGuard = (options?: AccessGuardOptions) =>
           return false;
         }
 
-        if (main_roles.some((role) => role.name === ROLES.ADMIN)) {
+        if (main_roles.some((role) => role.name === ROLES.ADMIN ) || main_roles.some((role) => role.name === ROLES.SUPER_ADMIN)) {
           return true;
         }
 
@@ -212,11 +212,24 @@ export const createAccessGuard = (options?: AccessGuardOptions) =>
         return false;
       };
 
+      const checkTenantAccess = (tenantId?: string) => {
+        const isSuperAdmin = main_roles.some(role => role.name === ROLES.SUPER_ADMIN);
+        if (options?.requireTenant && !isSuperAdmin) {
+          if (!tenantId || auth.tenantId !== tenantId) {
+            throw new AppError({
+              error: 'You are not authorized to access this tenant',
+              statusCode: 403,
+            });
+          }
+        }
+      };
+
       // Permission checks if requested
       if (options?.permissions && options.permissions.length > 0) {
         const mode: 'all' | 'any' = options.require ?? 'all';
         if (mode === 'all') {
           for (const check of options.permissions) {
+            checkTenantAccess(options.requireTenant ? auth.tenantId : undefined);
             requirePermission(
               check.entity,
               check.permission,
@@ -224,12 +237,14 @@ export const createAccessGuard = (options?: AccessGuardOptions) =>
             );
           }
         } else {
-          const hasAnyPermission = options.permissions.some((check) =>
+          const hasAnyPermission = options.permissions.some((check) =>{
+            checkTenantAccess(options.requireTenant ? auth.tenantId : undefined);
             checkPermission(
               check.entity,
               check.permission,
               options.requireTenant ? auth.tenantId : undefined
             )
+          }
           );
           if (!hasAnyPermission) {
             throw new AppError({

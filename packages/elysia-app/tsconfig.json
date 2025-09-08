@@ -9,6 +9,12 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["src/**/*.ts", "eslint.config.ts"],
+  "references": [
+    { "path": "../auth" }
+  ],
+  "include": [
+    "src/**/*.ts",
+    "eslint.config.ts", 
+  ],
   "exclude": ["node_modules", "dist"]
 }
