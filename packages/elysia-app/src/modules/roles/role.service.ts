@@ -26,7 +26,7 @@ export class RoleService extends BaseService {
     });
     if (!result) {
       throw new AppError({
-        error: 'Role not found',
+        error: 'role_not_found',
         statusCode: 404,
       });
     }
@@ -46,7 +46,7 @@ export class RoleService extends BaseService {
     });
     if (!result) {
       throw new AppError({
-        error: 'Role not found',
+        error: 'role_not_found',
         statusCode: 404,
       });
     }
@@ -68,7 +68,7 @@ export class RoleService extends BaseService {
   async create(data: NewRole): Promise<RoleEntity> {
     if (data.permissions && !this.validatePermissions(data.permissions)) {
       throw new AppError({
-        error: 'Invalid permissions structure',
+        error: 'invalid_permissions_structure',
         statusCode: 400,
       });
     }
@@ -80,14 +80,14 @@ export class RoleService extends BaseService {
     const existingRole = await this.findOne(id);
     if (existingRole?.is_system_role && data.is_system_role === false) {
       throw new AppError({
-        error: 'Cannot modify system roles',
+        error: 'cannot_modify_system_roles',
         statusCode: 400,
       });
     }
 
     if (data.permissions && !this.validatePermissions(data.permissions)) {
       throw new AppError({
-        error: 'Invalid permissions structure',
+        error: 'invalid_permissions_structure',
         statusCode: 400,
       });
     }
@@ -99,7 +99,7 @@ export class RoleService extends BaseService {
     const existingRole = await this.findOne(id);
     if (existingRole?.is_system_role) {
       throw new AppError({
-        error: 'Cannot delete system roles',
+        error: 'cannot_delete_system_roles',
         statusCode: 400,
       });
     }

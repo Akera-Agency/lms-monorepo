@@ -1,5 +1,7 @@
+import { ErrorsKeys } from "../i18n/generated-types";
+
 export interface IAppError {
-  error: string;
+  error: ErrorsKeys;
   statusCode?: number;
 }
 
@@ -8,7 +10,7 @@ export function isAppError(exception: unknown): exception is IAppError {
 }
 
 export class AppError extends Error {
-  public error: string;
+  public error: ErrorsKeys;
   public statusCode: number;
 
   constructor({ error, statusCode = 500 }: IAppError) {

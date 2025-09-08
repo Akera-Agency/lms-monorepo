@@ -13,6 +13,7 @@ const schema = z.object({
 
   // Elysia
   PORT: z.string().nonempty(),
+  LOCAL: z.enum(['true', 'false']).optional().default('false'),
 
   // Supabase
   SUPABASE_URL: z.string().nonempty(),
@@ -25,6 +26,12 @@ const schema = z.object({
 
   // Notifications
   NOTIFS_DEBUG: z.enum(['0', '1']).optional().default('0'),
+
+  // Sentry
+  SENTRY_DSN: z.string().nonempty(),
+
+  // PostHog
+  POSTHOG_API_KEY: z.string().nonempty(),
 });
 
 export const env = schema.parse(

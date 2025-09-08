@@ -5,9 +5,9 @@ import {
   Selectable,
   Updateable,
 } from 'kysely';
-import { InfinityPaginationResultType } from '../InfinityPaginationResultType';
 import { IDb } from '../../../database/types/IDb';
 import { BaseQuery } from './base.query';
+import { InfinityPaginationResultType } from 'src/shared/utils/infinityPagination';
 
 type UpdateArgs<TEntity, UpdateDto> = {
   where: FindArgs<TEntity>[];

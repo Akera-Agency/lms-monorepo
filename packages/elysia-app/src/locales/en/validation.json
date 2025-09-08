@@ -1,0 +1,90 @@
+{
+  "email": {
+    "required": "Email is required",
+    "invalid": "Please enter a valid email address",
+    "already_exists": "Email already exists",
+    "not_found": "Email not found"
+  },
+  "password": {
+    "required": "Password is required",
+    "too_short": "Password must be at least {{min}} characters long",
+    "too_long": "Password must be no more than {{max}} characters long",
+    "weak": "Password is too weak. Please include uppercase, lowercase, numbers, and special characters",
+    "mismatch": "Passwords do not match",
+    "current_required": "Current password is required",
+    "new_required": "New password is required"
+  },
+  "name": {
+    "required": "Name is required",
+    "too_short": "Name must be at least {{min}} characters long",
+    "too_long": "Name must be no more than {{max}} characters long",
+    "invalid_characters": "Name contains invalid characters"
+  },
+  "first_name": {
+    "required": "First name is required",
+    "too_short": "First name must be at least {{min}} characters long",
+    "too_long": "First name must be no more than {{max}} characters long"
+  },
+  "last_name": {
+    "required": "Last name is required",
+    "too_short": "Last name must be at least {{min}} characters long",
+    "too_long": "Last name must be no more than {{max}} characters long"
+  },
+  "phone": {
+    "required": "Phone number is required",
+    "invalid": "Please enter a valid phone number",
+    "format": "Phone number must be in format: +1234567890"
+  },
+  "address": {
+    "required": "Address is required",
+    "too_short": "Address must be at least {{min}} characters long",
+    "too_long": "Address must be no more than {{max}} characters long"
+  },
+  "city": {
+    "required": "City is required",
+    "too_short": "City must be at least {{min}} characters long",
+    "too_long": "City must be no more than {{max}} characters long"
+  },
+  "country": {
+    "required": "Country is required",
+    "invalid": "Please select a valid country"
+  },
+  "zip_code": {
+    "required": "ZIP code is required",
+    "invalid": "Please enter a valid ZIP code",
+    "format": "ZIP code format is invalid"
+  },
+  "date": {
+    "required": "Date is required",
+    "invalid": "Please enter a valid date",
+    "past": "Date cannot be in the past",
+    "future": "Date cannot be in the future",
+    "format": "Date must be in format: YYYY-MM-DD"
+  },
+  "time": {
+    "required": "Time is required",
+    "invalid": "Please enter a valid time",
+    "format": "Time must be in format: HH:MM"
+  },
+  "file": {
+    "required": "File is required",
+    "too_large": "File size must be less than {{max}}MB",
+    "invalid_type": "File type not supported. Allowed types: {{types}}",
+    "corrupted": "File appears to be corrupted"
+  },
+  "url": {
+    "required": "URL is required",
+    "invalid": "Please enter a valid URL",
+    "protocol": "URL must start with http:// or https://"
+  },
+  "number": {
+    "required": "Number is required",
+    "invalid": "Please enter a valid number",
+    "min": "Number must be at least {{min}}",
+    "max": "Number must be no more than {{max}}",
+    "positive": "Number must be positive",
+    "negative": "Number must be negative",
+    "integer": "Number must be an integer",
+    "decimal": "Number must be a decimal"
+  }
+}
