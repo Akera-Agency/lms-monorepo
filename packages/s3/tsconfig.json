@@ -1,0 +1,20 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "lib": ["ES2022", "DOM"],
+    "paths": {
+      "@akera/s3": ["src"]
+    }
+  },
+  "files": [],
+  "include": ["src/**/*.ts", "src/**/*.js", "src/**/*.json"],
+  "references": [
+    {
+      "path": "./tsconfig.lib.json"
+    },
+    {
+      "path": "./tsconfig.spec.json"
+    }
+  ]
+}

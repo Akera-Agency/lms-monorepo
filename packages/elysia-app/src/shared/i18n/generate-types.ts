@@ -31,7 +31,7 @@ function generateTypeFromKeys(keys: string[], typeName: string): string {
 }
 
 function generateTypesFromTranslations(): void {
-  const localesDir = join(process.cwd(), 'src/locales');
+  const localesDir = join(process.cwd(), 'assets/locales');
   const namespaces = ['common', 'errors', 'validation', 'messages'];
 
   try {

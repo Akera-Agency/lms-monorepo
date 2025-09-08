@@ -1,0 +1,42 @@
+{
+  "name": "s3",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/s3/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "packages/s3/dist",
+        "main": "packages/s3/src/index.ts",
+        "tsConfig": "packages/s3/tsconfig.lib.json",
+        "assets": ["packages/s3/*.md", "packages/s3/cors.xml"]
+      }
+    },
+    "serve": {
+      "executor": "@nx/js:node",
+      "options": {
+        "buildTarget": "s3:build",
+        "runBuildTargetDependencies": true
+      }
+    },
+    "dev": {
+      "executor": "@nx/js:node",
+      "options": {
+        "buildTarget": "s3:build",
+        "runBuildTargetDependencies": true,
+        "watch": true
+      }
+    },
+    "typecheck": {
+      "executor": "@nx/js:tsc",
+      "options": {
+        "main": "packages/s3/src/index.ts",
+        "outputPath": "packages/s3/dist",
+        "tsConfig": "packages/s3/tsconfig.json"
+      }
+    }
+  },
+  "tags": ["type:lib", "scope:s3", "platform:node"]
+}

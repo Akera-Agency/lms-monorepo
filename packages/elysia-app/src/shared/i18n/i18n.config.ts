@@ -2,14 +2,14 @@ import i18next from 'i18next';
 import Backend from 'i18next-fs-backend';
 import { LanguagesEnum } from '../constants/i18n';
 import { env } from 'src/conf/env';
-import CommonEng from 'src/locales/en/common.json';
-import CommonAr from 'src/locales/ar/common.json';
-import ErrorsEng from 'src/locales/en/errors.json';
-import ErrorsAr from 'src/locales/ar/errors.json';
-import ValidationEng from 'src/locales/en/validation.json';
-import ValidationAr from 'src/locales/ar/validation.json';
-import MessagesEng from 'src/locales/en/messages.json';
-import MessagesAr from 'src/locales/ar/messages.json';
+import CommonEng from '../../../assets/locales/en/common.json';
+import CommonAr from '../../../assets/locales/ar/common.json';
+import ErrorsEng from '../../../assets/locales/en/errors.json';
+import ErrorsAr from '../../../assets/locales/ar/errors.json';
+import ValidationEng from '../../../assets/locales/en/validation.json';
+import ValidationAr from '../../../assets/locales/ar/validation.json';
+import MessagesEng from '../../../assets/locales/en/messages.json';
+import MessagesAr from '../../../assets/locales/ar/messages.json';
 import { join } from 'path';
 
 export const initializeI18n = async () => {
@@ -21,7 +21,7 @@ export const initializeI18n = async () => {
     debug: env.NODE_ENV === 'development',
 
     backend: {
-      loadPath: join(process.cwd(), 'src/locales/{{lng}}/{{ns}}.json'),
+      loadPath: join(process.cwd(), 'assets/locales/{{lng}}/{{ns}}.json'),
       resources: {
         [LanguagesEnum.en]: {
           common: CommonEng,

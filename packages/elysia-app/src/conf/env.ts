@@ -32,6 +32,13 @@ const schema = z.object({
 
   // PostHog
   POSTHOG_API_KEY: z.string().nonempty(),
+
+  // S3
+  S3_BUCKET_NAME: z.string().nonempty(),
+  S3_ENDPOINT: z.string().nonempty(),
+  AWS_ACCESS_KEY_ID: z.string().nonempty(),
+  AWS_SECRET_ACCESS_KEY: z.string().nonempty(),
+  AWS_REGION: z.string().nonempty(),
 });
 
 export const env = schema.parse(

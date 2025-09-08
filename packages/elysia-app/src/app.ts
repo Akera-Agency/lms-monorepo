@@ -24,6 +24,11 @@ import { requestID } from 'elysia-requestid';
 const prefix = '/api';
 const controllers = appModules.map((module) => module.controllers);
 
+export type ErrorResponse = {
+  message: string;
+  errors?: any;
+};
+
 export const app = new Elysia<typeof prefix, TContext>({ prefix })
   .use(swagger({ path: '/docs' }))
   .use(requestID())
@@ -33,7 +38,7 @@ export const app = new Elysia<typeof prefix, TContext>({ prefix })
     ctx.store.trx.commit();
   })
   .error({ AppError, PostgresError, EventError, CronError })
-  .onError((ctx) => {
+  .onError((ctx): ErrorResponse => {
     Logger.error(ctx.error);
     try {
       ctx.store.trx.rollback();
