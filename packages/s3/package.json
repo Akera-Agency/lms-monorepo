@@ -1,0 +1,35 @@
+{
+  "name": "@akera/s3",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "development": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "nx build s3",
+    "dev": "nx dev s3",
+    "serve": "nx serve s3",
+    "typecheck": "nx typecheck s3",
+    "test": "nx test s3"
+  },
+  "dependencies": {
+    "s3rver": "^3.7.1"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/s3rver": "^3.7.4"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}

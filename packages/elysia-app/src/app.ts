@@ -1,13 +1,14 @@
+import './shared/metrics/instrument';
 import { swagger } from '@elysiajs/swagger';
-import Elysia from 'elysia';
+import Elysia, { StatusMap } from 'elysia';
 import { cors } from '@elysiajs/cors';
 import { appModules, servicesMap } from './app.module';
 import { transactionDerive } from './database/transaction';
 import { env } from './conf/env';
 import { Logger } from './shared/logger/logger';
-import { TContext } from './shared/types/context';
 import { seed } from './database/runners/seed';
-import { eventBusPlugin } from './plugins/event-bus.plugin';
+import { eventBusPlugin } from './shared/plugins/event-bus.plugin';
+import { initializeI18n } from './shared/i18n/i18n.config';
 import { AppError, isAppError } from './shared/Errors/AppError';
 import { PostgresError, isDatabaseError } from './shared/Errors/PostgresError';
 import { EventError } from './shared/Errors/EventError';
@@ -18,8 +19,20 @@ import { userController } from './modules/users/user.controller';
 import { tenantController } from './modules/tenants/tenant.controller';
 import { notificationController } from './modules/notifications/notification.controller';
 
+import { TContext } from './shared/types/context';
+import { eventBus } from './core/event-bus';
+import { posthog } from './shared/metrics/posthug';
+import { LanguagesEnum } from './shared/constants/i18n';
+import { LANGUAGE_HEADER } from './shared/constants/headers';
+import { createTypeSafeI18nService } from './shared/i18n/type-safe-i18n.service';
+import { requestID } from 'elysia-requestid';
 
 const prefix = '/api';
+
+export type ErrorResponse = {
+  message: string;
+  errors?: any;
+};
 
 export const app = new Elysia<typeof prefix, TContext>({ prefix })
 .use(cors({
@@ -29,36 +42,69 @@ export const app = new Elysia<typeof prefix, TContext>({ prefix })
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
 }))
   .error({ AppError, PostgresError, EventError, CronError })
+  .use(requestID())
+  .use(swagger({ path: '/docs' }))
+  .use(eventBusPlugin)
   .onAfterHandle((ctx) => {
     ctx.store.trx.commit();
   })
-  .onError((ctx) => {
+  .error({ AppError, PostgresError, EventError, CronError })
+  .onError((ctx): ErrorResponse => {
     Logger.error(ctx.error);
     try {
       ctx.store.trx.rollback();
       if (isAppError(ctx.error)) {
         ctx.set.status = ctx.error.statusCode;
         return {
-          message: ctx.error.error,
+          message: ctx.store.i18n.error(ctx.error.error),
         };
       }
       if (isDatabaseError(ctx.error)) {
         ctx.set.status = 500;
+        const message = ctx.store.i18n.error('database_error');
         return {
-          message: ctx.error.message,
+          message,
         };
       }
     } catch (e) {
       Logger.error(e);
     }
+    if (ctx.set.status === StatusMap['Unprocessable Content']) {
+      const message = ctx.store.i18n.error('validation_failed');
+      return {
+        errors: JSON.parse((ctx.error as Error).message),
+        message,
+      };
+    } else {
+      const message = ctx.store.i18n.error('internal_server_error');
+      return {
+        message,
+      };
+    }
+  })
+  .derive(({ headers, store }) => {
+    let locale = LanguagesEnum.en;
+    if (headers[LANGUAGE_HEADER]) {
+      const acceptLanguage = headers[LANGUAGE_HEADER];
+      if (
+        Object.values(LanguagesEnum).includes(acceptLanguage as LanguagesEnum)
+      ) {
+        locale = acceptLanguage as LanguagesEnum;
+      }
+    }
+    const i18n = createTypeSafeI18nService();
+    i18n.changeLanguage(locale);
     return {
-      message: 'Internal server error',
+      store: {
+        ...store,
+        i18n,
+        locale,
+      },
     };
   })
   
   .use(eventBusPlugin)
-  .use(swagger({ path: '/docs' }))
-  .derive(async () => {
+  .derive(async ({ store }) => {
     const trx = await transactionDerive();
 
     const localStore: Record<string, unknown> = {};
@@ -77,6 +123,7 @@ export const app = new Elysia<typeof prefix, TContext>({ prefix })
           (key: { name: string }) => localStore[key.name]
         );
         if (value.inject.length !== deps.filter(Boolean).length) {
+          // Note: This error occurs during app initialization, before i18n is available
           throw new Error(`Missing dependencies for ${key}`);
         }
         const instance = new value.import(...deps);
@@ -86,6 +133,7 @@ export const app = new Elysia<typeof prefix, TContext>({ prefix })
 
     return {
       store: {
+        ...store,
         trx,
         ...(localStore as servicesMap),
       },
@@ -104,12 +152,24 @@ export type Role = typeof roleController;
 export type User = typeof userController;
 
 const main = async () => {
+  await initializeI18n();
+
   await seed();
 
   app.listen(env.PORT, () => {
     Logger.info(`🚀 Elysia API running on http://localhost:${env.PORT}/api`);
     Logger.info(`🚀 Docs running on http://localhost:${env.PORT}/api/docs`);
   });
+
+  app.onStop(() => {
+    posthog.shutdown();
+  });
 };
 
 main();
+
+declare module 'elysia' {
+  interface Elysia {
+    eventBus: typeof eventBus;
+  }
+}

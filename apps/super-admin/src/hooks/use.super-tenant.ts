@@ -37,6 +37,7 @@ export function useSuperAdmin() {
 
   const handleCreateTenant = async (
     tenantName: string,
+    is_public: boolean,
     roles: {
       roleName: string;
       permissions: {};
@@ -45,13 +46,14 @@ export function useSuperAdmin() {
       roleDescription?: string;
     }[],
     tenantDescription?: string,
-    logo_url?: string
+    logo_url?: string,
+    
   ) => {
     setSuccessMessage(null);
     setError(null);
   
     try {
-      const createdTenant = await createTenant(session, tenantName, tenantDescription, logo_url);
+      const createdTenant = await createTenant(session, tenantName, is_public, tenantDescription, logo_url);
   
       const createdRoles = await Promise.all(
         roles.map((role) =>

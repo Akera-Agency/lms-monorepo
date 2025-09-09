@@ -14,7 +14,10 @@
   ],
   "include": [
     "src/**/*.ts",
-    "eslint.config.ts", 
+    "eslint.config.ts",
+    "src/shared/i18n/generated-types.ts",
+    "src/**/*.json",
+    "assets/**/*.json"
   ],
   "exclude": ["node_modules", "dist"]
 }

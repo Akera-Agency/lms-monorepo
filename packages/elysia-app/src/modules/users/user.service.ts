@@ -20,7 +20,7 @@ export class UserService extends BaseService {
     });
     if (!user) {
       throw new AppError({
-        error: 'User not found',
+        error: 'user_not_found',
         statusCode: 404,
       });
     }

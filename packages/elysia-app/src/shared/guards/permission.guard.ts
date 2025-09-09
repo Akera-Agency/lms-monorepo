@@ -68,7 +68,7 @@ export const createAccessGuard = (options?: AccessGuardOptions) =>
 
       if (!auth) {
         throw new AppError({
-          error: 'Authentication token is required',
+          error: 'authentication_token_required',
           statusCode: 401,
         });
       }
@@ -128,9 +128,8 @@ export const createAccessGuard = (options?: AccessGuardOptions) =>
       ): void => {
         const hasPermission = checkPermission(entity, permission, tenantId);
         if (!hasPermission) {
-          const tenantContext = tenantId ? ` in tenant ${tenantId}` : '';
           throw new AppError({
-            error: `Insufficient permissions: ${permission} on ${entity}${tenantContext}`,
+            error: 'insufficient_permissions',
             statusCode: 403,
           });
         }
@@ -217,7 +216,7 @@ export const createAccessGuard = (options?: AccessGuardOptions) =>
         if (options?.requireTenant && !isSuperAdmin) {
           if (!tenantId || auth.tenantId !== tenantId) {
             throw new AppError({
-              error: 'You are not authorized to access this tenant',
+              error: 'unauthorized_tenant',
               statusCode: 403,
             });
           }
@@ -248,7 +247,7 @@ export const createAccessGuard = (options?: AccessGuardOptions) =>
           );
           if (!hasAnyPermission) {
             throw new AppError({
-              error: `User does not have any of the required permissions`,
+              error: `insufficient_permissions`,
               statusCode: 403,
             });
           }

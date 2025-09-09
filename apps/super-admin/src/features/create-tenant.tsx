@@ -14,6 +14,7 @@ export default function CreateTenant() {
     tenant_name: "",
     tenant_description: "",
     logo_url: "",
+    is_public: true
   });
 
   const [roles, setRoles] = useState([
@@ -76,6 +77,7 @@ export default function CreateTenant() {
     try {
       await handleCreateTenant(
         tenantData.tenant_name.trim(),
+        tenantData.is_public,
         roles.map((r) => ({
           roleName: r.role_name.trim(),
           permissions: r.permissions,
@@ -87,7 +89,7 @@ export default function CreateTenant() {
         tenantData.logo_url?.trim()
       );
 
-      setTenantData({ tenant_name: "", tenant_description: "", logo_url: "" });
+      setTenantData({ tenant_name: "", tenant_description: "", logo_url: "", is_public: true});
       setRoles([
         {
           role_name: "",
@@ -334,7 +336,7 @@ export default function CreateTenant() {
                     <path 
                       className="opacity-75" 
                       fill="currentColor" 
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4m2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                     />
                   </svg>
                   Creating Tenant...

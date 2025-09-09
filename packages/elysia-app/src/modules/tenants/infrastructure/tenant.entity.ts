@@ -12,6 +12,7 @@ export interface KyselyTenantEntity {
   name: ColumnType<string, string, string | null>;
   description: string | null;
   logo_url: string | null;
+  is_public: boolean;
   deleted_at: ColumnType<Date | null, never, Date | null>;
   created_at: ColumnType<Date, Date | undefined, never>;
   updated_at: ColumnType<Date, Date | undefined, never>;

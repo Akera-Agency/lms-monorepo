@@ -26,13 +26,14 @@ export class PostgresError extends Error {
   detail: string;
   column: string;
   table: string;
-  constructor(error: any) {
-    super(error.message);
+  constructor(error: DatabaseError | unknown) {
+    const typedError = error as DatabaseError;
+    super(typedError.message);
     this.name = 'PostgresError';
-    this.code = error.code || '';
-    this.detail = error.detail || '';
-    this.column = error.column || '';
-    this.table = error.table || '';
+    this.code = typedError.code || '';
+    this.detail = typedError.detail || '';
+    this.column = typedError.column || '';
+    this.table = typedError.table || '';
     // This line maintains proper stack trace (only available in V8 environments)
     if (Error.captureStackTrace) {
       Error.captureStackTrace(this, PostgresError);

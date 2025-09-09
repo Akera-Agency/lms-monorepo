@@ -1,5 +1,14 @@
-import { InfinityPaginationResultType } from '../types/InfinityPaginationResultType';
-
+export type InfinityPaginationResultType<T> = Readonly<{
+  data: T[];
+  meta: {
+    page: number;
+    limit: number;
+    total_pages: number;
+    has_next_page: boolean;
+    has_previous_page: boolean;
+    total_count: number;
+  };
+}>;
 export const infinityPagination = <T>(
   data: T[],
   options: {
@@ -27,3 +36,4 @@ export const infinityPagination = <T>(
     },
   };
 };
+

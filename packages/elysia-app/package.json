@@ -9,11 +9,22 @@
     "start": "bun run dist/app.js",
     "lint": "bun run --bun eslint . --ext .ts",
     "format": "bun run --bun prettier --write .",
+    "----------------------i18n------------------------------": "------------------------------------------------",
+    "generate:i18n-types": "bun run src/shared/i18n/generate-types.ts",
     "--------------------migrations------------------------------": "------------------------------------------------",
     "migration:run": "bun run --bun src/database/runners/runMigrations.ts",
     "migration:create": "bun run --bun src/database/runners/create-migration.ts",
     "migration:to": "bun run --bun src/database/runners/migrateTo.ts",
     "migration:list": "bun run --bun src/database/runners/listAppliedMigrations.ts",
     "seed": "bun run --bun src/database/runners/seed.ts"
+  },
+  "dependencies": {
+    "i18next": "^23.7.6",
+    "i18next-fs-backend": "^2.3.1",
+    "i18next-http-middleware": "^3.5.0",
+    "elysia-requestid": "1.0.9",
+    "posthog-node": "5.8.2",
+    "@sentry/bun": "10.10.0",
+    "zod": "^4.0.5"
   }
 }

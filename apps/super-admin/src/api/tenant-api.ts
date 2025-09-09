@@ -64,14 +64,16 @@ export const SuperAdminApi = {
   async createTenant(
     session: Session | null,
     name: string, 
+    is_public: boolean,
     description?: string, 
-    logo_url?:string
+    logo_url?:string,
   ):Promise <TenantEntity> {
 
     const { data, error } = await apiClient(session).api.tenants.post({
       name,
       description,
-      logo_url
+      logo_url,
+      is_public
     });
     
     if (error) {
