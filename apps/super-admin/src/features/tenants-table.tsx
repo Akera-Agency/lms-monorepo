@@ -1,6 +1,6 @@
 import { ArrowUpDown, ChevronLeft, ChevronRight, MoreHorizontal, Trash2, University } from "lucide-react";
 import { useState, useCallback, useMemo } from "react";
-import { useSuperAdmin } from "@/hooks/use.super-tenant";
+import { SuperAdminQueries } from "@/queries/super-tenant-queries";
 import {
   type ColumnDef,
   type ColumnFiltersState,
@@ -35,11 +35,10 @@ import { Skeleton } from "../../../../packages/ui/src/components/skeleton/skelet
 import { ConfirmDeleteDialog } from "../../../../packages/ui/src/components/dialog/confirm-dialog";
 import { EmptyState } from "../../../../packages/ui/src/components/empty-states/empty-state";
 import type { Table as TanstackTable } from "@tanstack/react-table";
-// import { showRolesDialog } from "@/utils/roles-dialog";
 import type { TenantEntity } from "elysia-app/src/modules/tenants/infrastructure/tenant.entity";
 
 export default function DataTable() {
-  const { tenants, loading, setTenants, deleteUser } = useSuperAdmin();
+  const { tenants, loading, deleteTenant } = SuperAdminQueries();
 
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -50,7 +49,7 @@ export default function DataTable() {
     pageSize: 6,
   });
 
-  const columns = useMemo<ColumnDef<TenantEntity>[]>(() => getColumns(setTenants, deleteUser), [setTenants, deleteUser]);
+  const columns = useMemo<ColumnDef<TenantEntity>[]>(() => getColumns(deleteTenant), [deleteTenant]);
 
   const table = useReactTable({
     data: tenants,
@@ -72,20 +71,17 @@ export default function DataTable() {
 
   const handleBulkDelete = useCallback(async () => {
     try {
-      const deletedIds: string[] = [];
       for (const row of table.getSelectedRowModel().rows) {
-        await deleteUser(row.original.id);
-        deletedIds.push(row.original.id);
+        await deleteTenant(row.original.id);
       }
-      setTenants((prev) => prev.filter((tenant) => !deletedIds.includes(tenant.id)));
       table.resetRowSelection();
     } catch (error) {
       console.error("Bulk delete failed:", error);
     }
-  }, [deleteUser, table]);
+  }, [deleteTenant, table]);
 
   return (
-    <div className="flex flex-col h-full   overflow-auto custom-hidden-scrollbar">
+    <div className="flex flex-col h-full overflow-auto custom-hidden-scrollbar">
       {loading ? (
         <LoadingSkeleton />
       ) : tenants.length === 0 ? (
@@ -99,7 +95,7 @@ export default function DataTable() {
           <div className="flex items-center py-4 gap-7 justify-end">
             <Input
               className="max-w-sm lg:text-sm text-xs border-neutral-700 bg-neutral-900 text-white"
-              placeholder="Filter by user name..."
+              placeholder="Filter by tenant name..."
               value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
               onChange={(e) => table.getColumn("name")?.setFilterValue(e.target.value)}
             />
@@ -146,9 +142,10 @@ export default function DataTable() {
                 <ConfirmDeleteDialog
                   trigger={<Trash2 className="md:h-6 md:w-6 h-5 w-5 text-red-500 cursor-pointer" />}
                   title="Confirm Deletion"
-                  description={selectedRowIds.length === 1 ? 
-                    "Are you sure you want to delete this user?" : 
-                    `Are you sure you want to delete these ${selectedRowIds.length} users?`
+                  description={
+                    selectedRowIds.length === 1
+                      ? "Are you sure you want to delete this tenant?"
+                      : `Are you sure you want to delete these ${selectedRowIds.length} tenants?`
                   }
                   closeText="Cancel"
                   confirmText="Delete"
@@ -212,10 +209,7 @@ function PaginationControls({ table }: { table: TanstackTable<any> }) {
   );
 }
 
-function getColumns(
-  setUsers: React.Dispatch<React.SetStateAction<TenantEntity[]>>,
-  deleteUser: (id: string) => Promise<void>
-  ): ColumnDef<TenantEntity>[] {
+function getColumns(deleteTenant: (id: string) => Promise<void>): ColumnDef<TenantEntity>[] {
   return [
     {
       id: "select",
@@ -229,7 +223,7 @@ function getColumns(
       ),
       cell: ({ row }) => (
         <Checkbox
-          className="cursor-pointer data-[state=checked]:bg-red-600 "
+          className="cursor-pointer data-[state=checked]:bg-red-600"
           checked={row.getIsSelected()}
           onCheckedChange={(value) => row.toggleSelected(!!value)}
           aria-label="Select row"
@@ -252,28 +246,27 @@ function getColumns(
       cell: ({ getValue }) => <div className="lowercase">{getValue<string>()}</div>,
     },
     {
-        accessorKey: "created_at",
-        header: ({ column }) => (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="-ml-3 cursor-pointer"
-          >
-            Date submitted
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        ),
-        cell: ({ row }) => {
-          const rawDate = row.getValue("created_at") as string;
-          const date = new Date(rawDate);
-          const formatted = `${date.toLocaleDateString("en-CA")} at ${date.toLocaleTimeString("en-GB", {
-            hour: "2-digit",
-            minute: "2-digit",
-          })}`;
-          return <div>{formatted}</div>;
-        },
+      accessorKey: "created_at",
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="-ml-3 cursor-pointer"
+        >
+          Date submitted
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
+      cell: ({ row }) => {
+        const rawDate = row.getValue("created_at") as string;
+        const date = new Date(rawDate);
+        const formatted = `${date.toLocaleDateString("en-CA")} at ${date.toLocaleTimeString("en-GB", {
+          hour: "2-digit",
+          minute: "2-digit",
+        })}`;
+        return <div>{formatted}</div>;
       },
-    
+    },
     {
       id: "actions",
       header: "Actions",
@@ -286,17 +279,6 @@ function getColumns(
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="border bg-neutral-900 border-neutral-800 text-neutral-400">
-          {/* <DropdownMenuItem
-                        onSelect={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          showRolesDialog(row.original.name,row.original.role);
-                        }}
-                        className="cursor-pointer focus:bg-neutral-800 focus:text-white"
-                      >
-                        Edit
-            </DropdownMenuItem> */}
-
             <ConfirmDeleteDialog
               trigger={
                 <DropdownMenuItem
@@ -304,16 +286,17 @@ function getColumns(
                     e.preventDefault();
                     e.stopPropagation();
                   }}
-                  className="cursor-pointer text-red-500 focus:bg-neutral-800 focus:text-red-600">
-                    Remove
-                </DropdownMenuItem>}
+                  className="cursor-pointer text-red-500 focus:bg-neutral-800 focus:text-red-600"
+                >
+                  Remove
+                </DropdownMenuItem>
+              }
               title="Confirm Deletion"
-              description="Are you sure you want to delete this user?"
+              description="Are you sure you want to delete this tenant?"
               closeText="Cancel"
               confirmText="Delete"
               onConfirm={async () => {
-                await deleteUser(row.original.id);
-                setUsers((prev) => prev.filter((user) => user.id !== row.original.id));
+                await deleteTenant(row.original.id);
               }}
             />
           </DropdownMenuContent>

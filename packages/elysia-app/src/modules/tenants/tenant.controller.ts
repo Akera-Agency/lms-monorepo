@@ -21,7 +21,10 @@ const updateTenantValidationSchema = t.Object({
 
 const createTenantRoleValidationSchema = t.Object({
   name: t.String(),
-  permissions: t.Object({}),
+  permissions: t.Record(
+    t.String(),           
+    t.Array(t.String()) 
+  ),
   is_default: t.Boolean(),
   is_system_role: t.Boolean(),
   description: t.Optional(t.String()),

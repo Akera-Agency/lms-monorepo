@@ -31,7 +31,7 @@ export function Navbar({
         />
         <Button
           variant="default"
-          className="bg-gradient-to-r from-[#F3562E] to-[#e94e26] hover:from-transparent hover:to-transparent border-2 border-transparent hover:border-[#F3562E] hover:text-[#F3562E] shadow-lg hover:shadow-[#F3562E]/25 active:scale-95"
+          className="bg-gradient-to-r from-primaryOrange to-[#e94e26] hover:from-transparent hover:to-transparent border-2 border-transparent hover:border-primaryOrange hover:text-primaryOrange shadow-lg hover:shadow-primaryOrange/25 active:scale-95"
           onClick={handleSignOut}
         >
           Sign out
@@ -57,7 +57,7 @@ export function Navbar({
         />
             <Button
           variant="default"
-          className="bg-gradient-to-r from-[#F3562E] to-[#e94e26] hover:from-transparent hover:to-transparent border-2 border-transparent hover:border-[#F3562E] hover:text-[#F3562E] shadow-lg hover:shadow-[#F3562E]/25 active:scale-95"
+          className="bg-gradient-to-r from-primaryOrange to-[#e94e26] hover:from-transparent hover:to-transparent border-2 border-transparent hover:border-primaryOrange hover:text-primaryOrange shadow-lg hover:shadow-primaryOrange/25 active:scale-95"
           onClick={handleSignOut}
         >
           Sign out

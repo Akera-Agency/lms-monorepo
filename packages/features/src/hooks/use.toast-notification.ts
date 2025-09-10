@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useToast } from "@ui/hooks/use-toast";
+import { useToast } from "../../../ui/src/hooks/use-toast";
 
 interface ToastOptions {
     successMessage?: string | null;

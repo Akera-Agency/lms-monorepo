@@ -1,6 +1,7 @@
 import { cn } from '../../lib/utils';
 
 type RadioProps = {
+  id?: string;
   title?: string;
   description?: string;
   disabled?: boolean;
@@ -10,6 +11,7 @@ type RadioProps = {
 };
 
 const Radio = ({
+  id,
   title,
   description,
   className,
@@ -25,6 +27,7 @@ const Radio = ({
 
   return (
     <div
+      id={id}
       onClick={handleCheck}
       className={cn(
         'relative flex select-none items-start',
