@@ -4,12 +4,16 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '../shadcn/dialog';
-import { Drawer, DrawerContent, DrawerHeader } from '../shadcn/drawer';
-import { useMediaQuery } from '../../hooks/use-media-query';
-import { Separator } from '../shadcn/separator';
-import { cn } from '../../lib/utils';
-import { X } from 'lucide-react';
+} from "../shadcn/dialog";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+} from "../shadcn/drawer";
+import { useMediaQuery } from "../../hooks/use-media-query";
+import { Separator } from "../shadcn/separator";
+import { cn } from "../../lib/utils";
+import { X } from "lucide-react";
 
 type TResponsiveDialogProps = {
   children: React.ReactNode;
@@ -24,6 +28,7 @@ type TResponsiveDialogProps = {
   descriptionClassName?: string;
   icon?: React.ReactNode;
   showHeader?: boolean;
+  dismissible?: boolean;
 };
 
 const ResponsiveDialog = ({
@@ -38,30 +43,44 @@ const ResponsiveDialog = ({
   titleClassName,
   descriptionClassName,
   icon,
+  dismissible = true,
 }: TResponsiveDialogProps) => {
-  const isDesktop = useMediaQuery('(min-width: 834px)');
+  const isDesktop = useMediaQuery("(min-width: 768px)");
+
+  const handleOpenChange = (open: boolean) => {
+    if (!open && dismissible && onClose) {
+      onClose();
+    }
+  };
 
   const renderHeader = () => (
-    <div className={cn('relative z-20 flex gap-2', icon && 'flex-row')}>
+    <div
+      className={cn(
+        "relative z-20 flex items-center gap-2",
+        icon && "flex-row",
+      )}
+    >
       {icon && (
-        <span className="flex h-12 w-14 items-center justify-center rounded-[10px] border">
+        <span className="flex items-center justify-center rounded-[10px]">
           {icon}
         </span>
       )}
       <div className="flex w-full flex-col gap-0.5">
         <div className="flex justify-between">
-          <DialogTitle className={cn('text-lg font-semibold', titleClassName)}>
+          <DialogTitle className={cn("text-lg font-semibold", titleClassName)}>
             {title}
           </DialogTitle>
-          <X
-            className="h-5 w-5 cursor-pointer text-muted-100 hover:text-neutral-800"
-            onClick={onClose}
-          />
+          {dismissible && (
+            <X
+              className="text-muted-100 h-5 w-5 cursor-pointer hover:text-neutral-800"
+              onClick={onClose}
+            />
+          )}
         </div>
         <DialogDescription
           className={cn(
-            'text-sm font-medium text-secondary-text',
-            descriptionClassName
+            "text-secondary-text text-sm font-medium",
+            descriptionClassName,
           )}
         >
           {description}
@@ -72,27 +91,26 @@ const ResponsiveDialog = ({
 
   if (isDesktop) {
     return (
-      <Dialog open={isOpen} onOpenChange={onClose}>
-        {/* <DialogContent className={cn("px-0 sm:max-w-[38.75rem]", className)}> */}
+      <Dialog open={isOpen} onOpenChange={handleOpenChange}>
         <DialogContent
-          className={cn('w-full px-0 sm:max-w-[45rem]', className)}
+          className={cn("w-full px-0 sm:max-w-[45rem]", className)}
         >
-          <DialogHeader className={cn('px-5 pb-3', headerClassName)}>
+          <DialogHeader className={headerClassName}>
             {renderHeader()}
           </DialogHeader>
           {separator && <Separator />}
-          <div className="px-5">{children}</div>
+          <div>{children}</div>
         </DialogContent>
       </Dialog>
     );
   }
 
   return (
-    <Drawer open={isOpen} onOpenChange={onClose}>
-      <DrawerContent className={cn('px-0 pb-5', className)}>
-        <DrawerHeader className="px-5 text-left">{renderHeader()}</DrawerHeader>
+    <Drawer open={isOpen} onOpenChange={handleOpenChange}>
+      <DrawerContent className={cn("px-0 pb-5", className)}>
+        <DrawerHeader className="text-left">{renderHeader()}</DrawerHeader>
         {separator && <Separator />}
-        <div className="px-5">{children}</div>
+        <div>{children}</div>
       </DrawerContent>
     </Drawer>
   );

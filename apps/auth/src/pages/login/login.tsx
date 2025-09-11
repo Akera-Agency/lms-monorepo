@@ -1,6 +1,7 @@
 import { AuthForm } from '@/components/auth-form';
-import { useAuthForm } from '../../../../../packages/auth/src/hooks/useAuth';
-import { studentRoute } from '../../../../../packages/auth/src/utils/external-routes';
+import { useAuthForm } from '../../../../../packages/auth/src/hooks/use.auth';
+import { userRoute } from '../../../../../packages/auth/src/utils/external-routes';
+import { tenantRoute } from '../../../../../packages/auth/src/utils/external-routes';
 
 export default function LoginPage() {
   const {
@@ -22,7 +23,12 @@ export default function LoginPage() {
       const result = await signIn(email, password);
       if (result?.data.session) {
         console.log('Login successful:', result.data);
-        window.location.href = `${studentRoute}/profile#access_token=${result.data.session.access_token}&refresh_token=${result.data.session.refresh_token}`;
+        if (result.data.user?.user_metadata.role === 'student') {
+          window.location.href = `${userRoute}/#access_token=${result.data.session.access_token}&refresh_token=${result.data.session.refresh_token}`;
+        }
+        else if (result.data.user?.user_metadata.role === 'admin') {
+          window.location.href = `${tenantRoute}/#access_token=${result.data.session.access_token}&refresh_token=${result.data.session.refresh_token}`;
+        }
       } else {
         console.error('Login failed:', result.error);
         setError(result?.error?.message || 'Login failed');

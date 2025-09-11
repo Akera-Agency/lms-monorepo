@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState, type ReactNode } from 'react';
-import { supabase } from '../utils/supabase';
+import { supabase, supabaseAdmin } from '../utils/supabase';
 import type {
   AuthError,
   AuthResponse,
@@ -8,13 +8,14 @@ import type {
   Session,
   User,
 } from '@supabase/supabase-js';
-import { studentRoute } from '../utils/external-routes';
+import { tenantRoute } from '../utils/external-routes';
 
 export const AuthContext = createContext<{
   session: Session | null;
   user: User | null;
   sessionLoading: boolean;
-  signUp: (email: string, password: string) => Promise<AuthResponse>;
+  tenants: User[];
+  signUp: (email: string, password: string, name:string, role:string, tenant: string) => Promise<AuthResponse>;
   signOut: () => Promise<{ error: AuthError | null }>;
   signIn: (email: string, password: string) => Promise<AuthResponse>;
   signInWithOAuth: (
@@ -32,6 +33,7 @@ export const AuthContext = createContext<{
   session: null,
   user: null,
   sessionLoading: true,
+  tenants: [],
   signUp: async () => ({ data: { user: null, session: null }, error: null }),
   signOut: async () => ({ error: null }),
   signIn: async () => ({ data: { user: null, session: null }, error: null }),
@@ -47,12 +49,26 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [sessionLoading, setSessionLoading] = useState(true);
+  const [tenants, setTenants] = useState<User[]>([]);
 
   const signUp = async (
     email: string,
-    password: string
+    password: string,
+    name: string,
+    role: string,
+    tenant: string
   ): Promise<AuthResponse> => {
-    return await supabase.auth.signUp({ email, password });
+    return await supabase.auth.signUp({ 
+      email,
+      password,
+      options:{
+        data:{
+          name: name,
+          role: role,
+          tenant: tenant
+        }
+      } 
+    });
   };
 
   const signIn = async (
@@ -66,13 +82,13 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
 
   const signInWithOAuth = async (
     provider: Provider,
-    redirectPath: string = '/profile'
+    redirectPath: string = '/'
   ): Promise<OAuthResponse> => {
     try {
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
-          redirectTo: `${studentRoute}${redirectPath}`,
+          redirectTo: `${tenantRoute}${redirectPath}`,
         },
       });
 
@@ -131,6 +147,30 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  useEffect(() => {
+    
+    const fetchTenants = async () => {
+      try {
+        const { data, error } = await supabaseAdmin.auth.admin.listUsers();
+    
+        if (error) {
+          console.error('Error listing users:', error.message);
+          setTenants([]);
+          return [];
+        }
+  
+        setTenants(data.users.filter(user => user.user_metadata?.role === 'tenant'));
+        return data.users;
+      } catch (err) {
+        console.error('Unexpected error listing tenants:', err);
+        setTenants([]);
+        return [];
+      }
+    };
+    fetchTenants();
+  }, []);
+  
+  
   useEffect(() => {
     let cancelled = false;
     let unsub: (() => void) | undefined;
@@ -201,6 +241,7 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
     session,
     user,
     sessionLoading,
+    tenants,
     signUp,
     signIn,
     signOut,

@@ -13,6 +13,32 @@ export const updateUserValidationSchema = t.Object({
   avatar_url: t.String(),
 });
 
+// export const fetchUserSchema = t.Object({
+//   data: t.Array(
+//     t.Object({
+//       email: t.String({ format: 'email' }),
+//       name: t.String(),
+//       language: t.Enum(LanguagesEnum),
+//       avatar_url: t.String().nullable(),
+//       id: t.String(),
+//       role_id: t.String().nullable(),
+//       is_active: t.Boolean(),
+//       last_login_at: t.Date().nullable(),
+//       deleted_at: t.Date().nullable(),
+//       created_at: t.Date(),
+//       updated_at: t.Date(),
+//     })
+//   ),
+//   meta: t.Object({
+//     page: t.Number(),
+//     limit: t.Number(),
+//     total_pages: t.Number(),
+//     has_next_page: t.Boolean(),
+//     has_previous_page: t.Boolean(),
+//     total_count: t.Number(),
+//   }),
+// });
+
 export const userController = new Elysia<typeof prefix, TContext>({
   prefix,
   detail: {
