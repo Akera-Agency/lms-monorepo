@@ -58,7 +58,7 @@ const decodeAndVerifyToken = (token: string): ITokenPayload => {
 
   if (!jwtSecret) {
     throw new AppError({
-      error: 'JWT secret is not configured',
+      error: 'jwt_secret_not_configured',
       statusCode: 500,
     });
   }
@@ -73,7 +73,7 @@ const decodeAndVerifyToken = (token: string): ITokenPayload => {
     const currentTime = Math.floor(Date.now() / 1000);
     if (decoded.exp && decoded.exp < currentTime) {
       throw new AppError({
-        error: 'JWT token has expired',
+        error: 'jwt_token_expired',
         statusCode: 401,
       });
     }
@@ -84,7 +84,7 @@ const decodeAndVerifyToken = (token: string): ITokenPayload => {
       throw error;
     }
     throw new AppError({
-      error: 'Invalid JWT token',
+      error: 'invalid_jwt_token',
       statusCode: 401,
     });
   }
@@ -94,7 +94,6 @@ const decodeAndVerifyToken = (token: string): ITokenPayload => {
 export const authGuard = new Elysia<string, TContext>().derive(
   { as: 'global' },
   async (context) => {
-    console.log('🚀 ~ authGuard:');
     const { headers } = context;
 
     // Extract token from headers
@@ -102,7 +101,7 @@ export const authGuard = new Elysia<string, TContext>().derive(
 
     if (!token) {
       throw new AppError({
-        error: 'Authentication token is required',
+        error: 'authentication_token_required',
         statusCode: 401,
       });
     }
@@ -113,7 +112,7 @@ export const authGuard = new Elysia<string, TContext>().derive(
     // Check if user is anonymous
     if (user.is_anonymous) {
       throw new AppError({
-        error: 'Anonymous access is not allowed',
+        error: 'anonymous_access_not_allowed',
         statusCode: 401,
       });
     }
@@ -135,7 +134,6 @@ export const authGuard = new Elysia<string, TContext>().derive(
 export const optionalAuthGuard = new Elysia<string, TContext>().derive(
   { as: 'global' },
   async (context) => {
-    console.log('🚀 ~ optionalAuthGuard:');
     const { headers } = context;
 
     // Extract token from headers

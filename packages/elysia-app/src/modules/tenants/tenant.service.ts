@@ -38,7 +38,7 @@ export class TenantService extends BaseService {
 
     if (result === null) {
       throw new AppError({
-        error: 'Tenant not found',
+        error: 'tenant_not_found',
         statusCode: 404,
       });
     }

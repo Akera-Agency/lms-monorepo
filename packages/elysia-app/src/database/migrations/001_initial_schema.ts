@@ -70,6 +70,7 @@ export async function up(db: Kysely<unknown>): Promise<void> {
     .addColumn('name', 'text')
     .addColumn('description', 'text')
     .addColumn('logo_url', 'text')
+    .addColumn('is_public', 'boolean', (col) => col.defaultTo(false))
     .addColumn('deleted_at', 'timestamptz')
     .addColumn('created_at', 'timestamptz', (col) =>
       col.defaultTo(sql`now()`).notNull()

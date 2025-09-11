@@ -11,7 +11,7 @@ export function isCronError(exception: unknown): exception is ICronError {
 export class CronError extends Error {
   public error: Error;
 
-  constructor(error: any) {
+  constructor({ error }: ICronError) {
     super(error.message);
     this.name = 'CronError';
     this.error = error;
