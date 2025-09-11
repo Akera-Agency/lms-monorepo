@@ -151,7 +151,7 @@ class ResendMailer implements IMailer {
 
       if (response.error) {
         throw new AppError({
-          error: 'Failed to send email',
+          error: 'failed_to_send_email',
           statusCode: 500,
         });
       }
@@ -159,7 +159,7 @@ class ResendMailer implements IMailer {
     } catch (error) {
       Logger.error('Failed to send email:', error);
       throw new AppError({
-        error: 'Failed to send email',
+        error: 'failed_to_send_email',
         statusCode: 500,
       });
     }
@@ -223,7 +223,7 @@ class ResendMailer implements IMailer {
           err
         );
         throw new AppError({
-          error: 'Failed to load email template',
+          error: 'failed_to_load_email_template',
           statusCode: 500,
         });
       }
@@ -238,7 +238,7 @@ class ResendMailer implements IMailer {
         error
       );
       throw new AppError({
-        error: 'Failed to load email template',
+        error: 'failed_to_load_email_template',
         statusCode: 500,
       });
     }

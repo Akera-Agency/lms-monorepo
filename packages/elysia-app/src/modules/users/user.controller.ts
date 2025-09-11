@@ -18,105 +18,107 @@ export const userController = new Elysia<typeof prefix, TContext>({
   detail: {
     tags: ['Users'],
   },
-})
-  .use(authGuard)
-  .get('/me', async (ctx) => {
-    const user = ctx.auth.user;
-    return await ctx.store.UserService.findOne({
-      id: user.sub,
-    });
-  })
-  .patch(
-    '/me',
-    async (ctx) => {
+}).guard((app) =>
+  app
+    .use(authGuard)
+    .get('/me', async (ctx) => {
       const user = ctx.auth.user;
-      await ctx.store.UserService.update(user.sub, {
-        ...ctx.body,
+      return await ctx.store.UserService.findOne({
+        id: user.sub,
       });
-    },
-    {
-      body: updateUserValidationSchema,
-    }
-  )
-  .guard((app) =>
-    app
-      .use(
-        createAccessGuard({
-          permissions: [{ entity: 'users', permission: 'read' }],
-          require: 'all',
-        })
-      )
-      .get(
-        '/',
-        async (ctx) => {
-          return await ctx.store.UserService.findManyWithPagination({
-            page: ctx.query.page,
-            limit: ctx.query.limit,
-          });
-        },
-        {
-          query: t.Object({
-            page: t.Number(),
-            limit: t.Number(),
-          }),
-        }
-      )
-      .get(
-        ':id',
-        async (ctx) => {
-          return await ctx.store.UserService.findOne({
-            id: ctx.params.id,
-          });
-        },
-        {
-          params: t.Object({
-            id: t.String(),
-          }),
-        }
-      )
-  )
-  .guard((app) =>
-    app
-      .use(
-        createAccessGuard({
-          permissions: [{ entity: 'users', permission: 'update' }],
-          require: 'all',
-        })
-      )
-      .patch(
-        ':id',
-        async (ctx) => {
-          const updatedUser = await ctx.store.UserService.update(
-            ctx.params.id,
-            ctx.body
-          );
-          return updatedUser;
-        },
-        {
-          params: t.Object({
-            id: t.String(),
-          }),
-          body: updateUserValidationSchema,
-        }
-      )
-  )
-  .guard((app) =>
-    app
-      .use(
-        createAccessGuard({
-          permissions: [{ entity: 'users', permission: 'delete' }],
-          require: 'all',
-        })
-      )
-      .delete(
-        ':id',
-        async (ctx) => {
-          return await ctx.store.UserService.delete(ctx.params.id);
-        },
-        {
-          params: t.Object({
-            id: t.String(),
-          }),
-        }
-      )
-  );
+    })
+    .patch(
+      '/me',
+      async (ctx) => {
+        const user = ctx.auth.user;
+        await ctx.store.UserService.update(user.sub, {
+          ...ctx.body,
+        });
+      },
+      {
+        body: updateUserValidationSchema,
+      }
+    )
+    .guard((app) =>
+      app
+        .use(
+          createAccessGuard({
+            permissions: [{ entity: 'users', permission: 'read' }],
+            require: 'all',
+          })
+        )
+        .get(
+          '/',
+          async (ctx) => {
+            return await ctx.store.UserService.findManyWithPagination({
+              page: ctx.query.page,
+              limit: ctx.query.limit,
+            });
+          },
+          {
+            query: t.Object({
+              page: t.Number(),
+              limit: t.Number(),
+            }),
+          }
+        )
+        .get(
+          ':id',
+          async (ctx) => {
+            return await ctx.store.UserService.findOne({
+              id: ctx.params.id,
+            });
+          },
+          {
+            params: t.Object({
+              id: t.String(),
+            }),
+          }
+        )
+    )
+    .guard((app) =>
+      app
+        .use(
+          createAccessGuard({
+            permissions: [{ entity: 'users', permission: 'update' }],
+            require: 'all',
+          })
+        )
+        .patch(
+          ':id',
+          async (ctx) => {
+            const updatedUser = await ctx.store.UserService.update(
+              ctx.params.id,
+              ctx.body
+            );
+            return updatedUser;
+          },
+          {
+            params: t.Object({
+              id: t.String(),
+            }),
+            body: updateUserValidationSchema,
+          }
+        )
+    )
+    .guard((app) =>
+      app
+        .use(
+          createAccessGuard({
+            permissions: [{ entity: 'users', permission: 'delete' }],
+            require: 'all',
+          })
+        )
+        .delete(
+          ':id',
+          async (ctx) => {
+            return await ctx.store.UserService.delete(ctx.params.id);
+          },
+          {
+            params: t.Object({
+              id: t.String(),
+            }),
+          }
+        )
+    )
+);

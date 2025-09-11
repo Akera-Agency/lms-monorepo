@@ -13,6 +13,7 @@ const schema = z.object({
 
   // Elysia
   PORT: z.string().nonempty(),
+  LOCAL: z.enum(['true', 'false']).optional().default('false'),
 
   // Supabase
   SUPABASE_URL: z.string().nonempty(),
@@ -25,6 +26,19 @@ const schema = z.object({
 
   // Notifications
   NOTIFS_DEBUG: z.enum(['0', '1']).optional().default('0'),
+
+  // Sentry
+  SENTRY_DSN: z.string().nonempty(),
+
+  // PostHog
+  POSTHOG_API_KEY: z.string().nonempty(),
+
+  // S3
+  S3_BUCKET_NAME: z.string().nonempty(),
+  S3_ENDPOINT: z.string().nonempty(),
+  AWS_ACCESS_KEY_ID: z.string().nonempty(),
+  AWS_SECRET_ACCESS_KEY: z.string().nonempty(),
+  AWS_REGION: z.string().nonempty(),
 });
 
 export const env = schema.parse(

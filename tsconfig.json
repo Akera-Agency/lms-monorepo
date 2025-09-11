@@ -11,6 +11,9 @@
     },
     {
       "path": "./packages/supabase"
+    },
+    {
+      "path": "./packages/s3"
     }
   ]
 }
