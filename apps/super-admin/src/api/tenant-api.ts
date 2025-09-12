@@ -49,10 +49,17 @@ export const SuperAdminApi = {
     return data.data;
   },
 
+  async fetchTenantRoles( session: Session | null, tenant_id: string ): Promise<TenantRoleEntity[]> {
+    const { data, error } = await apiClient(session).api.tenants({id:tenant_id}).roles.get();
+
+    if (error) {
+      throw new Error(errorMessage(error));
+    }
+    return data;
+  },
+
   async deleteTenant(session: Session | null, tenantId: string ): Promise<void> {
-    const { error } = await apiClient(session).api.tenants({id:tenantId}).delete({
-      tenantId
-    });
+    const { error } = await apiClient(session).api.tenants({id:tenantId}).delete();
     if (error) throw new Error(error?.value.message);
   },
 
@@ -80,7 +87,7 @@ export const SuperAdminApi = {
     session: Session | null,
     tenant_id: string,
     name: string,
-    permissions: Record<Resource, PermissionOption[]>,
+    permissions: Record<Resource, PermissionOption[]> | Record<string, string[]>,
     is_default: boolean,
     is_system_role: boolean,
     description?: string

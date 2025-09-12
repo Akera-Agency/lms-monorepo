@@ -10,17 +10,38 @@ export function SuperAdminQueries() {
   const { session } = useAuthForm();
   const queryClient = useQueryClient();
 
-  const {
-    data: tenants = [],
-    isLoading: loading,
-    isError,
-    error,
-  } = useQuery<TenantEntity[], Error>({
-    queryKey: ["tenants"],
-    queryFn: () => SuperAdminApi.fetchTenants(session),
-    enabled: !!session,
-  });
-
+  const tenants = () => {
+    const {
+      data: tenants = [],
+      isLoading: loading,
+      isError,
+      error,
+    } = useQuery<TenantEntity[], Error>({
+      queryKey: ["tenants"],
+      queryFn: () => SuperAdminApi.fetchTenants(session),
+      enabled: !!session,
+    });
+    return { tenants, loading, isError,  error: error ? normalizeError(error) : null };
+  };
+  
+  const tenantRoles = (tenant_id: string) => {
+    const {
+      data: tenantRoles = [],
+      isLoading: loading,
+      isError,
+      error,
+    } = useQuery<TenantRoleEntity[], Error>({
+      queryKey: ["tenant_roles", tenant_id],
+      queryFn: () => {
+        if (!tenant_id) throw new Error("Tenant ID is required");
+        return SuperAdminApi.fetchTenantRoles(session, tenant_id);
+      },
+      enabled: !!session && !!tenant_id,
+    });
+  
+    return { tenantRoles, loading, isError,  error: error ? normalizeError(error) : null };
+  };
+  
   const createTenantMutation = useMutation<
     { tenant: TenantEntity; roles: TenantRoleEntity[] },
     Error,
@@ -29,7 +50,7 @@ export function SuperAdminQueries() {
       is_public: boolean;
       roles: {
         roleName: string;
-        permissions: Record<Resource, PermissionOption[]>;
+        permissions: Record<Resource, PermissionOption[]> | Record<string, string[]>;
         is_default: boolean;
         is_system_role: boolean;
         roleDescription?: string;
@@ -89,8 +110,7 @@ export function SuperAdminQueries() {
 
   return {
     tenants,
-    loading,
-    error: isError ? normalizeError(error) : null,
+    tenantRoles,
     handleCreateTenant: createTenantMutation.mutateAsync,
     deleteTenant: deleteTenantMutation.mutateAsync,
     successMessage: createTenantMutation.status,

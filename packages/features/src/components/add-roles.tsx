@@ -61,13 +61,16 @@ return (
 
             <div className="space-y-6">
               {roles.map((role, index) => (
+                <div
+                key={index}
+                >
                 <EditRole
                     role={role}
                     isDisabled={isDisabled}
                     showRemoveButton={true}
                     index={index}
                 />
-
+              </div>
               ))}
             </div>
           </div>

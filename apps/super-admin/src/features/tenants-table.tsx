@@ -36,9 +36,11 @@ import { ConfirmDeleteDialog } from "../../../../packages/ui/src/components/dial
 import { EmptyState } from "../../../../packages/ui/src/components/empty-states/empty-state";
 import type { Table as TanstackTable } from "@tanstack/react-table";
 import type { TenantEntity } from "elysia-app/src/modules/tenants/infrastructure/tenant.entity";
+import { showRolessDialog } from "@/utils/dialogs/permission-dialog-utils";
 
 export default function DataTable() {
-  const { tenants, loading, deleteTenant } = SuperAdminQueries();
+  const { deleteTenant } = SuperAdminQueries();
+    const { tenants, loading } = SuperAdminQueries().tenants();
 
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -209,7 +211,10 @@ function PaginationControls({ table }: { table: TanstackTable<any> }) {
   );
 }
 
-function getColumns(deleteTenant: (id: string) => Promise<void>): ColumnDef<TenantEntity>[] {
+function getColumns(
+  deleteTenant: (id: string) => Promise<void>,
+): ColumnDef<TenantEntity>[] {
+
   return [
     {
       id: "select",
@@ -279,6 +284,19 @@ function getColumns(deleteTenant: (id: string) => Promise<void>): ColumnDef<Tena
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="border bg-neutral-900 border-neutral-800 text-neutral-400">
+          <DropdownMenuItem
+  onSelect={(e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    showRolessDialog(row.original.id);
+
+  }}
+  className="cursor-pointer text-neutral-300 focus:bg-neutral-800 focus:text-white"
+>
+  Edit
+</DropdownMenuItem>
+
             <ConfirmDeleteDialog
               trigger={
                 <DropdownMenuItem

@@ -8,7 +8,7 @@ import {
   permissionOptions,
   type Resource,
   resourceList,
-  RoleData,
+  type RoleData,
 } from "../validation/tenantValidation";
 import { Trash2, ChevronDown, Settings, TriangleAlert } from "lucide-react";
 import {
@@ -23,7 +23,7 @@ interface EditRoleProps {
   index?: number;
   showRemoveButton: boolean;
   isDisabled: boolean;
-  role: RoleData | undefined
+  role?: RoleData | undefined
 }
 
 export default function EditRole({
@@ -121,7 +121,7 @@ export default function EditRole({
       </div>
 
       <div className="space-y-3">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center gap-1 justify-between">
           <h4 className="text-white font-semibold">Resource Permissions</h4>
           <DropdownMenu key={`resource_${index}`}>
             <DropdownMenuTrigger asChild>

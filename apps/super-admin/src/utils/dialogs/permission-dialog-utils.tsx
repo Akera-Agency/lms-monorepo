@@ -1,15 +1,13 @@
 import NiceModal from "@ebay/nice-modal-react";
-import PermissionsDialog from "@/components/permissions-dialog";
+import RolesDialog from "@/components/permissions-dialog";
 
-export const showPermissionsDialog = (roleName: string, currentPermissions: string[]) => {
-  NiceModal.show(PermissionsDialog, {
-    role_permissions: currentPermissions,
+export const showRolessDialog = (tenant_id: string) => {
+  NiceModal.show(RolesDialog, {
+    tenant_id, 
     closeText: "Cancel",
     confirmText: "Change",
-    role_name: roleName,
-    permissions: ["Create", "Read", "Update", "Delete"],
-    onConfirm: async (role: string, selected: string[]) => {
-      console.log("Changed role:", role, "with permissions:", selected);
+    onConfirm: async (updatedRole, selected) => {
+      console.log("Changed role:", updatedRole, "with permissions:", selected);
     },
   });
 };

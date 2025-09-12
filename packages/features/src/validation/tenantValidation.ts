@@ -1,8 +1,11 @@
-export type Resource =
-  | "tenant_roles"
-  | "tenant_users"
-  | "notifications"
-  | "notification_preferences";
+export const resources = [
+  "tenant_roles",
+  "tenant_users",
+  "notifications",
+  "notification_preferences",
+] as const;
+
+export type Resource = (typeof resources)[number];
 
 export const permissionOptions = ["create", "read", "update", "delete"] as const;
 
@@ -15,13 +18,13 @@ export const resourceList: Resource[] = [
   "notification_preferences",
 ];
 
-export const createEmptyPermissions = (): Record<Resource, PermissionOption[]> => {
+export const createEmptyPermissions = (): Record<Resource, PermissionOption[]> | Record<string, string[]> => {
   return resourceList.reduce(
     (acc, res) => {
       acc[res] = [];
       return acc;
     },
-    {} as Record<Resource, PermissionOption[]>
+    {} as Record<Resource, PermissionOption[]> | Record<string, string[]>
   );
 };
 
@@ -31,7 +34,7 @@ export const emptyPermissions = createEmptyPermissions();
 export interface RoleData {
     role_name: string;
     role_description?: string;
-    permissions: Record<Resource, PermissionOption[]>;
+    permissions: Record<Resource, PermissionOption[]> | Record<string, string[]> ;
     is_default: boolean;
     is_system_role: boolean;
   }
