@@ -31,10 +31,15 @@ export const createEmptyPermissions = (): Record<Resource, PermissionOption[]> |
 // Optional: for backward compatibility if needed
 export const emptyPermissions = createEmptyPermissions();
 
-export interface RoleData {
-    role_name: string;
-    role_description?: string;
-    permissions: Record<Resource, PermissionOption[]> | Record<string, string[]> ;
+  export interface RoleData {
+    tenant_id?: string;
+    id?: string;
+    name: string;
+    description: string | null;
+    deleted_at?: Date | null;
+    created_at?: Date;
+    updated_at?: Date;
+    permissions:  Record<Resource, PermissionOption[]> | Record<string, string[]>;
     is_default: boolean;
     is_system_role: boolean;
   }
@@ -77,9 +82,9 @@ export interface RoleData {
       data.roles.forEach((role, index) => {
         const currentRoleErrors: { role_name?: string; role_description?: string, permissions?: string} = {};
   
-        if (!role.role_name.trim()) {
+        if (!role.name.trim()) {
           currentRoleErrors.role_name = "Role name is required";
-        } else if (role.role_name.trim().length < 2) {
+        } else if (role.name.trim().length < 2) {
           currentRoleErrors.role_name = "Role name must be at least 2 characters";
         }
 

@@ -24,13 +24,15 @@ interface EditRoleProps {
   showRemoveButton: boolean;
   isDisabled: boolean;
   role?: RoleData | undefined
+  usage: 'create' | 'edit'
 }
 
 export default function EditRole({
   index,
   showRemoveButton,
   isDisabled,
-  role
+  role,
+  usage
 }: EditRoleProps) {
   const { errors, selectedResource, setSelectedResource, roles, setRoles } =
     useTenantContext();
@@ -73,7 +75,7 @@ export default function EditRole({
     >
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-medium text-white">
-          {`Role ${index + 1}`}
+          {usage === 'create' ? `Role ${index + 1}` : role.name}
         </h3>
 
         {showRemoveButton && roles.length > 1 && (
@@ -90,38 +92,38 @@ export default function EditRole({
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <Input
-          id={`role_name_${index}`}
+          id={`name_${index}`}
           label="Role Name"
           placeholder="Enter role name..."
           labelClassName="text-white font-medium"
           className="border-neutral-700 text-white"
-          value={role.role_name}
+          value={role.name}
           error={errors.roles?.[index]?.role_name}
           onChange={(e) => {
             const value = (e.target as HTMLInputElement).value;
-            handleRoleChange(index, "role_name", value);
+            handleRoleChange(index, "name", value) 
           }}
           disabled={isDisabled}
         />
 
         <Input
-          id={`role_description_${index}`}
+          id={`description_${index}`}
           label="Role Description"
           placeholder="Enter role description..."
           labelClassName="text-white font-medium"
           className="border-neutral-700 text-white"
-          value={role.role_description}
+          value={role.description ?? ""}
           error={errors.roles?.[index]?.role_description}
           onChange={(e) => {
             const value = (e.target as HTMLInputElement).value;
-            handleRoleChange(index, "role_description", value);
+            handleRoleChange(index, "description", value) 
           }}
           disabled={isDisabled}
         />
       </div>
 
       <div className="space-y-3">
-        <div className="flex items-center gap-1 justify-between">
+        <div className="flex items-center justify-between sm:flex-row flex-col gap-4">
           <h4 className="text-white font-semibold">Resource Permissions</h4>
           <DropdownMenu key={`resource_${index}`}>
             <DropdownMenuTrigger asChild>
@@ -226,7 +228,7 @@ export default function EditRole({
             label=""
             checked={role.is_default}
             onCheckedChange={(checked) =>
-              handleRoleChange(index, "is_default", checked)
+              handleRoleChange(index, "is_default", checked) 
             }
             className="sr-only"
           />
@@ -250,7 +252,7 @@ export default function EditRole({
             label=""
             checked={role.is_system_role}
             onCheckedChange={(checked) =>
-              handleRoleChange(index, "is_system_role", checked)
+              handleRoleChange(index, "is_system_role", checked) 
             }
             className="sr-only"
           />

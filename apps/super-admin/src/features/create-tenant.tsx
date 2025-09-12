@@ -30,11 +30,11 @@ export default function CreateTenant() {
         tenantName: tenantData.tenant_name.trim(),
         is_public: tenantData.is_public,
         roles: roles.map((r) => ({
-          roleName: r.role_name.trim(),
+          roleName: r.name.trim(),
           permissions: r.permissions,
           is_default: r.is_default,
           is_system_role: r.is_system_role,
-          roleDescription: r.role_description?.trim(),
+          roleDescription: r.description?.trim(),
         })),
         tenantDescription: tenantData.tenant_description.trim(),
       });
@@ -42,8 +42,8 @@ export default function CreateTenant() {
       setTenantData({ tenant_name: "", tenant_description: "", logo_url: "", is_public: true});
       setRoles([
         {
-          role_name: "",
-          role_description: "",
+          name: "",
+          description: "",
           permissions: createEmptyPermissions(),
           is_default: true,
           is_system_role: false,

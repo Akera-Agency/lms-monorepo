@@ -12,16 +12,20 @@ export const useTenant = () => {
       const [errors, setErrors] = useState<FormErrors>({});
       const [isSubmitting, setIsSubmitting] = useState(false);
 
-
       const [roles, setRoles] = useState<RoleData[]>([
         {
-          role_name: "",
-          role_description: "",
+          id: "",
+          tenant_id: "",
+          name: "",
+          description: "",
           permissions: createEmptyPermissions(),
           is_default: true,
           is_system_role: false,
-        },
-      ]);
+          deleted_at: new Date(),
+          created_at: new Date(),
+          updated_at: new Date()
+        }
+      ])
 
     const [selectedResource, setSelectedResource] = useState<{ [key: number]: Resource }>({
       0: resourceList[0],

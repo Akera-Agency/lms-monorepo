@@ -20,11 +20,13 @@ const {roles, setRoles, setSelectedResource} = useTenantContext();
     setRoles((prev) => [
       ...prev,
       {
-        role_name: "",
-        role_description: "",
+        name: "",
+        description: "",
         permissions: createEmptyPermissions(),
         is_default: false,
         is_system_role: false,
+        id:"",
+        tenant_id:""
       },
     ]);
     setSelectedResource((prev) => ({
@@ -65,6 +67,7 @@ return (
                 key={index}
                 >
                 <EditRole
+                    usage={'create'}
                     role={role}
                     isDisabled={isDisabled}
                     showRemoveButton={true}

@@ -6,8 +6,5 @@ export const showRolessDialog = (tenant_id: string) => {
     tenant_id, 
     closeText: "Cancel",
     confirmText: "Change",
-    onConfirm: async (updatedRole, selected) => {
-      console.log("Changed role:", updatedRole, "with permissions:", selected);
-    },
   });
 };

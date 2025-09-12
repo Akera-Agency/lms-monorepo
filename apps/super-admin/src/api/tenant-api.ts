@@ -105,4 +105,28 @@ export const SuperAdminApi = {
     }
     return data;
   },
+
+  async updateTenantRole(
+    session: Session | null,
+    tenant_id: string,
+    id: string,
+    name: string,
+    permissions: Record<Resource, PermissionOption[]> | Record<string, string[]>,
+    is_default: boolean,
+    is_system_role: boolean,
+    description?: string
+  ): Promise<TenantRoleEntity> {
+    const { data, error } = await apiClient(session).api.tenants({ id: tenant_id }).roles({ roleId : id}).patch({
+      name,
+      description,
+      permissions,
+      is_default,
+      is_system_role,
+    });
+
+    if (error) {
+      throw new Error(errorMessage(error));
+    }
+    return data;
+  },
 };

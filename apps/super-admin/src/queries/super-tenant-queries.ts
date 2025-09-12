@@ -108,12 +108,57 @@ export function SuperAdminQueries() {
     },
   });
 
+  const updateTenantRoleMutation = useMutation<TenantRoleEntity, Error, 
+  {
+    tenant_id: string;
+    id: string;
+    name: string;
+    permissions: Record<Resource, PermissionOption[]> | Record<string, string[]>;
+    is_default: boolean;
+    is_system_role: boolean;
+    description?: string;
+  }
+  >({
+    mutationFn: async({ 
+      tenant_id,
+      id,
+      name,
+      permissions,
+      is_default,
+      is_system_role,
+      description
+    }) => SuperAdminApi.updateTenantRole(
+      session,
+      tenant_id,
+      id,
+      name,
+      permissions,
+      is_default,
+      is_system_role,
+      description
+    ),
+    onSuccess: (updatedRole, variables) => {
+      // Update the tenant_roles query with the updated role
+      queryClient.setQueryData<TenantRoleEntity[]>(
+        ["tenant_roles", variables.tenant_id],
+        (old = []) => old.map(role => 
+          role.id === variables.id ? updatedRole : role
+        )
+      );
+    },
+    onError: (err) => {
+      console.error("Update tenant role error:", normalizeError(err));
+    },
+  });
+
   return {
     tenants,
     tenantRoles,
     handleCreateTenant: createTenantMutation.mutateAsync,
     deleteTenant: deleteTenantMutation.mutateAsync,
+    updateTenantRole: updateTenantRoleMutation.mutateAsync,
     successMessage: createTenantMutation.status,
     deleteTenantStatus: deleteTenantMutation.status,
+    updateTenantRoleStatus: updateTenantRoleMutation.status
   };
 }
