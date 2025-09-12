@@ -13,6 +13,12 @@ import { AppError, isAppError } from './shared/Errors/AppError';
 import { PostgresError, isDatabaseError } from './shared/Errors/PostgresError';
 import { EventError } from './shared/Errors/EventError';
 import { CronError } from './shared/Errors/CronError';
+
+import { roleController } from './modules/roles/role.controller';
+import { userController } from './modules/users/user.controller';
+import { tenantController } from './modules/tenants/tenant.controller';
+import { notificationController } from './modules/notifications/notification.controller';
+
 import { TContext } from './shared/types/context';
 import { eventBus } from './core/event-bus';
 import { posthog } from './shared/metrics/posthug';
@@ -22,7 +28,6 @@ import { createTypeSafeI18nService } from './shared/i18n/type-safe-i18n.service'
 import { requestID } from 'elysia-requestid';
 
 const prefix = '/api';
-const controllers = appModules.map((module) => module.controllers);
 
 export type ErrorResponse = {
   message: string;
@@ -30,9 +35,15 @@ export type ErrorResponse = {
 };
 
 export const app = new Elysia<typeof prefix, TContext>({ prefix })
-  .use(swagger({ path: '/docs' }))
+.use(cors({
+  origin: ['http://localhost:5176', 'http://localhost:5174', 'http://localhost:5175', 'http://localhost:5173'],         
+  credentials: true,
+  allowedHeaders: ['Content-Type', 'Authorization'], 
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+}))
+  .error({ AppError, PostgresError, EventError, CronError })
   .use(requestID())
-  .use(cors())
+  .use(swagger({ path: '/docs' }))
   .use(eventBusPlugin)
   .onAfterHandle((ctx) => {
     ctx.store.trx.commit();
@@ -91,6 +102,8 @@ export const app = new Elysia<typeof prefix, TContext>({ prefix })
       },
     };
   })
+  
+  .use(eventBusPlugin)
   .derive(async ({ store }) => {
     const trx = await transactionDerive();
 
@@ -126,9 +139,17 @@ export const app = new Elysia<typeof prefix, TContext>({ prefix })
       },
     };
   })
-  .use(controllers.flat());
+
+  .use(tenantController)
+  .use(roleController)
+  .use(userController)
+  .use(notificationController);
 
 export type App = typeof app;
+
+export type Role = typeof roleController;
+
+export type User = typeof userController;
 
 const main = async () => {
   await initializeI18n();

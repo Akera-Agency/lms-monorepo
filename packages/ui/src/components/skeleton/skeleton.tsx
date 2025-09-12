@@ -12,12 +12,8 @@ function Skeleton({
   return (
     <div
       className={cn(
-        'bg-skeleton-background animate-pulse rounded-md',
+        'animate-pulse rounded-md',
         className,
-        {
-          'bg-skeleton-background': variant === 'background',
-          'bg-skeleton-foreground': variant === 'foreground',
-        }
       )}
       {...props}
     />

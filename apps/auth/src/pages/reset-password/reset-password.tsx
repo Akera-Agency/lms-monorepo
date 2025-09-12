@@ -1,5 +1,5 @@
 import { AuthForm } from '@/components/auth-form';
-import { useAuthForm } from '../../../../../packages/auth/src/hooks/useAuth';
+import { useAuthForm } from '../../../../../packages/auth/src/hooks/use.auth';
 import { useEffect } from 'react';
 import { supabase } from '../../../../../packages/auth/src/utils/supabase';
 

@@ -1,0 +1,20 @@
+{
+"extends": "../../tsconfig.base.json",
+"compilerOptions": {
+    "jsx": "react",
+    "composite": true,
+    "declaration": true,
+    "outDir": "dist",
+    "lib": ["ESNext", "DOM"], 
+    "types": ["bun-types"]
+},
+"references": [
+    { 
+        "path": "../elysia-app" 
+    },
+    {
+        "path": "../ui"
+    }
+  ],
+"include": ["src/**/*"]
+}

@@ -13,6 +13,7 @@ export const updateUserValidationSchema = t.Object({
   avatar_url: t.String(),
 });
 
+
 export const userController = new Elysia<typeof prefix, TContext>({
   prefix,
   detail: {

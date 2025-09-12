@@ -86,7 +86,7 @@ const Input: React.FC<InputProps> = ({
     ...props,
     type: inputType,
     className: cn(
-      'bg-input-background w-full border border-input-border p-4 text-sm placeholder-input-placeholder placeholder:text-sm placeholder:font-normal disabled:opacity-50 dark:disabled:bg-input-background',
+      'bg-input-background w-full border border-input-border p-4  text-sm placeholder-input-placeholder placeholder:text-sm placeholder:font-normal disabled:opacity-50 dark:disabled:bg-input-background',
       type === 'number' && 'pr-16',
       type === 'password' && 'pr-12',
       className,

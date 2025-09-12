@@ -5,9 +5,20 @@
     "jsx": "react-jsx",
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "paths": {
-      "@akera/ui": ["src"]
+      "@akera/ui/src": ["src"]
     }
   },
+  "references": [
+    {
+      "path": "./tsconfig.lib.json"
+    },
+    {
+      "path": "./tsconfig.spec.json"
+    },
+    {
+      "path": "../auth"
+    }
+  ],
   "files": [],
   "include": [
     "src/**/*.ts",
@@ -18,12 +29,5 @@
     "src/**/*.css",
     "src/**/*.scss"
   ],
-  "references": [
-    {
-      "path": "./tsconfig.lib.json"
-    },
-    {
-      "path": "./tsconfig.spec.json"
-    }
-  ]
+  
 }
