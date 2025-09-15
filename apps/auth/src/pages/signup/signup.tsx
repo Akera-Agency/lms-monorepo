@@ -1,11 +1,14 @@
-import { useAuthForm } from '../../../../../packages/auth/src/hooks/useAuth';
+import { useAuthForm } from '../../../../../packages/auth/src/hooks/use.auth';
 import { AuthForm } from '@/components/auth-form';
-import { studentRoute } from '../../../../../packages/auth/src/utils/external-routes';
+import { userRoute } from '../../../../../packages/auth/src/utils/external-routes';
+import { tenantRoute } from '../../../../../packages/auth/src/utils/external-routes';
 
 export default function SignupPage() {
   const {
     email,
     password,
+    name,
+    setName,
     setEmail,
     setPassword,
     loading,
@@ -13,22 +16,41 @@ export default function SignupPage() {
     error,
     setError,
     signUp,
+    setSelectedType,
+    selectedType,
+    tenant,
+    setTenant,
+    userTypes,
+    setSuccessMessage,
+    successMessage,
   } = useAuthForm();
 
   const handleSignUp = async (e: any) => {
+    setSuccessMessage(null);
+    setError(null);
     e.preventDefault();
     setLoading(true);
     try {
-      const result = await signUp(email, password);
+      const result = await signUp(email, password, name, selectedType, tenant);
       if (result?.data.session) {
         console.log('Signup successful:', result.data);
-        window.location.href = `${studentRoute}/profile#access_token=${result.data.session.access_token}&refresh_token=${result.data.session.refresh_token}`;
-      } else {
+        if (result.data.user?.user_metadata.role === 'student') {
+          window.location.href = `${userRoute}/#access_token=${result.data.session.access_token}&refresh_token=${result.data.session.refresh_token}`;
+        }
+        else if (result.data.user?.user_metadata.role === 'admin') {
+          window.location.href = `${tenantRoute}/#access_token=${result.data.session.access_token}&refresh_token=${result.data.session.refresh_token}`;
+        }      
+      }
+      else if (result.error === null) {
+        console.log('Signup successful, please confirm your email:', result);
+        setSuccessMessage('Signup successful! Please check your email to confirm your account before logging in.');
+      }
+      else {
         console.error('Signup failed:', result.error);
         setError(result?.error?.message || 'Signup failed');
       }
     } catch (error) {
-      console.error('Error resetting password:', error);
+      console.error(error);
       if (error instanceof Error) {
         setError(error.message);
       } else {
@@ -65,12 +87,23 @@ export default function SignupPage() {
               handleAuth={handleSignUp}
               handleInputChange={(e) => {
                 const { id, value } = e.target;
-                id === 'email' ? setEmail(value) : setPassword(value);
+                id === 'email'
+                  ? setEmail(value)
+                  : id === 'password'
+                  ? setPassword(value)
+                  : setName(value);
               }}
               error={error}
+              successMessage={successMessage}
               passwordInput={true}
               emailInput={true}
+              nameInput={true}
+              toggle={true}
               OAuth={true}
+              selectedType={selectedType}
+              userTypes={userTypes}
+              handleTypeChange={(type) => setSelectedType(type)}
+              handleSelect={(value) => setTenant(value)}
             />
           </div>
         </div>

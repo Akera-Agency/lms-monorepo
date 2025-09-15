@@ -10,6 +10,7 @@ import { env } from 'src/conf/env';
 import { Logger } from 'src/shared/logger/logger';
 
 const connectionString = `postgresql://${env.POSTGRES_USER}.${env.POOLER_TENANT_ID}:${env.POSTGRES_PASSWORD}@${env.POSTGRES_HOST}:${env.POSTGRES_PORT}/${env.POSTGRES_DB}`;
+
 export const database = new Kysely<IDb>({
   plugins: [new ParseJSONResultsPlugin()],
   dialect: new PostgresDialect({
@@ -33,7 +34,7 @@ export const database = new Kysely<IDb>({
         `Executed query: ${query.sql} ${
           query.parameters.length > 0 ? `with params:[${query.parameters}]` : ''
         } in ${event.queryDurationMillis} ms`,
-        event.error
+        event.error as undefined
       );
     }
   },
