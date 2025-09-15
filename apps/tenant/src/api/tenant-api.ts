@@ -50,7 +50,7 @@ export const TenantApi = {
     session: Session | null,
     page: number = 1,
     limit: number = 10,
-  ): Promise<User[]> {
+  ) {
     const token = session?.access_token || null;
     const apitest = treaty<App>('http://localhost:4001', {
       headers: {

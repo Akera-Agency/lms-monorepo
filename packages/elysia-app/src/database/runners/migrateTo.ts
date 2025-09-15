@@ -13,7 +13,7 @@ import { Logger } from 'src/shared/logger/logger';
 config();
 
 async function migrateTo(
-  targetMigration: string | NoMigrations = NO_MIGRATIONS
+  targetMigration: string | NoMigrations = NO_MIGRATIONS,
 ) {
   const migrator = new Migrator({
     db: database,
@@ -30,16 +30,16 @@ async function migrateTo(
     if (migrationResult.status === 'Success') {
       if (migrationResult.direction === 'Up') {
         Logger.info(
-          `Migration "${migrationResult.migrationName}" was applied successfully`
+          `Migration "${migrationResult.migrationName}" was applied successfully`,
         );
       } else if (migrationResult.direction === 'Down') {
         Logger.info(
-          `Migration "${migrationResult.migrationName}" was reverted successfully`
+          `Migration "${migrationResult.migrationName}" was reverted successfully`,
         );
       }
     } else if (migrationResult.status === 'Error') {
       Logger.error(
-        `Failed to apply/revert migration "${migrationResult.migrationName}"`
+        `Failed to apply/revert migration "${migrationResult.migrationName}"`,
       );
     }
   });
@@ -55,6 +55,6 @@ async function migrateTo(
 
 const targetMigration = process.argv[2];
 
-Logger.info('targetMigration', targetMigration);
+Logger.info('targetMigration: ' + targetMigration);
 
 migrateTo(targetMigration);

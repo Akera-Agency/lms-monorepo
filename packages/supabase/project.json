@@ -1,89 +1,17 @@
 {
-  "name": "supabase",
-  "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "packages/supabase/src",
-  "projectType": "application",
+  "name": "@akera/supabase",
+  "projectType": "library",
+  "sourceRoot": "packages/supabase",
+  "tags": ["type:lib", "scope:supabase"],
   "targets": {
-    "start": {
-      "executor": "@nx/workspace:run-commands",
+    "typecheck": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
       "options": {
-        "command": "docker compose -f docker/docker-compose.yml up -d",
-        "cwd": "packages/supabase"
-      },
-      "description": "Start Supabase services"
-    },
-    "start:dev": {
-      "executor": "@nx/workspace:run-commands",
-      "options": {
-        "command": "docker compose -f docker/docker-compose.yml -f docker/dev/docker-compose.dev.yml up -d",
-        "cwd": "packages/supabase"
-      },
-      "description": "Start Supabase services with development configuration"
-    },
-    "stop": {
-      "executor": "@nx/workspace:run-commands",
-      "options": {
-        "command": "docker compose -f docker/docker-compose.yml down",
-        "cwd": "packages/supabase"
-      },
-      "description": "Stop Supabase services"
-    },
-    "stop:dev": {
-      "executor": "@nx/workspace:run-commands",
-      "options": {
-        "command": "docker compose -f docker/docker-compose.yml -f docker/dev/docker-compose.dev.yml down",
-        "cwd": "packages/supabase"
-      },
-      "description": "Stop Supabase services with development configuration"
-    },
-    "destroy": {
-      "executor": "@nx/workspace:run-commands",
-      "options": {
-        "command": "docker compose -f docker/docker-compose.yml -f docker/dev/docker-compose.dev.yml down -v --remove-orphans",
-        "cwd": "packages/supabase"
-      },
-      "description": "Destroy all Supabase containers and volumes"
-    },
-    "reset": {
-      "executor": "@nx/workspace:run-commands",
-      "options": {
-        "command": "./docker/reset.sh",
-        "cwd": "packages/supabase"
-      },
-      "description": "Reset everything using the reset script"
-    },
-    "logs": {
-      "executor": "@nx/workspace:run-commands",
-      "options": {
-        "command": "docker compose -f docker/docker-compose.yml logs -f",
-        "cwd": "packages/supabase"
-      },
-      "description": "Show Supabase logs"
-    },
-    "logs:dev": {
-      "executor": "@nx/workspace:run-commands",
-      "options": {
-        "command": "docker compose -f docker/docker-compose.yml -f docker/dev/docker-compose.dev.yml logs -f",
-        "cwd": "packages/supabase"
-      },
-      "description": "Show Supabase logs with development configuration"
-    },
-    "status": {
-      "executor": "@nx/workspace:run-commands",
-      "options": {
-        "command": "docker compose -f docker/docker-compose.yml ps",
-        "cwd": "packages/supabase"
-      },
-      "description": "Show Supabase service status"
-    },
-    "test": {
-      "executor": "@nx/vite:test",
-      "outputs": ["{projectRoot}/coverage"],
-      "options": {
-        "passWithNoTests": true,
-        "reportsDirectory": "../../coverage/packages/supabase"
+        "outputPath": "packages/supabase/dist",
+        "main": "packages/supabase/index.ts",
+        "tsConfig": "packages/supabase/tsconfig.json"
       }
     }
-  },
-  "tags": ["supabase", "database", "docker"]
+  }
 }

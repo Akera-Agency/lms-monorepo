@@ -33,6 +33,9 @@
   "include": ["src", "src/utils"],
   "references": [
     {
+      "path": "../../packages/elysia-app"
+    },
+    {
       "path": "../../packages/ui/tsconfig.lib.json"
     }
   ]

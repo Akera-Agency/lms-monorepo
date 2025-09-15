@@ -1,0 +1,17 @@
+{
+  "name": "@akera/ui",
+  "projectType": "library",
+  "sourceRoot": "packages/ui/src",
+  "tags": ["type:lib", "scope:ui"],
+  "targets": {
+    "typecheck": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "packages/ui/dist",
+        "main": "packages/ui/src/index.ts",
+        "tsConfig": "packages/ui/tsconfig.lib.json"
+      }
+    }
+  }
+}

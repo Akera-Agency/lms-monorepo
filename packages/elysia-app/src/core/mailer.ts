@@ -48,7 +48,7 @@ export interface IMailer {
   sendMail: (options: ISendMailOptions) => Promise<void>;
   sendTemplatedMail: <
     U extends TemplateName,
-    T extends EmailTemplates[U]
+    T extends EmailTemplates[U],
   >(options: {
     to: string[];
     from: string;
@@ -157,7 +157,7 @@ class ResendMailer implements IMailer {
       }
       Logger.info('Email sent successfully');
     } catch (error) {
-      Logger.error('Failed to send email:', error);
+      Logger.error('Failed to send email: ' + error);
       throw new AppError({
         error: 'failed_to_send_email',
         statusCode: 500,
@@ -167,7 +167,7 @@ class ResendMailer implements IMailer {
 
   public async sendTemplatedMail<
     U extends TemplateName,
-    T extends EmailTemplates[U]
+    T extends EmailTemplates[U],
   >(options: {
     to: string[];
     from: string;
@@ -203,14 +203,14 @@ class ResendMailer implements IMailer {
 
   private async getTemplate(
     templateName: TemplateName,
-    language: LanguagesEnum
+    language: LanguagesEnum,
   ): Promise<EmailTemplate> {
     try {
       // Try to find a localized .hbs template first
       const localizedPath = path.join(
         this.templatesDir,
         language,
-        `${templateName}.hbs`
+        `${templateName}.hbs`,
       );
       let templateContent: string;
 
@@ -219,8 +219,8 @@ class ResendMailer implements IMailer {
         templateContent = await fs.promises.readFile(localizedPath, 'utf-8');
       } catch (err) {
         Logger.error(
-          `Failed to load email template ${templateName} for language ${language}:`,
-          err
+          `Failed to load email template ${templateName} for language ${language}:` +
+            String(err),
         );
         throw new AppError({
           error: 'failed_to_load_email_template',
@@ -234,8 +234,8 @@ class ResendMailer implements IMailer {
       return { html };
     } catch (error) {
       Logger.error(
-        `Failed to load email template ${templateName} for language ${language}:`,
-        error
+        `Failed to load email template ${templateName} for language ${language}:` +
+          String(error),
       );
       throw new AppError({
         error: 'failed_to_load_email_template',
@@ -253,7 +253,7 @@ export class Mailer implements IMailer {
     // Set templates directory relative to project root
     this.templatesDir = path.join(
       process.cwd(),
-      'packages/elysia-app/assets/templates/emails'
+      'packages/elysia-app/assets/templates/emails',
     );
 
     this.mailer = new ResendMailer({
@@ -269,7 +269,7 @@ export class Mailer implements IMailer {
 
   public async sendTemplatedMail<
     U extends TemplateName,
-    T extends EmailTemplates[U]
+    T extends EmailTemplates[U],
   >(options: {
     to: string[];
     from: string;

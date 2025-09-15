@@ -1,0 +1,18 @@
+{
+  "name": "tenant",
+  "projectType": "application",
+  "sourceRoot": "apps/tenant/src",
+  "tags": ["type:app", "framework:react"],
+  "targets": {
+    "typecheck": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "apps/tenant/dist",
+        "main": "apps/tenant/src/main.tsx",
+        "tsConfig": "apps/tenant/tsconfig.app.json",
+        "assets": ["apps/tenant/public"]
+      }
+    }
+  }
+}

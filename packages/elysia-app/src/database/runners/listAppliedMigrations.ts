@@ -27,10 +27,10 @@ async function displayAppliedMigrations() {
     const appliedMigrations = await listAppliedMigrations();
     Logger.info('Applied migrations:');
     appliedMigrations.forEach((migrationName) =>
-      Logger.info('-', migrationName)
+      Logger.info('- ' + migrationName),
     );
   } catch (error) {
-    Logger.error('An error occurred:', error);
+    Logger.error('An error occurred: ' + error);
   } finally {
     await database.destroy();
   }

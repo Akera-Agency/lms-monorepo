@@ -18,6 +18,7 @@
     "dep:fix": "syncpack fix-mismatches && bun install",
     "dep:update": "bunx npm-check-updates -u && bun install",
     "dep:validate": "bun run scripts/validate-deps.ts",
+    "ts:check": "nx run-many -t typecheck",
     "migrate": "nx migrate latest && bun install && nx migrate --run-migrations",
     "release": "nx release version && nx release publish"
   },
@@ -53,7 +54,7 @@
     "@swc/core": "^1.13.5",
     "@swc/helpers": "~0.5.17",
     "@tailwindcss/postcss": "^4.1.13",
-    "@types/eventemitter2": "^2.2.1",
+    "eventemitter2": "^6.4.9",
     "@types/js-cookie": "^3.0.6",
     "@types/node": "^18.19.124",
     "@types/react": "^19.1.12",

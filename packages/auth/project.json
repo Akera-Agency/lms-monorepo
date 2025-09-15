@@ -1,0 +1,17 @@
+{
+  "name": "@akera/auth",
+  "projectType": "library",
+  "sourceRoot": "packages/auth/src",
+  "tags": ["type:lib", "scope:auth"],
+  "targets": {
+    "typecheck": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "packages/auth/dist",
+        "main": "packages/auth/src/index.ts",
+        "tsConfig": "packages/auth/tsconfig.json"
+      }
+    }
+  }
+}
