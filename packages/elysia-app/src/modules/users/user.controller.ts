@@ -13,38 +13,12 @@ export const updateUserValidationSchema = t.Object({
   avatar_url: t.String(),
 });
 
-// export const fetchUserSchema = t.Object({
-//   data: t.Array(
-//     t.Object({
-//       email: t.String({ format: 'email' }),
-//       name: t.String(),
-//       language: t.Enum(LanguagesEnum),
-//       avatar_url: t.String().nullable(),
-//       id: t.String(),
-//       role_id: t.String().nullable(),
-//       is_active: t.Boolean(),
-//       last_login_at: t.Date().nullable(),
-//       deleted_at: t.Date().nullable(),
-//       created_at: t.Date(),
-//       updated_at: t.Date(),
-//     })
-//   ),
-//   meta: t.Object({
-//     page: t.Number(),
-//     limit: t.Number(),
-//     total_pages: t.Number(),
-//     has_next_page: t.Boolean(),
-//     has_previous_page: t.Boolean(),
-//     total_count: t.Number(),
-//   }),
-// });
-
 export const userController = new Elysia<typeof prefix, TContext>({
   prefix,
   detail: {
     tags: ['Users'],
   },
-}).guard((app) =>
+}).guard({}, (app) =>
   app
     .use(authGuard)
     .get('/me', async (ctx) => {
@@ -63,15 +37,15 @@ export const userController = new Elysia<typeof prefix, TContext>({
       },
       {
         body: updateUserValidationSchema,
-      }
+      },
     )
-    .guard((app) =>
+    .guard({}, (app) =>
       app
         .use(
           createAccessGuard({
             permissions: [{ entity: 'users', permission: 'read' }],
             require: 'all',
-          })
+          }),
         )
         .get(
           '/',
@@ -86,10 +60,10 @@ export const userController = new Elysia<typeof prefix, TContext>({
               page: t.Number(),
               limit: t.Number(),
             }),
-          }
+          },
         )
         .get(
-          ':id',
+          '/:id',
           async (ctx) => {
             return await ctx.store.UserService.findOne({
               id: ctx.params.id,
@@ -99,23 +73,23 @@ export const userController = new Elysia<typeof prefix, TContext>({
             params: t.Object({
               id: t.String(),
             }),
-          }
-        )
+          },
+        ),
     )
-    .guard((app) =>
+    .guard({}, (app) =>
       app
         .use(
           createAccessGuard({
             permissions: [{ entity: 'users', permission: 'update' }],
             require: 'all',
-          })
+          }),
         )
         .patch(
-          ':id',
+          '/:id',
           async (ctx) => {
             const updatedUser = await ctx.store.UserService.update(
               ctx.params.id,
-              ctx.body
+              ctx.body,
             );
             return updatedUser;
           },
@@ -124,19 +98,19 @@ export const userController = new Elysia<typeof prefix, TContext>({
               id: t.String(),
             }),
             body: updateUserValidationSchema,
-          }
-        )
+          },
+        ),
     )
-    .guard((app) =>
+    .guard({}, (app) =>
       app
         .use(
           createAccessGuard({
             permissions: [{ entity: 'users', permission: 'delete' }],
             require: 'all',
-          })
+          }),
         )
         .delete(
-          ':id',
+          '/:id',
           async (ctx) => {
             return await ctx.store.UserService.delete(ctx.params.id);
           },
@@ -144,7 +118,7 @@ export const userController = new Elysia<typeof prefix, TContext>({
             params: t.Object({
               id: t.String(),
             }),
-          }
-        )
-    )
+          },
+        ),
+    ),
 );

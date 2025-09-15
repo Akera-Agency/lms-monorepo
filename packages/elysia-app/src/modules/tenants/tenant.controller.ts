@@ -78,18 +78,18 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
         limit: t.Optional(t.Number()),
         search: t.Optional(t.String()),
       }),
-    }
+    },
   )
-  .guard((app) =>
+  .guard({}, (app) =>
     app
       .use(authGuard)
-      .guard((app) =>
+      .guard({}, (app) =>
         app
           .use(
             createAccessGuard({
               permissions: [{ entity: 'tenants', permission: 'read' }],
               require: 'all',
-            })
+            }),
           )
           .get(
             '/',
@@ -114,17 +114,17 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
                 limit: t.Number(),
                 search: t.Optional(t.String()),
               }),
-            }
-          )
+            },
+          ),
       )
-      .guard((app) =>
+      .guard({}, (app) =>
         app
           .use(
             createAccessGuard({
               permissions: [{ entity: 'tenants', permission: 'read' }],
               require: 'all',
               requireTenant: true,
-            })
+            }),
           )
           .get(
             '/:id',
@@ -141,16 +141,16 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
               params: t.Object({
                 id: t.String(),
               }),
-            }
-          )
+            },
+          ),
       )
-      .guard((app) =>
+      .guard({}, (app) =>
         app
           .use(
             createAccessGuard({
               permissions: [{ entity: 'tenants', permission: 'create' }],
               require: 'all',
-            })
+            }),
           )
           .post(
             '/',
@@ -159,17 +159,17 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
             },
             {
               body: createTenantValidationSchema,
-            }
-          )
+            },
+          ),
       )
-      .guard((app) =>
+      .guard({}, (app) =>
         app
           .use(
             createAccessGuard({
               permissions: [{ entity: 'tenants', permission: 'update' }],
               require: 'all',
               requireTenant: true,
-            })
+            }),
           )
           .patch(
             '/:id',
@@ -182,7 +182,7 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
               }
               return await ctx.store.TenantService.update(
                 ctx.params.id,
-                ctx.body
+                ctx.body,
               );
             },
             {
@@ -190,17 +190,17 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
                 id: t.String(),
               }),
               body: updateTenantValidationSchema,
-            }
-          )
+            },
+          ),
       )
-      .guard((app) =>
+      .guard({}, (app) =>
         app
           .use(
             createAccessGuard({
               permissions: [{ entity: 'tenants', permission: 'delete' }],
               require: 'all',
               requireTenant: true,
-            })
+            }),
           )
           .delete(
             '/:id',
@@ -217,17 +217,17 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
               params: t.Object({
                 id: t.String(),
               }),
-            }
-          )
+            },
+          ),
       )
-      .guard((app) =>
+      .guard({}, (app) =>
         app
           .use(
             createAccessGuard({
               permissions: [{ entity: 'tenant_roles', permission: 'read' }],
               require: 'all',
               requireTenant: true,
-            })
+            }),
           )
           .get(
             '/:id/roles',
@@ -239,24 +239,24 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
                 });
               }
               return await ctx.store.TenantService.getTenantRoles(
-                ctx.params.id
+                ctx.params.id,
               );
             },
             {
               params: t.Object({
                 id: t.String(),
               }),
-            }
-          )
+            },
+          ),
       )
-      .guard((app) =>
+      .guard({}, (app) =>
         app
           .use(
             createAccessGuard({
               permissions: [{ entity: 'tenant_roles', permission: 'create' }],
               require: 'all',
               requireTenant: true,
-            })
+            }),
           )
           .post(
             '/:id/roles',
@@ -268,7 +268,7 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
                 });
               }
               const tenant = await ctx.store.TenantService.findOne(
-                ctx.params.id
+                ctx.params.id,
               );
               return await ctx.store.TenantService.createRoleForTenant({
                 ...ctx.body,
@@ -280,17 +280,17 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
                 id: t.String(),
               }),
               body: createTenantRoleValidationSchema,
-            }
-          )
+            },
+          ),
       )
-      .guard((app) =>
+      .guard({}, (app) =>
         app
           .use(
             createAccessGuard({
               permissions: [{ entity: 'tenant_roles', permission: 'update' }],
               require: 'all',
               requireTenant: true,
-            })
+            }),
           )
           .patch(
             '/:id/roles/:roleId',
@@ -303,7 +303,7 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
               }
               return await ctx.store.TenantService.updateRoleForTenant(
                 ctx.params.roleId,
-                ctx.body
+                ctx.body,
               );
             },
             {
@@ -312,17 +312,17 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
                 roleId: t.String(),
               }),
               body: updateTenantRoleValidationSchema,
-            }
-          )
+            },
+          ),
       )
-      .guard((app) =>
+      .guard({}, (app) =>
         app
           .use(
             createAccessGuard({
               permissions: [{ entity: 'tenant_roles', permission: 'delete' }],
               require: 'all',
               requireTenant: true,
-            })
+            }),
           )
           .delete(
             '/:id/roles/:roleId',
@@ -334,7 +334,7 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
                 });
               }
               await ctx.store.TenantService.removeRoleFromTenant(
-                ctx.params.roleId
+                ctx.params.roleId,
               );
             },
             {
@@ -342,17 +342,17 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
                 id: t.String(),
                 roleId: t.String(),
               }),
-            }
-          )
+            },
+          ),
       )
-      .guard((app) =>
+      .guard({}, (app) =>
         app
           .use(
             createAccessGuard({
               permissions: [{ entity: 'tenant_users', permission: 'create' }],
               require: 'all',
               requireTenant: true,
-            })
+            }),
           )
           .post(
             '/:id/users',
@@ -366,7 +366,7 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
               return await ctx.store.TenantService.assignUserToTenant(
                 ctx.params.id,
                 ctx.body.userId,
-                ctx.body.roleId
+                ctx.body.roleId,
               );
             },
             {
@@ -374,17 +374,17 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
                 id: t.String(),
               }),
               body: tenantUserRoleValidationSchema,
-            }
-          )
+            },
+          ),
       )
-      .guard((app) =>
+      .guard({}, (app) =>
         app
           .use(
             createAccessGuard({
               permissions: [{ entity: 'tenant_users', permission: 'delete' }],
               require: 'all',
               requireTenant: true,
-            })
+            }),
           )
           .delete(
             '/:id/users/:userId',
@@ -397,7 +397,7 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
               }
               return await ctx.store.TenantService.removeUserFromTenant(
                 ctx.params.id,
-                ctx.params.userId
+                ctx.params.userId,
               );
             },
             {
@@ -405,17 +405,17 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
                 id: t.String(),
                 userId: t.String(),
               }),
-            }
-          )
+            },
+          ),
       )
-      .guard((app) =>
+      .guard({}, (app) =>
         app
           .use(
             createAccessGuard({
               permissions: [{ entity: 'tenant_users', permission: 'read' }],
               require: 'all',
               requireTenant: true,
-            })
+            }),
           )
           .get(
             '/:id/users',
@@ -431,7 +431,7 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
                 {
                   page: ctx.query.page,
                   limit: ctx.query.limit,
-                }
+                },
               );
             },
             {
@@ -442,17 +442,17 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
                 page: t.Number(),
                 limit: t.Number(),
               }),
-            }
-          )
+            },
+          ),
       )
-      .guard((app) =>
+      .guard({}, (app) =>
         app
           .use(
             createAccessGuard({
               permissions: [{ entity: 'tenant_users', permission: 'update' }],
               require: 'all',
               requireTenant: true,
-            })
+            }),
           )
           .patch(
             '/:id/users/:userId/role',
@@ -466,7 +466,7 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
               return await ctx.store.TenantService.updateUserRoleInTenant(
                 ctx.params.id,
                 ctx.params.userId,
-                ctx.body.roleId
+                ctx.body.roleId,
               );
             },
             {
@@ -475,7 +475,7 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
                 userId: t.String(),
               }),
               body: tenantUserRoleValidationSchema,
-            }
-          )
-      )
+            },
+          ),
+      ),
   );

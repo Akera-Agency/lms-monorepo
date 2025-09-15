@@ -15,8 +15,12 @@
     "migration:run": "bun run --bun src/database/runners/runMigrations.ts",
     "migration:create": "bun run --bun src/database/runners/create-migration.ts",
     "migration:to": "bun run --bun src/database/runners/migrateTo.ts",
-    "seed": "bun run --bun src/database/runners/seed.ts"
+    "seed": "bun run --bun src/database/runners/seed.ts",
     "migration:list": "bun run --bun src/database/runners/listAppliedMigrations.ts"
+  },
+  "peerDependencies": {
+    "elysia": "^1.4.5",
+    "zod": "^3.23.8"
   },
   "dependencies": {
     "i18next": "^23.7.6",
@@ -25,7 +29,15 @@
     "elysia-requestid": "1.0.9",
     "posthog-node": "5.8.2",
     "@sentry/bun": "10.10.0",
-    "zod": "^4.0.5"
-
+    "jsonwebtoken": "^9.0.2",
+    "kysely": "^0.28.7"
+  },
+  "devDependencies": {
+    "elysia": "^1.4.5",
+    "zod": "^3.23.8",
+    "typescript": "5.6.3",
+    "@types/node": "^18.19.124",
+    "@types/jsonwebtoken": "^9.0.10",
+    "bun-types": "^1.2.21"
   }
 }

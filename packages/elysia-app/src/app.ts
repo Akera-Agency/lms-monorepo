@@ -20,15 +20,12 @@ import { LanguagesEnum } from './shared/constants/i18n';
 import { LANGUAGE_HEADER } from './shared/constants/headers';
 import { createTypeSafeI18nService } from './shared/i18n/type-safe-i18n.service';
 import { requestID } from 'elysia-requestid';
-
 import { roleController } from './modules/roles/role.controller';
 import { userController } from './modules/users/user.controller';
 import { tenantController } from './modules/tenants/tenant.controller';
 import { notificationController } from './modules/notifications/notification.controller';
 
-
 const prefix = '/api';
-const controllers = appModules.map((module) => module.controllers);
 
 export type ErrorResponse = {
   message: string;
@@ -36,18 +33,18 @@ export type ErrorResponse = {
 };
 
 export const app = new Elysia<typeof prefix, TContext>({ prefix })
-
-.use(cors({
-  origin: 'http://localhost:5176',         
-  credentials: true,
-  allowedHeaders: ['Content-Type', 'Authorization'], 
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-}))
+  .use(
+    cors({
+      origin: 'http://localhost:5176',
+      credentials: true,
+      allowedHeaders: ['Content-Type', 'Authorization'],
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    }),
+  )
   .error({ AppError, PostgresError, EventError, CronError })
   .use(swagger({ path: '/docs' }))
   .use(requestID())
   .use(eventBusPlugin)
-
   .onAfterHandle((ctx) => {
     ctx.store.trx.commit();
   })
@@ -105,12 +102,7 @@ export const app = new Elysia<typeof prefix, TContext>({ prefix })
       },
     };
   })
-  
-  .use(eventBusPlugin)
-  .use(swagger({ path: '/docs' }))
-
   .derive(async ({ store }) => {
-
     const trx = await transactionDerive();
 
     const localStore: Record<string, unknown> = {};
@@ -126,7 +118,7 @@ export const app = new Elysia<typeof prefix, TContext>({ prefix })
     for (const service of services) {
       for (const [key, value] of Object.entries(service)) {
         const deps = value.inject.map(
-          (key: { name: string }) => localStore[key.name]
+          (key: { name: string }) => localStore[key.name],
         );
         if (value.inject.length !== deps.filter(Boolean).length) {
           // Note: This error occurs during app initialization, before i18n is available
@@ -145,19 +137,10 @@ export const app = new Elysia<typeof prefix, TContext>({ prefix })
       },
     };
   })
-
   .use(roleController)
   .use(userController)
   .use(tenantController)
   .use(notificationController);
-
-export type App = typeof app;
-
-export type Role = typeof roleController;
-
-export type User = typeof userController;
-
-const main = async () => {
 
 export type App = typeof app;
 
@@ -183,4 +166,3 @@ declare module 'elysia' {
     eventBus: typeof eventBus;
   }
 }
-
