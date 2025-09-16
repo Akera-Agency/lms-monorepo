@@ -1,0 +1,18 @@
+{
+  "name": "auth",
+  "projectType": "application",
+  "sourceRoot": "apps/auth/src",
+  "tags": ["type:app", "framework:react"],
+  "targets": {
+    "typecheck": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "apps/auth/dist",
+        "main": "apps/auth/src/main.tsx",
+        "tsConfig": "apps/auth/tsconfig.app.json",
+        "assets": ["apps/auth/public"]
+      }
+    }
+  }
+}

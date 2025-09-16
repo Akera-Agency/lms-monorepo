@@ -1,0 +1,48 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "rangeStrategy": "bump",
+  "packageRules": [
+    {
+      "matchPackagePatterns": ["^@nx/"],
+      "groupName": "nx"
+    },
+    {
+      "matchPackagePatterns": ["^next$", "^react", "^react-dom$"],
+      "groupName": "react-stack"
+    },
+    {
+      "matchPackagePatterns": ["^@nestjs/", "^elysia"],
+      "groupName": "server-stack"
+    },
+    {
+      "matchPackagePatterns": ["^@radix-ui/"],
+      "groupName": "radix-ui"
+    },
+    {
+      "matchPackagePatterns": ["^@tanstack/"],
+      "groupName": "tanstack"
+    },
+    {
+      "matchPackagePatterns": ["^@tiptap/"],
+      "groupName": "tiptap"
+    },
+    {
+      "matchUpdateTypes": ["major"],
+      "labels": ["major"],
+      "automerge": false
+    },
+    {
+      "matchUpdateTypes": ["minor", "patch"],
+      "automerge": true,
+      "automergeType": "pr"
+    },
+    {
+      "matchPackageNames": ["typescript"],
+      "rangeStrategy": "pin"
+    }
+  ],
+  "schedule": ["before 9am on monday"],
+  "prConcurrentLimit": 5,
+  "prHourlyLimit": 2
+}

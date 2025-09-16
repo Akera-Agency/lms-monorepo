@@ -1,0 +1,25 @@
+{
+  "name": "env",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/env/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "packages/env/dist",
+        "main": "packages/env/src/index.ts",
+        "tsConfig": "packages/env/tsconfig.json",
+        "assets": []
+      }
+    },
+    "typecheck": {
+      "executor": "@nx/js:tsc",
+      "options": {
+        "tsConfig": "packages/env/tsconfig.json"
+      }
+    }
+  },
+  "tags": []
+}

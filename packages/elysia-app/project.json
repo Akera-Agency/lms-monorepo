@@ -2,5 +2,17 @@
   "name": "elysia-app",
   "projectType": "application",
   "sourceRoot": "packages/elysia-app/src",
-  "tags": ["type:app", "framework:elysia"]
+  "tags": ["type:app", "framework:elysia"],
+  "targets": {
+    "typecheck": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "packages/elysia-app/dist",
+        "main": "packages/elysia-app/src/app.ts",
+        "tsConfig": "packages/elysia-app/tsconfig.json",
+        "assets": ["packages/elysia-app/*.md"]
+      }
+    }
+  }
 }

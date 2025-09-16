@@ -24,20 +24,20 @@ export const roleController = new Elysia<typeof prefix, TContext>({
   detail: {
     tags: ['Roles'],
   },
-}).guard((app) =>
+}).guard({}, (app) =>
   app
     .use(authGuard)
     .get('/me', async (ctx) => {
       const user = ctx.auth.user;
       return await ctx.store.RoleService.findByUserId(user.sub);
     })
-    .guard((app) =>
+    .guard({}, (app) =>
       app
         .use(
           createAccessGuard({
             permissions: [{ entity: 'roles', permission: 'read' }],
             require: 'all',
-          })
+          }),
         )
         .get(
           '/',
@@ -67,7 +67,7 @@ export const roleController = new Elysia<typeof prefix, TContext>({
               limit: t.Number(),
               search: t.Optional(t.String()),
             }),
-          }
+          },
         )
         .get('/system', async (ctx) => {
           return await ctx.store.RoleService.findSystemRoles();
@@ -84,7 +84,7 @@ export const roleController = new Elysia<typeof prefix, TContext>({
             params: t.Object({
               id: t.String(),
             }),
-          }
+          },
         )
         .get(
           '/name/:name',
@@ -95,16 +95,16 @@ export const roleController = new Elysia<typeof prefix, TContext>({
             params: t.Object({
               name: t.String(),
             }),
-          }
-        )
+          },
+        ),
     )
-    .guard((app) =>
+    .guard({}, (app) =>
       app
         .use(
           createAccessGuard({
             permissions: [{ entity: 'roles', permission: 'create' }],
             require: 'all',
-          })
+          }),
         )
         .post(
           '/',
@@ -113,16 +113,16 @@ export const roleController = new Elysia<typeof prefix, TContext>({
           },
           {
             body: createRoleValidationSchema,
-          }
-        )
+          },
+        ),
     )
-    .guard((app) =>
+    .guard({}, (app) =>
       app
         .use(
           createAccessGuard({
             permissions: [{ entity: 'roles', permission: 'update' }],
             require: 'all',
-          })
+          }),
         )
         .patch(
           '/:id',
@@ -134,16 +134,16 @@ export const roleController = new Elysia<typeof prefix, TContext>({
               id: t.String(),
             }),
             body: updateRoleValidationSchema,
-          }
-        )
+          },
+        ),
     )
-    .guard((app) =>
+    .guard({}, (app) =>
       app
         .use(
           createAccessGuard({
             permissions: [{ entity: 'roles', permission: 'delete' }],
             require: 'all',
-          })
+          }),
         )
         .delete(
           '/:id',
@@ -154,7 +154,7 @@ export const roleController = new Elysia<typeof prefix, TContext>({
             params: t.Object({
               id: t.String(),
             }),
-          }
-        )
-    )
+          },
+        ),
+    ),
 );

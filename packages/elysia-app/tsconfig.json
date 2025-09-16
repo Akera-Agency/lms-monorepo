@@ -7,7 +7,10 @@
     "experimentalDecorators": true,
     "types": ["bun-types"],
     "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "paths": {
+      "@akera/env": ["../env/src"]
+    }
   },
   "references": [
     { "path": "../auth" }
@@ -19,5 +22,10 @@
     "src/**/*.json",
     "assets/**/*.json"
   ],
-  "exclude": ["node_modules", "dist"]
+  "exclude": ["node_modules", "dist"],
+  "references": [
+    {
+      "path": "../env"
+    }
+  ]
 }

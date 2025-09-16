@@ -3,7 +3,7 @@ import { AppError } from '../Errors/AppError';
 import { TContext } from '../types/context';
 import jwt from 'jsonwebtoken';
 import { Logger } from '../logger/logger';
-import { env } from 'src/conf/env';
+import { env } from '@akera/env';
 
 // Supabase JWT token payload interface
 export interface ITokenPayload {
@@ -32,11 +32,9 @@ export interface AuthContext extends TContext {
   };
 }
 
-export const X_TENANT_ID = 'x-tenant-id';
-
 // Helper function to extract JWT token from headers
 const extractToken = (
-  headers: Record<string, string | undefined>
+  headers: Record<string, string | undefined>,
 ): string | null => {
   const authHeader = headers.authorization || headers.Authorization;
   if (!authHeader) {
@@ -66,7 +64,7 @@ const decodeAndVerifyToken = (token: string): ITokenPayload => {
   try {
     // Verify and decode the token
     const decoded = JSON.parse(
-      JSON.stringify(jwt.verify(token, jwtSecret))
+      JSON.stringify(jwt.verify(token, jwtSecret)),
     ) as ITokenPayload;
 
     // Check if token is expired
@@ -119,7 +117,7 @@ export const authGuard = new Elysia<string, TContext>().derive(
 
     // const tenantId: string | undefined = headers[X_TENANT_ID];
     const tenantId: string | undefined = user.sub;
-    console.log(headers)
+    console.log(headers);
     return {
       auth: {
         user,
@@ -127,7 +125,7 @@ export const authGuard = new Elysia<string, TContext>().derive(
         tenantId,
       },
     };
-  }
+  },
 );
 
 // Optional auth guard (doesn't throw if no token)
@@ -171,5 +169,5 @@ export const optionalAuthGuard = new Elysia<string, TContext>().derive(
         auth: null,
       };
     }
-  }
+  },
 );

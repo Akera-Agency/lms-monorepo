@@ -2,18 +2,28 @@
   "extends": "./tsconfig.base.json",
   "compileOnSave": false,
   "files": [],
+  "paths": {
+    "@akera/env": ["./packages/env/src"],
+    "@akera/auth": ["./packages/auth/src"],
+    "@akera/elysia-app": ["./packages/elysia-app/src"],
+    "@akera/s3": ["./packages/s3/src"],
+    "@akera/ui": ["./packages/ui/src"]
+  },
   "references": [
     {
-      "path": "./packages/ui"
+      "path": "./packages/env"
+    },
+    {
+      "path": "./packages/auth"
     },
     {
       "path": "./packages/elysia-app"
     },
     {
-      "path": "./packages/supabase"
+      "path": "./packages/s3"
     },
     {
-      "path": "./packages/s3"
+      "path": "./packages/ui"
     }
   ]
 }

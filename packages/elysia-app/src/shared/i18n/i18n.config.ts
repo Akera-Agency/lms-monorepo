@@ -1,7 +1,7 @@
 import i18next from 'i18next';
 import Backend from 'i18next-fs-backend';
 import { LanguagesEnum } from '../constants/i18n';
-import { env } from 'src/conf/env';
+import { env } from '@akera/env';
 import CommonEng from '../../../assets/locales/en/common.json';
 import CommonAr from '../../../assets/locales/ar/common.json';
 import ErrorsEng from '../../../assets/locales/en/errors.json';
@@ -18,7 +18,7 @@ export const initializeI18n = async () => {
     fallbackLng: LanguagesEnum.en,
     supportedLngs: [LanguagesEnum.en, LanguagesEnum.ar],
 
-    debug: env.NODE_ENV === 'development',
+    // debug: env.NODE_ENV === 'development',
 
     backend: {
       loadPath: join(process.cwd(), 'assets/locales/{{lng}}/{{ns}}.json'),
@@ -39,7 +39,7 @@ export const initializeI18n = async () => {
     },
 
     interpolation: {
-      escapeValue: false, // React already does escaping
+      escapeValue: false,
     },
 
     // Namespaces for different parts of the application

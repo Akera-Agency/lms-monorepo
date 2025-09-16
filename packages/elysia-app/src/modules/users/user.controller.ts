@@ -19,7 +19,7 @@ export const userController = new Elysia<typeof prefix, TContext>({
   detail: {
     tags: ['Users'],
   },
-}).guard((app) =>
+}).guard({}, (app) =>
   app
     .use(authGuard)
     .get('/me', async (ctx) => {
@@ -38,15 +38,15 @@ export const userController = new Elysia<typeof prefix, TContext>({
       },
       {
         body: updateUserValidationSchema,
-      }
+      },
     )
-    .guard((app) =>
+    .guard({}, (app) =>
       app
         .use(
           createAccessGuard({
             permissions: [{ entity: 'users', permission: 'read' }],
             require: 'all',
-          })
+          }),
         )
         .get(
           '/',
@@ -61,10 +61,10 @@ export const userController = new Elysia<typeof prefix, TContext>({
               page: t.Number(),
               limit: t.Number(),
             }),
-          }
+          },
         )
         .get(
-          ':id',
+          '/:id',
           async (ctx) => {
             return await ctx.store.UserService.findOne({
               id: ctx.params.id,
@@ -74,23 +74,23 @@ export const userController = new Elysia<typeof prefix, TContext>({
             params: t.Object({
               id: t.String(),
             }),
-          }
-        )
+          },
+        ),
     )
-    .guard((app) =>
+    .guard({}, (app) =>
       app
         .use(
           createAccessGuard({
             permissions: [{ entity: 'users', permission: 'update' }],
             require: 'all',
-          })
+          }),
         )
         .patch(
-          ':id',
+          '/:id',
           async (ctx) => {
             const updatedUser = await ctx.store.UserService.update(
               ctx.params.id,
-              ctx.body
+              ctx.body,
             );
             return updatedUser;
           },
@@ -99,19 +99,19 @@ export const userController = new Elysia<typeof prefix, TContext>({
               id: t.String(),
             }),
             body: updateUserValidationSchema,
-          }
-        )
+          },
+        ),
     )
-    .guard((app) =>
+    .guard({}, (app) =>
       app
         .use(
           createAccessGuard({
             permissions: [{ entity: 'users', permission: 'delete' }],
             require: 'all',
-          })
+          }),
         )
         .delete(
-          ':id',
+          '/:id',
           async (ctx) => {
             return await ctx.store.UserService.delete(ctx.params.id);
           },
@@ -119,7 +119,7 @@ export const userController = new Elysia<typeof prefix, TContext>({
             params: t.Object({
               id: t.String(),
             }),
-          }
-        )
-    )
+          },
+        ),
+    ),
 );

@@ -7,14 +7,14 @@ const prefix = '/notifications';
 export const notificationController = new Elysia<typeof prefix, TContext>({
   prefix,
   detail: { tags: ['Notifications'] },
-}).guard((app) =>
+}).guard({}, (app) =>
   app
     .use(authGuard)
     .get('/me', async (ctx) => {
       const limit = Math.min(Number(ctx.query['limit'] ?? 20), 100);
       const rows = await ctx.store.NotificationService.listMine(
         ctx.auth.user.sub,
-        limit
+        limit,
       );
       return { items: rows };
     })
@@ -23,14 +23,14 @@ export const notificationController = new Elysia<typeof prefix, TContext>({
       async (ctx) => {
         await ctx.store.NotificationService.markRead(
           ctx.auth.user.sub,
-          ctx.body.ids
+          ctx.body.ids,
         );
       },
-      { body: t.Object({ ids: t.Array(t.String()) }) }
+      { body: t.Object({ ids: t.Array(t.String()) }) },
     )
     .get('/me/preferences', async (ctx) => {
       const preferences = await ctx.store.NotificationService.listPreferences(
-        ctx.auth.user.sub
+        ctx.auth.user.sub,
       );
       return preferences;
     })
@@ -46,7 +46,7 @@ export const notificationController = new Elysia<typeof prefix, TContext>({
         }));
         await ctx.store.NotificationService.updatePreferences(
           userId,
-          normalized
+          normalized,
         );
       },
       {
@@ -63,9 +63,9 @@ export const notificationController = new Elysia<typeof prefix, TContext>({
                 t.Literal('all'),
               ]),
               enabled: t.Boolean(),
-            })
+            }),
           ),
         }),
-      }
-    )
+      },
+    ),
 );

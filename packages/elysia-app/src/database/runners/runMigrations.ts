@@ -1,11 +1,8 @@
 import * as path from 'path';
 import { promises as fs } from 'fs';
 import { Migrator, FileMigrationProvider } from 'kysely';
-import { config } from 'dotenv';
 import { database } from '../datasource';
 import { Logger } from 'src/shared/logger/logger';
-
-config();
 
 async function migrateToLatest() {
   const migrator = new Migrator({
@@ -23,11 +20,11 @@ async function migrateToLatest() {
   results?.forEach((migrationResult) => {
     if (migrationResult.status === 'Success') {
       Logger.info(
-        `migration "${migrationResult.migrationName}" was executed successfully`
+        `migration "${migrationResult.migrationName}" was executed successfully`,
       );
     } else if (migrationResult.status === 'Error') {
       Logger.error(
-        `failed to execute migration "${migrationResult.migrationName}"`
+        `failed to execute migration "${migrationResult.migrationName}"`,
       );
     }
   });

@@ -1,0 +1,13 @@
+{
+  "workspace": {
+    "typescript": "5.6.3",
+    "react": "19.1.1",
+    "react-dom": "19.1.1"
+  },
+  "rules": {
+    "enforceWorkspaceProtocol": true,
+    "reactInPeerDependencies": true,
+    "noExternalDepsInPrivateLibs": true,
+    "checkTypescriptVersion": true
+  }
+}

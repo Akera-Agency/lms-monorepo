@@ -4,7 +4,7 @@ import Elysia, { StatusMap } from 'elysia';
 import { cors } from '@elysiajs/cors';
 import { appModules, servicesMap } from './app.module';
 import { transactionDerive } from './database/transaction';
-import { env } from './conf/env';
+import { env } from '@akera/env';
 import { Logger } from './shared/logger/logger';
 import { seed } from './database/runners/seed';
 import { eventBusPlugin } from './shared/plugins/event-bus.plugin';
@@ -13,12 +13,6 @@ import { AppError, isAppError } from './shared/Errors/AppError';
 import { PostgresError, isDatabaseError } from './shared/Errors/PostgresError';
 import { EventError } from './shared/Errors/EventError';
 import { CronError } from './shared/Errors/CronError';
-
-import { roleController } from './modules/roles/role.controller';
-import { userController } from './modules/users/user.controller';
-import { tenantController } from './modules/tenants/tenant.controller';
-import { notificationController } from './modules/notifications/notification.controller';
-
 import { TContext } from './shared/types/context';
 import { eventBus } from './core/event-bus';
 import { posthog } from './shared/metrics/posthug';
@@ -26,6 +20,10 @@ import { LanguagesEnum } from './shared/constants/i18n';
 import { LANGUAGE_HEADER } from './shared/constants/headers';
 import { createTypeSafeI18nService } from './shared/i18n/type-safe-i18n.service';
 import { requestID } from 'elysia-requestid';
+import { roleController } from './modules/roles/role.controller';
+import { userController } from './modules/users/user.controller';
+import { tenantController } from './modules/tenants/tenant.controller';
+import { notificationController } from './modules/notifications/notification.controller';
 
 const prefix = '/api';
 
@@ -120,7 +118,7 @@ export const app = new Elysia<typeof prefix, TContext>({ prefix })
     for (const service of services) {
       for (const [key, value] of Object.entries(service)) {
         const deps = value.inject.map(
-          (key: { name: string }) => localStore[key.name]
+          (key: { name: string }) => localStore[key.name],
         );
         if (value.inject.length !== deps.filter(Boolean).length) {
           // Note: This error occurs during app initialization, before i18n is available

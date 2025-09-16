@@ -1,4 +1,3 @@
-import { config } from 'dotenv';
 import { database } from 'src/database/datasource';
 import { Logger } from 'src/shared/logger/logger';
 import {
@@ -7,8 +6,6 @@ import {
 } from 'src/shared/constants/permissions';
 import { LanguagesEnum } from 'src/shared/constants/i18n';
 import { supabaseAdmin } from "src/shared/utils/supabase";
-
-config();
 
 export async function seed() {
   await seedDefaultRoles();
@@ -56,8 +53,7 @@ async function seedDefaultRoles() {
 
     Logger.info('Default system roles seeded successfully.');
   } catch (error) {
-    console.log('🚀 ~ seedDefaultRoles ~ error:', error);
-    Logger.error('Failed to seed default roles' + error);
+    Logger.error('Failed to seed default roles ' + error);
     process.exitCode = 1;
   }
 };

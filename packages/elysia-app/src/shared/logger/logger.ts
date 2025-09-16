@@ -120,17 +120,6 @@ function safeStringify(obj: any, seen = new WeakSet(), depth = 0): any {
     return obj.map((item) => safeStringify(item, seen, depth + 1));
   }
 
-  // Special case for common services
-  // OpenAI client
-  if (obj.apiKey && obj.baseURL && obj.baseURL.includes('openai.com')) {
-    return { type: 'OpenAI Client', initialized: true };
-  }
-
-  // Database client
-  if (obj.$client || (obj._ && obj._.fullSchema)) {
-    return { type: 'DatabaseClient', sanitized: true };
-  }
-
   // Stripe client
   if (
     obj.VERSION &&
@@ -138,14 +127,6 @@ function safeStringify(obj: any, seen = new WeakSet(), depth = 0): any {
     (obj.account || obj.charges || obj.customers)
   ) {
     return { type: 'StripeClient', initialized: true, version: obj.VERSION };
-  }
-
-  // RabbitMQ client/connection
-  if (
-    obj.connection &&
-    obj.connection.serverProperties?.product === 'RabbitMQ'
-  ) {
-    return { type: 'RabbitMQ', initialized: true, connected: true };
   }
 
   // For regular objects, process each property
@@ -170,17 +151,6 @@ function safeStringify(obj: any, seen = new WeakSet(), depth = 0): any {
       continue;
     }
 
-    // Skip certain problematic keys
-    if (key === 'fullSchema' || key === '$client') {
-      result[key] = '[Hidden for brevity]';
-      continue;
-    }
-
-    if (key === 'database' || key === 'db' || key === '_') {
-      result[key] = '[DB Object - Details Hidden]';
-      continue;
-    }
-
     // Skip Stripe circular references
     if (key === '_stripe' || key === '_client') {
       result[key] = '[Internal Reference - Hidden]';
@@ -200,7 +170,7 @@ function safeStringify(obj: any, seen = new WeakSet(), depth = 0): any {
 }
 
 // Helper function to safely prepare objects for logging
-function sanitizeForLogging(args: any[]): any[] {
+function sanitizeForLogging(args: any[]) {
   // Don't process empty arrays
   if (!args.length) return args;
 
@@ -239,9 +209,11 @@ methods.forEach((method) => {
       return original.apply(this, sanitizedArgs as any);
     } catch (e) {
       // If sanitization fails, log with simplified error info
-      return original.call(this, `${method.toUpperCase()} logging failed`, {
-        sanitizationError: String(e),
-      });
+      return original.call(
+        this,
+        `${method.toUpperCase()} logging failed`,
+        String(e),
+      );
     }
   };
 });

@@ -12,7 +12,7 @@ export interface PermissionContext extends AuthContext {
     getRolePermissions: () => RolePermissionsByScope;
     checkRolePermission: (
       entity: keyof IDb,
-      permission: BasePermission
+      permission: BasePermission,
     ) => boolean;
     getTenantIds: () => string[];
   };
@@ -42,7 +42,7 @@ const createEmptyPermissions = (): Record<keyof IDb, BasePermission[]> => ({
 });
 
 const dedupePermissionSets = (
-  permissions: Record<keyof IDb, BasePermission[]>
+  permissions: Record<keyof IDb, BasePermission[]>,
 ): Record<keyof IDb, BasePermission[]> => {
   const deduped = createEmptyPermissions();
   (Object.keys(permissions) as Array<keyof IDb>).forEach((entity) => {
@@ -74,14 +74,14 @@ export const createAccessGuard = (options?: AccessGuardOptions) =>
       }
 
       const { main_roles, tenant_roles } = await store.RoleService.findByUserId(
-        auth.user.sub
+        auth.user.sub,
       );
 
       // Permission utilities use already-fetched roles for consistency and performance
       const checkPermission = (
         entity: keyof IDb,
         permission: BasePermission,
-        tenantId?: string
+        tenantId?: string,
       ): boolean => {
         if (!auth.user.sub) {
           return false;
@@ -100,7 +100,7 @@ export const createAccessGuard = (options?: AccessGuardOptions) =>
 
         if (tenantId) {
           const tenantRolesForTenant = tenant_roles.filter(
-            (role) => role.tenant_id === tenantId
+            (role) => role.tenant_id === tenantId,
           );
           for (const role of tenantRolesForTenant) {
             const permissions = role.permissions[entity] || [];
@@ -124,7 +124,7 @@ export const createAccessGuard = (options?: AccessGuardOptions) =>
       const requirePermission = (
         entity: keyof IDb,
         permission: BasePermission,
-        tenantId?: string
+        tenantId?: string,
       ): void => {
         const hasPermission = checkPermission(entity, permission, tenantId);
         if (!hasPermission) {
@@ -182,7 +182,7 @@ export const createAccessGuard = (options?: AccessGuardOptions) =>
       const checkRolePermission = (
         entity: keyof IDb,
         permission: BasePermission,
-        tenantId?: string
+        tenantId?: string,
       ): boolean => {
         for (const role of main_roles) {
           const permissions = role.permissions[entity] || [];
@@ -192,7 +192,7 @@ export const createAccessGuard = (options?: AccessGuardOptions) =>
         }
         if (tenantId) {
           const tenantRolesForTenant = tenant_roles.filter(
-            (role) => role.tenant_id === tenantId
+            (role) => role.tenant_id === tenantId,
           );
           for (const role of tenantRolesForTenant) {
             const permissions = role.permissions[entity] || [];
@@ -232,7 +232,7 @@ export const createAccessGuard = (options?: AccessGuardOptions) =>
             requirePermission(
               check.entity,
               check.permission,
-              options.requireTenant ? auth.tenantId : undefined
+              options.requireTenant ? auth.tenantId : undefined,
             );
           }
         } else {
@@ -243,8 +243,7 @@ export const createAccessGuard = (options?: AccessGuardOptions) =>
               check.permission,
               options.requireTenant ? auth.tenantId : undefined
             )
-          }
-          );
+        });
           if (!hasAnyPermission) {
             throw new AppError({
               error: `insufficient_permissions`,
@@ -265,5 +264,5 @@ export const createAccessGuard = (options?: AccessGuardOptions) =>
           },
         },
       };
-    }
+    },
   );

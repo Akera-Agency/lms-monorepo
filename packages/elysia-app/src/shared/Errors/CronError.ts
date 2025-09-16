@@ -16,9 +16,6 @@ export class CronError extends Error {
     this.name = 'CronError';
     this.error = error;
     Error.captureStackTrace(this, this.constructor);
-    Logger.error(
-      'CronError - ' + error?.toString(),
-      error instanceof Error ? error.stack : ''
-    );
+    Logger.error('CronError - ' + error?.toString());
   }
 }
