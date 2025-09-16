@@ -7,7 +7,7 @@
     "packages/*",
     "apps/*"
   ],
-  "packageManager": "bun@1.1.0",
+  "packageManager": "bun@1.2.4",
   "scripts": {
     "setup": "cp .env ./packages/supabase/.env && bunx nx docker supabase",
     "dev": "nx run-many --target=serve --all --parallel",
