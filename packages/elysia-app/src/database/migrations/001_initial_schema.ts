@@ -148,12 +148,13 @@ export async function up(db: Kysely<unknown>): Promise<void> {
     CREATE OR REPLACE FUNCTION public.insert_profile()
     RETURNS trigger AS $$
     BEGIN      
-      INSERT INTO public.users (id, email, name, is_active)
+      INSERT INTO public.users (id, email, name, is_active, role_id)
       VALUES (
         NEW.id,
         NEW.email,
         COALESCE(NEW.raw_user_meta_data->>'name', NEW.email),
-        true
+        true,
+        (SELECT id FROM public.roles WHERE name = NEW.raw_user_meta_data->>'role' LIMIT 1)
       );
       RETURN NEW;
     END;

@@ -9,7 +9,7 @@ export function useTenant() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
-    const [users, setUsers] = useState<User[] | undefined>(undefined);
+    const [users, setUsers] = useState<any[]>([]);
     const [email, setEmail] = useState<string>('');
     const [roles, setRoles] = useState<Role[]>([
         { id: "1", name: "admin", description: "Administrator with full access", isSystemRole: true },

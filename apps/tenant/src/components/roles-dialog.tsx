@@ -1,52 +1,48 @@
-import {
-    Dialog,
-    DialogPortal,
-    DialogOverlay,
-    DialogClose,
-    DialogTrigger,
-    DialogContent,
-    DialogHeader,
-    DialogFooter,
-    DialogTitle,
-  } from "../../../../packages/ui/src/components/shadcn/dialog";
-  import {DropdownMenu} from '../../../../packages/ui/src/components/dropdown/dropdown-menu';
+import { useState } from "react";
+import NiceModal, { useModal } from "@ebay/nice-modal-react";
+import { Button } from "../../../../packages/ui/src/components/shadcn/button";
+import ResponsiveDialog from "../../../../packages/ui/src/components/dialog/dialog";
+import { DropdownMenu } from '../../../../packages/ui/src/components/dropdown/dropdown-menu';
 import { cn } from "@ui/lib/utils";
 import { ChevronDown } from "lucide-react";
 import { useTenant } from "@/hooks/use.tenant";
-  
-  export function RolesDialog({
-    trigger,
+
+type RolesDialogProps = {
+  user_role: string;
+  user_name: string;
+  closeText: string;
+  confirmText: string;
+  onConfirm: (role: string) => Promise<void>;
+};
+
+export const RolesDialog = NiceModal.create(
+  ({
     user_role,
     user_name,
     closeText,
     confirmText,
     onConfirm,
-  }: {
-    trigger: React.ReactNode;
-    user_role: string;
-    user_name: string;
-    closeText: string;
-    confirmText: string;
-    onConfirm: (role: string) => Promise<void>;
-  }) {
-    const {roles} = useTenant();
-  
+  }: RolesDialogProps) => {
+    const modal = useModal();
+    const { roles } = useTenant();
+    const [selectedRole, setSelectedRole] = useState<string>(user_role);
+
+    const handleConfirm = async () => {
+      await onConfirm(selectedRole);
+      modal.hide();
+    };
+
     return (
-      <Dialog>
-        <DialogTrigger asChild>{trigger}</DialogTrigger>
-        <DialogPortal>
-          <DialogOverlay className="fixed inset-0 bg-black/50 backdrop-blur-sm" />
-          <DialogContent className="bg-neutral-950 border border-neutral-800 text-white max-w-md rounded-md">
-            <DialogHeader>
-              <DialogTitle>
-                Change role for{" "}
-                <span className="font-bold text-[#F3562E]">{user_name}</span>
-              </DialogTitle>
-            </DialogHeader>
-  
-            <div className="text-neutral-400 mt-3">
-              <p className="mb-2">Select a role</p>
-              <DropdownMenu
+      <ResponsiveDialog
+        title={`Change role for ${user_name}`}
+        isOpen={modal.visible}
+        onClose={() => modal.hide()}
+        className="gap-0 md:max-w-md text-white"
+      >
+        <div className="flex flex-col gap-3 px-6">
+          <div className="text-neutral-400">
+            <p className="mb-2">Select a role</p>
+            <DropdownMenu
                 options={
                   roles.length === 0
                   ? [{ label: 'No roles', value: '' }]
@@ -55,6 +51,7 @@ import { useTenant } from "@/hooks/use.tenant";
                     value: role.name,
                   }))
                 }
+                onSelect={(value) => setSelectedRole(value)} 
                 className="w-full bg-neutral-950 text-white border-white" 
               >
                 <div
@@ -63,31 +60,34 @@ import { useTenant } from "@/hooks/use.tenant";
                   'flex items-center justify-between min-h-[40px]' 
                   )}
                 >
-                  {user_role || 'Select a role'}
+                  {selectedRole || 'Select a role'}
                   <ChevronDown className="ml-2 size-4" />
                 </div>
               </DropdownMenu>
-            </div>
-  
-            <DialogFooter className="flex gap-2 mt-6">
-              <DialogClose asChild>
-                <button className="border-neutral-700 bg-neutral-800 hover:bg-neutral-900 w-1/2 cursor-pointer rounded-sm py-1">
-                  {closeText}
-                </button>
-              </DialogClose>
-  
-              <DialogClose asChild>
-                <button
-                  onClick={() => onConfirm(user_role)}
-                  className="w-1/2 cursor-pointer bg-red-700 hover:bg-red-800 rounded-sm py-1"
-                >
-                  {confirmText}
-                </button>
-              </DialogClose>
-            </DialogFooter>
-          </DialogContent>
-        </DialogPortal>
-      </Dialog>
+          </div>
+
+          <div className="flex justify-between gap-3 pt-4">
+            <Button 
+              onClick={() => modal.hide()}
+              className="border-neutral-700 bg-neutral-800 hover:bg-neutral-800/80 w-1/2 cursor-pointer rounded-sm py-1"
+            >
+              {closeText}
+            </Button>
+            <Button
+              variant="destructive"
+              className="w-1/2 cursor-pointer text-white rounded-sm py-1"
+              onClick={handleConfirm}
+              disabled={!selectedRole}
+            >
+              {confirmText}
+            </Button>
+          </div>
+        </div>
+      </ResponsiveDialog>
     );
   }
-  
+);
+
+
+
+export default RolesDialog;

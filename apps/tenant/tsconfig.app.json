@@ -30,13 +30,16 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src", "src/utils"],
+  "include": ["src/**/*", "src/utils/**/*"],
   "references": [
     {
       "path": "../../packages/elysia-app"
     },
     {
       "path": "../../packages/ui/tsconfig.lib.json"
+    },
+    {
+      "path": "../../packages/elysia-app/tsconfig.json"
     }
   ]
 }

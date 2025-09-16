@@ -2,6 +2,7 @@ import { AuthForm } from '@/components/auth-form';
 import { useAuthForm } from '../../../../../packages/auth/src/hooks/use.auth';
 import { userRoute } from '../../../../../packages/auth/src/utils/external-routes';
 import { tenantRoute } from '../../../../../packages/auth/src/utils/external-routes';
+import { superAdminRoute } from '../../../../../packages/auth/src/utils/external-routes';
 
 export default function LoginPage() {
   const {
@@ -28,6 +29,9 @@ export default function LoginPage() {
         }
         else if (result.data.user?.user_metadata.role === 'admin') {
           window.location.href = `${tenantRoute}/#access_token=${result.data.session.access_token}&refresh_token=${result.data.session.refresh_token}`;
+        }
+        else if (result.data.user?.user_metadata.role === 'super_admin') {
+          window.location.href = `${superAdminRoute}/#access_token=${result.data.session.access_token}&refresh_token=${result.data.session.refresh_token}`;
         }
       } else {
         console.error('Login failed:', result.error);

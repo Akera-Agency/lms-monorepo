@@ -12,6 +12,9 @@
       "@akera/env": ["../env/src"]
     }
   },
+  "references": [
+    { "path": "../auth" }
+  ],
   "include": [
     "src/**/*.ts",
     "eslint.config.ts",

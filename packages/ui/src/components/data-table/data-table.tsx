@@ -44,7 +44,7 @@ export function DataTable<TData, TValue>({
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow
                 key={headerGroup.id}
-                className="bg-primary-100 hover:bg-primary-100"
+                className="bg-neutral-900 border-neutral-700 border hover:bg-neutral-900"
               >
                 {headerGroup.headers.map((header) => {
                   return (
@@ -61,7 +61,7 @@ export function DataTable<TData, TValue>({
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody className="bg-white">
+          <TableBody className="border-neutral-700 text-white border">
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
@@ -84,11 +84,11 @@ export function DataTable<TData, TValue>({
                 <TableRowSkeleton columnCount={columns.length} />
                 <TableRowSkeleton columnCount={columns.length} />
                 <TableRowSkeleton columnCount={columns.length} />
+                {/* <TableRowSkeleton columnCount={columns.length} />
                 <TableRowSkeleton columnCount={columns.length} />
                 <TableRowSkeleton columnCount={columns.length} />
                 <TableRowSkeleton columnCount={columns.length} />
-                <TableRowSkeleton columnCount={columns.length} />
-                <TableRowSkeleton columnCount={columns.length} />
+                <TableRowSkeleton columnCount={columns.length} /> */}
               </>
             ) : (
               <TableRow>

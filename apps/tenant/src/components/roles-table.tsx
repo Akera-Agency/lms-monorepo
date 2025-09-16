@@ -36,7 +36,7 @@ import { ConfirmDeleteDialog } from "../../../../packages/ui/src/components/dial
 import { EmptyState } from "../../../../packages/ui/src/components/empty-states/empty-state";
 import type { Table as TanstackTable } from "@tanstack/react-table";
 import type { Role } from "../models/roles.model";
-import { showPermissionsDialog } from "@/utils/dialog-utils";
+import { showPermissionsDialog } from "@/utils/permission-dialog-utils";
 
 export default function DataTable() {
   const { loading, roles, setRoles } = useTenant();
@@ -173,7 +173,7 @@ export default function DataTable() {
 function LoadingSkeleton() {
   return (
     <>
-      <div className="py-4 z-50 justify-end flex gap-7 mt-6">
+      <div className="py-4 justify-end flex gap-7 mt-6">
         <Skeleton className="h-7 w-1/3 rounded-md bg-neutral-800" />
       </div>
       {[...Array(4)].map((_, i) => (
@@ -295,16 +295,15 @@ function getColumns({ setRoles }: { setRoles: React.Dispatch<React.SetStateActio
             className="border bg-neutral-900 border-neutral-800 text-neutral-400"
           >
             <DropdownMenuItem
-  onSelect={(e) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    showPermissionsDialog(row.original.name,role_permissions[row.original.name as keyof typeof role_permissions] || []);
-  }}
-  className="cursor-pointer focus:bg-neutral-800 focus:text-white"
->
-  Edit
-</DropdownMenuItem>
+              onSelect={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                showPermissionsDialog(row.original.name,role_permissions[row.original.name as keyof typeof role_permissions] || []);
+              }}
+              className="cursor-pointer focus:bg-neutral-800 focus:text-white"
+            >
+              Edit
+            </DropdownMenuItem>
 
             <ConfirmDeleteDialog
               trigger={

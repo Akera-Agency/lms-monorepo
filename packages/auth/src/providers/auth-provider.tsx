@@ -1,3 +1,4 @@
+import React from 'react';
 import { createContext, useEffect, useState, type ReactNode } from 'react';
 import { supabase, supabaseAdmin } from '../utils/supabase';
 import type {
@@ -8,14 +9,15 @@ import type {
   Session,
   User,
 } from '@supabase/supabase-js';
-import { tenantRoute } from '../utils/external-routes';
+import { userRoute } from '../utils/external-routes';
+import { ROLES } from '../../../elysia-app/src/shared/constants/permissions';
 
 export const AuthContext = createContext<{
   session: Session | null;
   user: User | null;
   sessionLoading: boolean;
   tenants: User[];
-  signUp: (email: string, password: string, name:string, role:string, tenant: string) => Promise<AuthResponse>;
+  signUp: (email: string, password: string, name:string, role:ROLES, tenant: string) => Promise<AuthResponse>;
   signOut: () => Promise<{ error: AuthError | null }>;
   signIn: (email: string, password: string) => Promise<AuthResponse>;
   signInWithOAuth: (
@@ -55,7 +57,7 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
     email: string,
     password: string,
     name: string,
-    role: string,
+    role: ROLES,
     tenant: string
   ): Promise<AuthResponse> => {
     return await supabase.auth.signUp({ 
@@ -88,7 +90,7 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
-          redirectTo: `${tenantRoute}${redirectPath}`,
+          redirectTo: `${userRoute}${redirectPath}`,
         },
       });
 
