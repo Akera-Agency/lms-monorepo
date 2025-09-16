@@ -62,9 +62,9 @@ export function DataTablePagination<TData>({
     ? meta?.totalCount
     : table.getFilteredRowModel().rows.length;
   return (
-    <div className="flex items-center justify-between rounded-b-2xl border-t bg-white px-4 py-3">
+    <div className="flex items-center justify-between rounded-b-2xl  border-neutral-700 px-4 py-3">
       <div>
-        <span className="text-sm font-normal text-neutral-800">
+        <span className="text-sm font-normal text-neutral-400">
           Showing{' '}
           {table.getState().pagination.pageIndex *
             table.getState().pagination.pageSize +
@@ -75,7 +75,7 @@ export function DataTablePagination<TData>({
               table.getState().pagination.pageSize,
             totalCount
           )}{' '}
-          of
+          of {' '}
           {totalCount} results
         </span>
       </div>

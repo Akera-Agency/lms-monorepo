@@ -70,7 +70,6 @@ return (
                     usage={'create'}
                     role={role}
                     isDisabled={isDisabled}
-                    showRemoveButton={true}
                     index={index}
                 />
               </div>

@@ -1,7 +1,7 @@
 import NiceModal from "@ebay/nice-modal-react";
-import RolesDialog from "@/components/permissions-dialog";
+import RolesDialog from "@/components/roles-dialog"
 
-export const showRolessDialog = (tenant_id: string) => {
+export const showRolesDialog = (tenant_id: string) => {
   NiceModal.show(RolesDialog, {
     tenant_id, 
     closeText: "Cancel",

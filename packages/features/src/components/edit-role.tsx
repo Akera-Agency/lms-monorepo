@@ -21,25 +21,41 @@ import { useTenantContext } from "../providers/tenant-provider";
 
 interface EditRoleProps {
   index?: number;
-  showRemoveButton: boolean;
   isDisabled: boolean;
-  role?: RoleData | undefined
-  usage: 'create' | 'edit'
+  role?: RoleData | undefined;
+  usage: 'create' | 'edit';
+  localRoles?: RoleData[];
+  setLocalRoles?: (roles: RoleData[]) => void;
+  localSelectedResource?: { [key: number]: Resource };
+  setLocalSelectedResource?: (resources: { [key: number]: Resource }) => void;
+  localErrors?: any;
+  handleRemove?: (id: string) => void 
 }
 
 export default function EditRole({
   index,
-  showRemoveButton,
   isDisabled,
   role,
-  usage
+  usage,
+  localRoles,
+  setLocalRoles,
+  localSelectedResource,
+  setLocalSelectedResource,
+  localErrors,
+  handleRemove
 }: EditRoleProps) {
-  const { errors, selectedResource, setSelectedResource, roles, setRoles } =
-    useTenantContext();
+
+  const context = useTenantContext();
+  
+  const errors = localErrors || context.errors;
+  const selectedResource = localSelectedResource || context.selectedResource;
+  const setSelectedResource = setLocalSelectedResource || context.setSelectedResource;
+  const roles = localRoles || context.roles;
+  const setRoles = setLocalRoles || context.setRoles;
 
   const handleRoleChange = (
     roleIndex: number,
-    field: keyof typeof roles[0],
+    field: keyof RoleData,
     value: any
   ) => {
     const updated = [...roles];
@@ -60,9 +76,12 @@ export default function EditRole({
     setRoles(updated);
   };
 
-  const removeRole = (roleIndex: number) => {
-    setRoles((prev) => prev.filter((_, i) => i !== roleIndex));
+  const removeRole = (roleIndex: number, roleId: string) => {
+    usage === 'create' ?
+    setRoles(roles.filter((_, i) => i !== roleIndex)) :
+    handleRemove ? handleRemove(roleId) : null
   };
+  
 
   if (index === undefined || !role) {
     return null; 
@@ -78,12 +97,12 @@ export default function EditRole({
           {usage === 'create' ? `Role ${index + 1}` : role.name}
         </h3>
 
-        {showRemoveButton && roles.length > 1 && (
+        {(roles.length > 1 || usage === 'edit' )&&(
           <Button
             type="button"
-            onClick={() => removeRole(index)}
+            onClick={() => removeRole(index, role.id ?? "")}
             disabled={isDisabled}
-            className="bg-red-600/50 hover:bg-red-600 text-white/50 hover:text-white p-2 rounded-md transition-all duration-200 opacity-0 group-hover:opacity-100"
+            className="bg-red-600/50 hover:bg-red-600 text-white/50 hover:text-white p-2 rounded-md transition-all duration-200 "
           >
             <Trash2 className="h-4 w-4" />
           </Button>
@@ -98,10 +117,10 @@ export default function EditRole({
           labelClassName="text-white font-medium"
           className="border-neutral-700 text-white"
           value={role.name}
-          error={errors.roles?.[index]?.role_name}
+          error={errors.roles?.[index]?.name || errors.roles?.[index]?.role_name}
           onChange={(e) => {
             const value = (e.target as HTMLInputElement).value;
-            handleRoleChange(index, "name", value) 
+            handleRoleChange(index, "name", value);
           }}
           disabled={isDisabled}
         />
@@ -113,10 +132,10 @@ export default function EditRole({
           labelClassName="text-white font-medium"
           className="border-neutral-700 text-white"
           value={role.description ?? ""}
-          error={errors.roles?.[index]?.role_description}
+          error={errors.roles?.[index]?.description || errors.roles?.[index]?.role_description}
           onChange={(e) => {
             const value = (e.target as HTMLInputElement).value;
-            handleRoleChange(index, "description", value) 
+            handleRoleChange(index, "description", value);
           }}
           disabled={isDisabled}
         />
@@ -124,7 +143,7 @@ export default function EditRole({
 
       <div className="space-y-3">
         <div className="flex items-center justify-between sm:flex-row flex-col gap-4">
-          <h4 className="text-white font-semibold">Resource Permissions</h4>
+          <h4 className="text-white font-semibold">Permissions</h4>
           <DropdownMenu key={`resource_${index}`}>
             <DropdownMenuTrigger asChild>
               <Button
@@ -144,10 +163,11 @@ export default function EditRole({
                 <DropdownMenuItem
                   key={resource}
                   onClick={() =>
-                    setSelectedResource((prev) => ({
-                      ...prev,
+                  { setSelectedResource({
+                      ...selectedResource,
                       [index]: resource,
-                    }))
+                    });
+                    }
                   }
                   className={`hover:bg-neutral-700 cursor-pointer ${
                     (selectedResource[index] || resourceList[0]) === resource
@@ -228,7 +248,7 @@ export default function EditRole({
             label=""
             checked={role.is_default}
             onCheckedChange={(checked) =>
-              handleRoleChange(index, "is_default", checked) 
+              handleRoleChange(index, "is_default", checked)
             }
             className="sr-only"
           />
@@ -252,7 +272,7 @@ export default function EditRole({
             label=""
             checked={role.is_system_role}
             onCheckedChange={(checked) =>
-              handleRoleChange(index, "is_system_role", checked) 
+              handleRoleChange(index, "is_system_role", checked)
             }
             className="sr-only"
           />

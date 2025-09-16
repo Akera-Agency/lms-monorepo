@@ -23,7 +23,30 @@ export function SuperAdminQueries() {
     });
     return { tenants, loading, isError,  error: error ? normalizeError(error) : null };
   };
-  
+
+  const tenantById = (id: string) => {
+    const {
+      data: tenant,
+      isLoading: loading,
+      isError,
+      error,
+    } = useQuery({
+      queryKey: ["tenants", id],
+      queryFn: () => {
+        if (!id) throw new Error("Tenant ID is required");
+        return SuperAdminApi.fetchTenantById(session, id);
+      },
+      enabled: !!session && !!id, 
+    });
+    
+    return { 
+      tenant, 
+      loading, 
+      isError,  
+      error: error ? normalizeError(error) : null 
+    };
+  };
+
   const tenantRoles = (tenant_id: string) => {
     const {
       data: tenantRoles = [],
@@ -108,6 +131,16 @@ export function SuperAdminQueries() {
     },
   });
 
+  const deleteTenantRoleMutation = useMutation<void, Error, {tenant_id: string, id: string}>({
+    mutationFn: ({tenant_id, id}) => SuperAdminApi.deleteTenantRole(session, tenant_id, id),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["tenant_roles", variables.tenant_id] });
+    },
+    onError: (err) => {
+      console.error("Delete tenant role error:", normalizeError(err));
+    },
+  });
+
   const updateTenantRoleMutation = useMutation<TenantRoleEntity, Error, 
   {
     tenant_id: string;
@@ -138,7 +171,6 @@ export function SuperAdminQueries() {
       description
     ),
     onSuccess: (updatedRole, variables) => {
-      // Update the tenant_roles query with the updated role
       queryClient.setQueryData<TenantRoleEntity[]>(
         ["tenant_roles", variables.tenant_id],
         (old = []) => old.map(role => 
@@ -151,14 +183,55 @@ export function SuperAdminQueries() {
     },
   });
 
+  const updateTenantMutation = useMutation<TenantEntity, Error, 
+  {
+    id: string,
+    name: string,
+    is_public: boolean,
+    description?: string,
+    logo_url?: string
+  }
+  >({
+    mutationFn: async({ 
+      id,
+      name,
+      is_public,
+      description,
+      logo_url
+    }) => SuperAdminApi.updateTenant(
+      session,
+      id,
+      name,
+      is_public,
+      description,
+      logo_url
+    ),
+    onSuccess: (updatedTenant, variables) => {
+      queryClient.setQueryData<TenantEntity[]>(
+        ["tenant", variables.id],
+        (old = []) => old.map(tenant => 
+          tenant.id === variables.id ? updatedTenant : tenant
+        )
+      );
+    },
+    onError: (err) => {
+      console.error("Update tenant error:", normalizeError(err));
+    },
+  });
+
   return {
     tenants,
+    tenantById,
     tenantRoles,
     handleCreateTenant: createTenantMutation.mutateAsync,
     deleteTenant: deleteTenantMutation.mutateAsync,
+    deleteTenantRole: deleteTenantRoleMutation.mutateAsync,
     updateTenantRole: updateTenantRoleMutation.mutateAsync,
+    updateTenant: updateTenantMutation.mutateAsync,
     successMessage: createTenantMutation.status,
     deleteTenantStatus: deleteTenantMutation.status,
-    updateTenantRoleStatus: updateTenantRoleMutation.status
+    deleteTenantRoleStatus: deleteTenantRoleMutation.status,
+    updateTenantRoleStatus: updateTenantRoleMutation.status,
+    updateTenantStatus: updateTenantMutation.status
   };
 }

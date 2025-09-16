@@ -36,7 +36,8 @@ import { ConfirmDeleteDialog } from "../../../../packages/ui/src/components/dial
 import { EmptyState } from "../../../../packages/ui/src/components/empty-states/empty-state";
 import type { Table as TanstackTable } from "@tanstack/react-table";
 import type { TenantEntity } from "elysia-app/src/modules/tenants/infrastructure/tenant.entity";
-import { showRolessDialog } from "@/utils/dialogs/permission-dialog-utils";
+import { showRolesDialog } from "@/utils/dialogs/roles-dialog-utils";
+import { showTenantsDialog } from "@/utils/dialogs/tenants-dialog-utils";
 
 export default function DataTable() {
   const { deleteTenant } = SuperAdminQueries();
@@ -285,17 +286,37 @@ function getColumns(
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="border bg-neutral-900 border-neutral-800 text-neutral-400">
           <DropdownMenuItem
-  onSelect={(e) => {
-    e.preventDefault();
-    e.stopPropagation();
+            onSelect={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              // showTenantsDialog(row.original.id);
+            }}
+            className="cursor-pointer text-neutral-300 focus:bg-neutral-800 focus:text-white"
+          >
+            Add User
+          </DropdownMenuItem>
 
-    showRolessDialog(row.original.id);
+          <DropdownMenuItem
+            onSelect={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              showTenantsDialog(row.original.id);
+            }}
+            className="cursor-pointer text-neutral-300 focus:bg-neutral-800 focus:text-white"
+          >
+            Edit Tenant
+          </DropdownMenuItem>
 
-  }}
-  className="cursor-pointer text-neutral-300 focus:bg-neutral-800 focus:text-white"
->
-  Edit
-</DropdownMenuItem>
+          <DropdownMenuItem
+            onSelect={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              showRolesDialog(row.original.id);
+            }}
+            className="cursor-pointer text-neutral-300 focus:bg-neutral-800 focus:text-white"
+          >
+            Edit Roles
+          </DropdownMenuItem>
 
             <ConfirmDeleteDialog
               trigger={

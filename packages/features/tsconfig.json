@@ -6,7 +6,10 @@
     "declaration": true,
     "outDir": "dist",
     "lib": ["ESNext", "DOM"], 
-    "types": ["bun-types"]
+    "types": ["bun-types"],
+    "paths": {
+      "@super-admin/*": ["../../apps/super-admin/src/*"]
+    }
 },
 "references": [
     { 

@@ -1,3 +1,5 @@
+import { LanguagesEnum } from "packages/elysia-app/src/shared/constants/i18n";
+
 export const resources = [
   "tenant_roles",
   "tenant_users",
@@ -43,12 +45,28 @@ export const emptyPermissions = createEmptyPermissions();
     is_default: boolean;
     is_system_role: boolean;
   }
+
+  export interface TenantData {
+    id?: string,
+    name: string,
+    description?: string | null,
+    logo_url?: string | null,
+    is_public: boolean,
+    deleted_at?: Date | null,
+    created_at?: Date,
+    updated_at?: Date,
+  }
+
+  export interface UserData {
+    email: string;
+    name?: string;
+    language?: LanguagesEnum;
+    avatar_url?: string;
+  }
   
   export interface FormData {
-    tenant_name: string;
-    tenant_description?: string;
-    logo_url?: string;
-    roles: RoleData[];
+    tenantData?: TenantData
+    roles?: RoleData[];
   }
   
   export interface FormErrors {
@@ -67,9 +85,9 @@ export const emptyPermissions = createEmptyPermissions();
     const errors: FormErrors = {};
   
     // Tenant validations
-    if (!data.tenant_name.trim()) {
+    if (!data.tenantData?.name.trim()) {
       errors.tenant_name = "Tenant name is required";
-    } else if (data.tenant_name.trim().length < 2) {
+    } else if (data.tenantData.name.trim().length < 2) {
       errors.tenant_name = "Tenant name must be at least 2 characters";
     }
   

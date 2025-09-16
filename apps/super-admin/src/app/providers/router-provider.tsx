@@ -2,8 +2,9 @@ import { RouterProvider, createRouter } from '@tanstack/react-router';
 import { rootRoute } from '@/routes/__root';
 import { indexRoute } from '@/routes';
 import { tenantsRoute } from '@/routes/tenants/tenants-route';
+import { usersRoute } from '@/routes/users/users-route';
 
-const routeTree = rootRoute.addChildren([tenantsRoute, indexRoute]);
+const routeTree = rootRoute.addChildren([tenantsRoute, usersRoute, indexRoute]);
 
 const router = createRouter({
   routeTree,

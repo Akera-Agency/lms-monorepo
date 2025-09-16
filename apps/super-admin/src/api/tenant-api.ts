@@ -10,7 +10,7 @@ import { errorMessage } from "@/utils/handlers/error-handlers";
 const cooldownMap = new Map<string, number>();
 
 export const SuperAdminApi = {
-  async inviteUser(email: string, redirectPath: string = "/forgot-password"): Promise<User | null> {
+  async inviteUser(email: string, roleId: string, redirectPath: string = "/forgot-password"): Promise<User | null> {
     const now = Date.now();
     const last = cooldownMap.get(email);
 
@@ -22,7 +22,7 @@ export const SuperAdminApi = {
 
     const { data, error } = await supabaseAdmin.auth.admin.inviteUserByEmail(email, {
       redirectTo: `${authRoute}${redirectPath}`,
-      data: { role: "user" },
+      data: { roleId: roleId },
     });
 
     if (error) {
@@ -51,6 +51,15 @@ export const SuperAdminApi = {
 
   async fetchTenantRoles( session: Session | null, tenant_id: string ): Promise<TenantRoleEntity[]> {
     const { data, error } = await apiClient(session).api.tenants({id:tenant_id}).roles.get();
+
+    if (error) {
+      throw new Error(errorMessage(error));
+    }
+    return data;
+  },
+
+  async fetchTenantById( session: Session | null, id: string ): Promise<TenantEntity> {
+    const { data, error } = await apiClient(session).api.tenants({id:id}).get();
 
     if (error) {
       throw new Error(errorMessage(error));
@@ -106,6 +115,12 @@ export const SuperAdminApi = {
     return data;
   },
 
+  async deleteTenantRole(session: Session | null, tenant_id: string, id: string): Promise<void> {
+    const { error } = await apiClient(session).api.tenants({ id: tenant_id }).roles({ roleId : id}).delete();
+
+    if (error) throw new Error(error?.value.message);
+  },
+
   async updateTenantRole(
     session: Session | null,
     tenant_id: string,
@@ -122,6 +137,27 @@ export const SuperAdminApi = {
       permissions,
       is_default,
       is_system_role,
+    });
+
+    if (error) {
+      throw new Error(errorMessage(error));
+    }
+    return data;
+  },
+
+  async updateTenant(
+    session: Session | null,
+    id: string,
+    name: string,
+    is_public: boolean,
+    description?: string,
+    logo_url?: string
+  ): Promise<TenantEntity> {
+    const { data, error } = await apiClient(session).api.tenants({ id: id }).patch({
+      name,
+      description,
+      is_public,
+      logo_url,
     });
 
     if (error) {
