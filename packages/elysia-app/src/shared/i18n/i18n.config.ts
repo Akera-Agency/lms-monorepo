@@ -1,7 +1,7 @@
 import i18next from 'i18next';
 import Backend from 'i18next-fs-backend';
 import { LanguagesEnum } from '../constants/i18n';
-import { env } from 'src/conf/env';
+import { env } from '@akera/env';
 import CommonEng from '../../../assets/locales/en/common.json';
 import CommonAr from '../../../assets/locales/ar/common.json';
 import ErrorsEng from '../../../assets/locales/en/errors.json';

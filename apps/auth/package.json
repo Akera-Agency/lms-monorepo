@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@akera/env": "workspace:*",
     "@akera/ui": "workspace:*",
     "@akera/auth": "workspace:*",
     "@tanstack/react-router": "^1.131.10",

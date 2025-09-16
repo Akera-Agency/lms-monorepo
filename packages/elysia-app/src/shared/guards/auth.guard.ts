@@ -3,7 +3,7 @@ import { AppError } from '../Errors/AppError';
 import { TContext } from '../types/context';
 import jwt from 'jsonwebtoken';
 import { Logger } from '../logger/logger';
-import { env } from 'src/conf/env';
+import { env } from '@akera/env';
 
 // Supabase JWT token payload interface
 export interface ITokenPayload {

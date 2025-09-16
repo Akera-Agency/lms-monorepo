@@ -1,10 +1,10 @@
 import { Resend } from 'resend';
 import fs from 'fs';
 import path from 'path';
-import { env } from 'src/conf/env';
 import { LanguagesEnum } from 'src/shared/constants/i18n';
 import { AppError } from 'src/shared/Errors/AppError';
 import { Logger } from 'src/shared/logger/logger';
+import { env } from '@akera/env';
 
 // We'll implement Handlebars-like functionality without the dependency
 // since we can't install it due to permission issues

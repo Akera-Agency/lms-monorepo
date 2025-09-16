@@ -1,13 +1,13 @@
 import type { ChannelMap, NotifyInput } from './types/types';
 import * as emailChannel from './channels/email';
-import { env } from 'src/conf/env';
+import { env } from '@akera/env';
 import { Logger } from 'src/shared/logger/logger';
 import { notificationRepository } from './infrastructure/notification.repository';
 
 export function createNotifier() {
   async function notify(input: NotifyInput) {
     const allRecipients = await notificationRepository.resolveAudience(
-      input.audience
+      input.audience,
     );
     const wantsInApp = input.channel === 'in_app' || input.channel === 'all';
     const wantsEmail = input.channel === 'email' || input.channel === 'all';
@@ -19,19 +19,19 @@ export function createNotifier() {
             ? notificationRepository.isChannelEnabled(
                 u.id,
                 input.event,
-                'in_app'
+                'in_app',
               )
             : Promise.resolve(false),
           wantsEmail
             ? notificationRepository.isChannelEnabled(
                 u.id,
                 input.event,
-                'email'
+                'email',
               )
             : Promise.resolve(false),
         ]);
         return { user: u, inAppOk, emailOk };
-      })
+      }),
     );
 
     const inAppRecipients = perRecipient
@@ -49,7 +49,7 @@ export function createNotifier() {
               event: input.event,
               template: input.event,
               payload: input.payload,
-            }))
+            })),
           )
         : Promise.resolve(undefined),
       wantsEmail && emailRecipients.length
@@ -63,7 +63,7 @@ export function createNotifier() {
         : Promise.resolve(undefined),
     ]);
 
-    if (env.NOTIFS_DEBUG === '1') {
+    if (env.NOTIFS_DEBUG) {
       Logger.info(
         JSON.stringify({
           at: 'notifications.engine',
@@ -73,9 +73,9 @@ export function createNotifier() {
             email: emailRecipients.length,
           },
           outcomes: results.map((r) =>
-            r.status === 'fulfilled' ? 'ok' : 'error'
+            r.status === 'fulfilled' ? 'ok' : 'error',
           ),
-        })
+        }),
       );
     }
   }

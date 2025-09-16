@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/bun';
-import { env } from 'src/conf/env';
+import { env } from '@akera/env';
 
 Sentry.init({
   dsn: env.SENTRY_DSN,
@@ -8,7 +8,7 @@ Sentry.init({
   beforeSendTransaction(event) {
     const status = event.contexts?.trace?.data?.['http.status_code'];
     const unwanted_status = [404];
-    if ((status && unwanted_status.includes(status)) || env.LOCAL === 'true') {
+    if ((status && unwanted_status.includes(status)) || env.LOCAL) {
       return null;
     } else {
       return event;

@@ -4,7 +4,7 @@ import Elysia, { StatusMap } from 'elysia';
 import { cors } from '@elysiajs/cors';
 import { appModules, servicesMap } from './app.module';
 import { transactionDerive } from './database/transaction';
-import { env } from './conf/env';
+import { env } from '@akera/env';
 import { Logger } from './shared/logger/logger';
 import { seed } from './database/runners/seed';
 import { eventBusPlugin } from './shared/plugins/event-bus.plugin';

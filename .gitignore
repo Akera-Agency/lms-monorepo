@@ -47,5 +47,7 @@ Thumbs.db
 vite.config.*.timestamp*
 vitest.config.*.timestamp*
 
+Legacy env file
 .env
+
 packages/elysia-app/logs/*

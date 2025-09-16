@@ -1,6 +1,6 @@
 import { NotifyInput } from '../types/types';
 import { Mailer, TemplateName } from 'src/core/mailer';
-import { env } from 'src/conf/env';
+import { env } from '@akera/env';
 import { UserEntity } from 'src/modules/users/infrastructure/user.entity';
 import { notificationRepository } from '../infrastructure/notification.repository';
 
