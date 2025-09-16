@@ -18,7 +18,7 @@ export const initializeI18n = async () => {
     fallbackLng: LanguagesEnum.en,
     supportedLngs: [LanguagesEnum.en, LanguagesEnum.ar],
 
-    debug: env.NODE_ENV === 'development',
+    // debug: env.NODE_ENV === 'development',
 
     backend: {
       loadPath: join(process.cwd(), 'assets/locales/{{lng}}/{{ns}}.json'),
@@ -39,7 +39,7 @@ export const initializeI18n = async () => {
     },
 
     interpolation: {
-      escapeValue: false, // React already does escaping
+      escapeValue: false,
     },
 
     // Namespaces for different parts of the application

@@ -1,12 +1,9 @@
-import { config } from 'dotenv';
 import { database } from 'src/database/datasource';
 import { Logger } from 'src/shared/logger/logger';
 import {
   DEFAULT_ROLE_PERMISSIONS,
   ROLES,
 } from 'src/shared/constants/permissions';
-
-config();
 
 export async function seed() {
   await seedDefaultRoles();
@@ -53,7 +50,7 @@ async function seedDefaultRoles() {
 
     Logger.info('Default system roles seeded successfully.');
   } catch (error) {
-    Logger.error('Failed to seed default roles' + error);
+    Logger.error('Failed to seed default roles ' + error);
     process.exitCode = 1;
   }
 }

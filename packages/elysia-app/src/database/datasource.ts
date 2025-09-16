@@ -27,14 +27,14 @@ export const database = new Kysely<IDb>({
       Logger.info(
         `Executed query: ${query.sql} ${
           query.parameters.length > 0 ? `with params:[${query.parameters}]` : ''
-        } in ${event.queryDurationMillis} ms`
+        } in ${event.queryDurationMillis} ms`,
       );
     } else {
       Logger.error(
         `Executed query: ${query.sql} ${
           query.parameters.length > 0 ? `with params:[${query.parameters}]` : ''
         } in ${event.queryDurationMillis} ms`,
-        event.error as undefined
+        event.error as undefined,
       );
     }
   },

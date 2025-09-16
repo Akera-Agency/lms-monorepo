@@ -6,11 +6,8 @@ import {
   NO_MIGRATIONS,
   NoMigrations,
 } from 'kysely';
-import { config } from 'dotenv';
 import { database } from '../datasource';
 import { Logger } from 'src/shared/logger/logger';
-
-config();
 
 async function migrateTo(
   targetMigration: string | NoMigrations = NO_MIGRATIONS,

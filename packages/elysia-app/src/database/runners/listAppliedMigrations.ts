@@ -1,11 +1,8 @@
 import * as path from 'path';
 import { promises as fs } from 'fs';
 import { Migrator, FileMigrationProvider } from 'kysely';
-import { config } from 'dotenv';
 import { database } from '../datasource';
 import { Logger } from 'src/shared/logger/logger';
-
-config();
 
 async function listAppliedMigrations() {
   const migrator = new Migrator({
