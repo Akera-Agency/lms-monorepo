@@ -6,13 +6,15 @@ import type { TenantEntity } from "elysia-app/src/modules/tenants/infrastructure
 import type { TenantRoleEntity } from "elysia-app/src/modules/tenants/infrastructure/tenant-role.entity";
 import type { PermissionOption, Resource } from "../../../../packages/features/src/validation/tenantValidation";
 import { errorMessage } from "@/utils/handlers/error-handlers";
+import type { TenantUserEntity } from "elysia-app/src/modules/tenants/infrastructure/tenant-user.entity";
 
 const cooldownMap = new Map<string, number>();
 
 export const SuperAdminApi = {
-  async inviteUser(email: string, roleId: string, redirectPath: string = "/forgot-password"): Promise<User | null> {
+  async inviteUser(email: string, roleId: string, tenantId: string): Promise<User | null> {
     const now = Date.now();
     const last = cooldownMap.get(email);
+    const redirectPath = "/forgot-password"
 
     if (last && now - last < 60_000) {
       throw new Error(
@@ -22,7 +24,10 @@ export const SuperAdminApi = {
 
     const { data, error } = await supabaseAdmin.auth.admin.inviteUserByEmail(email, {
       redirectTo: `${authRoute}${redirectPath}`,
-      data: { roleId: roleId },
+      data: {
+        roleId: roleId,
+        tenantId: tenantId
+      },
     });
 
     if (error) {
@@ -32,6 +37,24 @@ export const SuperAdminApi = {
     cooldownMap.set(email, now);
     return data.user;
   },
+
+  async assignUserToTenant(
+    session: Session | null,
+    tenantId: string,
+    userId: string,
+    roleId: string,
+  ): Promise<TenantUserEntity> {
+    const { data, error } = await apiClient(session).api.tenants({id: tenantId}).users.post({
+      userId,
+      roleId
+    })
+
+    if (error) {
+      throw new Error(errorMessage(error));
+    }
+    return data;
+  },
+
 
   async fetchTenants(
     session: Session | null,

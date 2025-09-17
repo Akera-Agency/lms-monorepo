@@ -1,5 +1,4 @@
 
-import React from 'react'
 import { Plus, Shield } from 'lucide-react';
 import EditRole  from "./edit-role"
 import { Button } from '../../../ui/src/components/button/button';

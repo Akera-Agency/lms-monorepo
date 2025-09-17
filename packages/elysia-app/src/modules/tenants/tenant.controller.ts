@@ -2,7 +2,7 @@ import Elysia, { t } from 'elysia';
 import { TContext } from '../../shared/types/context';
 import { authGuard } from '../../shared/guards/auth.guard';
 import { createAccessGuard } from 'src/shared/guards/permission.guard';
-import { AppError } from 'src/shared/Errors/AppError';
+// import { AppError } from 'src/shared/Errors/AppError';
 
 const prefix = '/tenants';
 
@@ -132,12 +132,12 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
           .get(
             '/:id',
             async (ctx) => {
-              if (ctx.auth.tenantId !== ctx.params.id) {
-                throw new AppError({
-                  error: 'unauthorized_tenant',
-                  statusCode: 403,
-                });
-              }
+              // if (ctx.auth.tenantId !== ctx.params.id) {
+              //   throw new AppError({
+              //     error: 'unauthorized_tenant',
+              //     statusCode: 403,
+              //   });
+              // }
               return await ctx.store.TenantService.findOne(ctx.params.id);
             },
             {
@@ -177,12 +177,12 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
           .patch(
             '/:id',
             async (ctx) => {
-              if (ctx.auth.tenantId !== ctx.params.id) {
-                throw new AppError({
-                  error: 'unauthorized_tenant',
-                  statusCode: 403,
-                });
-              }
+              // if (ctx.auth.tenantId !== ctx.params.id) {
+              //   throw new AppError({
+              //     error: 'unauthorized_tenant',
+              //     statusCode: 403,
+              //   });
+              // }
               return await ctx.store.TenantService.update(
                 ctx.params.id,
                 ctx.body,
@@ -208,12 +208,12 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
           .delete(
             '/:id',
             async (ctx) => {
-              if (ctx.auth.tenantId !== ctx.params.id) {
-                throw new AppError({
-                  error: 'unauthorized_tenant',
-                  statusCode: 403,
-                });
-              }
+              // if (ctx.auth.tenantId !== ctx.params.id) {
+              //   throw new AppError({
+              //     error: 'unauthorized_tenant',
+              //     statusCode: 403,
+              //   });
+              // }
               return await ctx.store.TenantService.delete(ctx.params.id);
             },
             {
@@ -235,12 +235,12 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
           .get(
             '/:id/roles',
             async (ctx) => {
-              if (ctx.auth.tenantId !== ctx.params.id) {
-                throw new AppError({
-                  error: 'unauthorized_tenant',
-                  statusCode: 403,
-                });
-              }
+              // if (ctx.auth.tenantId !== ctx.params.id) {
+              //   throw new AppError({
+              //     error: 'unauthorized_tenant',
+              //     statusCode: 403,
+              //   });
+              // }
               return await ctx.store.TenantService.getTenantRoles(
                 ctx.params.id,
               );
@@ -264,12 +264,12 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
           .post(
             '/:id/roles',
             async (ctx) => {
-              if (ctx.auth.tenantId !== ctx.params.id) {
-                throw new AppError({
-                  error: 'unauthorized_tenant',
-                  statusCode: 403,
-                });
-              }
+              // if (ctx.auth.tenantId !== ctx.params.id) {
+              //   throw new AppError({
+              //     error: 'unauthorized_tenant',
+              //     statusCode: 403,
+              //   });
+              // }
               const tenant = await ctx.store.TenantService.findOne(
                 ctx.params.id,
               );
@@ -298,12 +298,12 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
           .patch(
             '/:id/roles/:roleId',
             async (ctx) => {
-              if (ctx.auth.tenantId !== ctx.params.id) {
-                throw new AppError({
-                  error: 'unauthorized_tenant',
-                  statusCode: 403,
-                });
-              }
+              // if (ctx.auth.tenantId !== ctx.params.id) {
+              //   throw new AppError({
+              //     error: 'unauthorized_tenant',
+              //     statusCode: 403,
+              //   });
+              // }
               return await ctx.store.TenantService.updateRoleForTenant(
                 ctx.params.roleId,
                 ctx.body,
@@ -330,12 +330,12 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
           .delete(
             '/:id/roles/:roleId',
             async (ctx) => {
-              if (ctx.auth.tenantId !== ctx.params.id) {
-                throw new AppError({
-                  error: 'unauthorized_tenant',
-                  statusCode: 403,
-                });
-              }
+              // if (ctx.auth.tenantId !== ctx.params.id) {
+              //   throw new AppError({
+              //     error: 'unauthorized_tenant',
+              //     statusCode: 403,
+              //   });
+              // }
               await ctx.store.TenantService.removeRoleFromTenant(
                 ctx.params.roleId,
               );
@@ -360,12 +360,12 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
           .post(
             '/:id/users',
             async (ctx) => {
-              if (ctx.auth.tenantId !== ctx.params.id) {
-                throw new AppError({
-                  error: 'unauthorized_tenant',
-                  statusCode: 403,
-                });
-              }
+              // if (ctx.auth.tenantId !== ctx.params.id) {
+              //   throw new AppError({
+              //     error: 'unauthorized_tenant',
+              //     statusCode: 403,
+              //   });
+              // }
               return await ctx.store.TenantService.assignUserToTenant(
                 ctx.params.id,
                 ctx.body.userId,
@@ -392,12 +392,12 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
           .delete(
             '/:id/users/:userId',
             async (ctx) => {
-              if (ctx.auth.tenantId !== ctx.params.id) {
-                throw new AppError({
-                  error: 'unauthorized_tenant',
-                  statusCode: 403,
-                });
-              }
+              // if (ctx.auth.tenantId !== ctx.params.id) {
+              //   throw new AppError({
+              //     error: 'unauthorized_tenant',
+              //     statusCode: 403,
+              //   });
+              // }
               return await ctx.store.TenantService.removeUserFromTenant(
                 ctx.params.id,
                 ctx.params.userId,
@@ -423,12 +423,12 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
           .get(
             '/:id/users',
             async (ctx) => {
-              if (ctx.auth.tenantId !== ctx.params.id) {
-                throw new AppError({
-                  error: 'unauthorized_tenant',
-                  statusCode: 403,
-                });
-              }
+              // if (ctx.auth.tenantId !== ctx.params.id) {
+              //   throw new AppError({
+              //     error: 'unauthorized_tenant',
+              //     statusCode: 403,
+              //   });
+              // }
               return await ctx.store.TenantService.getTenantUsers(
                 ctx.params.id,
                 {
@@ -460,12 +460,12 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
           .patch(
             '/:id/users/:userId/role',
             async (ctx) => {
-              if (ctx.auth.tenantId !== ctx.params.id) {
-                throw new AppError({
-                  error: 'unauthorized_tenant',
-                  statusCode: 403,
-                });
-              }
+              // if (ctx.auth.tenantId !== ctx.params.id) {
+              //   throw new AppError({
+              //     error: 'unauthorized_tenant',
+              //     statusCode: 403,
+              //   });
+              // }
               return await ctx.store.TenantService.updateUserRoleInTenant(
                 ctx.params.id,
                 ctx.params.userId,

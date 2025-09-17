@@ -1,5 +1,4 @@
 
-import React from 'react'
 import { University } from 'lucide-react';
 import EditTenant from './edit-tenant';
 

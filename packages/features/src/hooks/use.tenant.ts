@@ -43,10 +43,10 @@ export const useTenant = () => {
       0: resourceList[0],
     });
 
-    const [selectedTenant, setSelectedTenant] = useState<{ [key: number]: TenantData }>({});
+    const [tenantId, setTenantId] = useState<string>()
+    const [roleId, setRoleId] = useState<string>()
 
-    const [index, setIndex] = useState (1)
-      
+
     return {
       tenantData,
       errors,
@@ -54,10 +54,10 @@ export const useTenant = () => {
       roles,
       selectedResource,
       userData,
-      selectedTenant,
-      index,
-      setIndex,
-      setSelectedTenant,
+      tenantId,
+      roleId,
+      setRoleId,
+      setTenantId,
       setUserData,
       setSelectedResource,
       setErrors,

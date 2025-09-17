@@ -1,90 +1,50 @@
 import { SuperAdminQueries } from "@/queries/super-tenant-queries";
 import { Button } from "@ui/components/button/button";
-import { validateTenantForm, createEmptyPermissions, type RoleData } from "../../../../packages/features/src/validation/tenantValidation";
 import { useToastNotifications } from "../../../../packages/features/src/hooks/use.toast-notification";
 import { useTenantContext } from "../../../../packages/features/src/providers/tenant-provider";
 import AddUser from "../../../../packages/features/src/components/add-user"
-import { useEffect, useState } from "react";
 
 export default function InviteUser() {
   const {
     setErrors,
-    tenantData,
-    setTenantData,
-    roles,
-    setRoles,
+    userData,
+    setUserData,
+    roleId,
     isSubmitting,
     setIsSubmitting,
-    selectedTenant,
-    index
+    tenantId,
   } = useTenantContext();
 
-  const { successMessage, handleCreateTenant } = SuperAdminQueries();
+  const { userTenantStatus, handleAssignUserTotenant } = SuperAdminQueries();
   const { error, loading, tenants: tenantList } = SuperAdminQueries().tenants();
+  const { tenantRoles } = SuperAdminQueries().tenantRoles(tenantId ?? "");
 
-  const [tenantRolesById, setTenantRolesById] = useState<
-    Record<string, RoleData[]>
-  >({});
-
-  useToastNotifications({ successMessage, error });
+  useToastNotifications({ successMessage: userTenantStatus, error });
 
   const isDisabled = isSubmitting || loading;
 
-  const fetchTenantRoles = async (tenantId: string) => {
-    if (!tenantRolesById[tenantId]) {
-      const { tenantRoles } = SuperAdminQueries().tenantRoles(tenantId);
-      const rolesData = await tenantRoles;
-      setTenantRolesById((prev) => ({ ...prev, [tenantId]: rolesData }));
-    }
-  };
-
-  useEffect(() => {
-    const tenantId = selectedTenant[index]?.id;
-    if (tenantId) {
-      fetchTenantRoles(tenantId);
-    }
-  }, [selectedTenant[index]?.id]);
-
   const handleSubmit = async () => {
-    const validationErrors = validateTenantForm({ tenantData, roles });
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-      return;
-    }
+    // const validationErrors = validateTenantForm({ tenantData, roles });
+    // if (Object.keys(validationErrors).length > 0) {
+    //   setErrors(validationErrors);
+    //   return;
+    // }
 
     setIsSubmitting(true);
     try {
-      await handleCreateTenant({
-        tenantName: tenantData.name.trim(),
-        is_public: tenantData.is_public,
-        roles: roles.map((r) => ({
-          roleName: r.name.trim(),
-          permissions: r.permissions,
-          is_default: r.is_default,
-          is_system_role: r.is_system_role,
-          roleDescription: r.description?.trim(),
-        })),
-        tenantDescription: tenantData.description?.trim(),
+      await handleAssignUserTotenant({
+        email: userData.email,
+        tenantId: tenantId ?? "",
+        roleId: roleId ?? ""
       });
 
-      setTenantData({
-        name: "",
-        description: "",
-        logo_url: "",
-        is_public: true,
+      setUserData({
+        email:""
       });
-      setRoles([
-        {
-          name: "",
-          description: "",
-          permissions: createEmptyPermissions(),
-          is_default: true,
-          is_system_role: false,
-        },
-      ]);
+
       setErrors({});
     } catch (err) {
-      console.error("Error creating tenant:", err);
+      console.error("Error inviting user:", err);
     } finally {
       setIsSubmitting(false);
     }
@@ -111,11 +71,7 @@ export default function InviteUser() {
           <AddUser
             isDisabled={isDisabled}
             tenants={tenantList}
-            // index={2}
-            roles={
-              tenantRolesById[selectedTenant[index]?.id || ""] || [] 
-            }
-            fetchTenantRoles={fetchTenantRoles} 
+            roles={tenantRoles}
           />
 
           <div className="flex justify-center pt-4">

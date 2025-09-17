@@ -5,6 +5,9 @@
       "path": "../../packages/ui"
     },
     {
+      "path": "../../packages/features"
+    },
+    {
       "path": "./tsconfig.app.json"
     },
     {

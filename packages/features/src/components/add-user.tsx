@@ -1,5 +1,4 @@
 
-import React from 'react'
 import { User } from 'lucide-react';
 import EditUser from './edit-user';
 import { RoleData, TenantData } from '../validation/tenantValidation';
@@ -7,17 +6,13 @@ import { RoleData, TenantData } from '../validation/tenantValidation';
 interface AddTenantProps {
   isDisabled: boolean;
   tenants: TenantData[];
-  // index: number;
   roles: RoleData[];
-  fetchTenantRoles: (tenantId: string) => Promise<void>;
 }
 
 export default function AddUser({
   isDisabled,
   tenants,
-  // index,
   roles,
-  fetchTenantRoles,
 }: AddTenantProps) {
   return (
     <div className="backdrop-blur-sm border border-neutral-700 rounded-xl p-6 space-y-6 bg-neutral-800/20">
@@ -29,10 +24,8 @@ export default function AddUser({
       </div>
       <EditUser
         isDisabled={isDisabled}
-        // index={index}
         tenants={tenants}
         roles={roles}
-        fetchTenantRoles={fetchTenantRoles}
       />
     </div>
   );

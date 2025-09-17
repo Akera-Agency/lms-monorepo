@@ -1,0 +1,16 @@
+{
+  "name": "@akera/features",
+  "projectType": "library",
+  "sourceRoot": "packages/features/src",
+  "tags": ["type:lib", "scope:ui"],
+  "targets": {
+    "typecheck": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "packages/features/dist",
+        "tsConfig": "packages/features/tsconfig.lib.json"
+      }
+    }
+  }
+}

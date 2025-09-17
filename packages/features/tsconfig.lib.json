@@ -12,7 +12,9 @@
     "lib": ["ES2022", "DOM", "DOM.Iterable"]
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],
-  "references": [],
+  "references": [
+    {"path": "../ui"}
+  ],
   "exclude": [
     "vite.config.ts",
     "vite.config.mts",

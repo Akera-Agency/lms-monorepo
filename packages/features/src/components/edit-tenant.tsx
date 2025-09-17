@@ -1,4 +1,3 @@
-import React from 'react'
 import Input from "../../../../packages/ui/src/components/form/input";
 import Switch from "../../../../packages/ui/src/components/switch/switch";
 import { useTenantContext } from '../providers/tenant-provider';

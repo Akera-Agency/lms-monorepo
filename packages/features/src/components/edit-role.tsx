@@ -1,4 +1,3 @@
-import React from "react";
 import { Button } from "../../../ui/src/components/button/button";
 import Input from "../../../../packages/ui/src/components/form/input";
 import Switch from "../../../../packages/ui/src/components/switch/switch";
@@ -16,7 +15,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "../../../../packages/ui/src/components/shadcn/dropdown-menu";
+} from "../../../ui/src/components/shadcn/dropdown-menu";
 import { useTenantContext } from "../providers/tenant-provider";
 
 interface EditRoleProps {

@@ -1,4 +1,4 @@
-import { LanguagesEnum } from "packages/elysia-app/src/shared/constants/i18n";
+import { LanguagesEnum } from "../../../elysia-app/src/shared/constants/i18n";
 
 export const resources = [
   "tenant_roles",

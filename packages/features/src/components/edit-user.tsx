@@ -1,4 +1,3 @@
-import React, { useEffect } from "react";
 import Input from "../../../../packages/ui/src/components/form/input";
 import { useTenantContext } from "../providers/tenant-provider";
 import { TenantData, UserData, RoleData } from "../validation/tenantValidation";
@@ -10,6 +9,7 @@ import {
 } from "../../../../packages/ui/src/components/shadcn/dropdown-menu";
 import { Button } from "../../../../packages/ui/src/components/button/button";
 import { ChevronDown, University, Shield } from "lucide-react";
+import { useState } from "react";
 
 interface EditUserProps {
     isDisabled: boolean;
@@ -18,8 +18,6 @@ interface EditUserProps {
     tenants: TenantData[];
     roles: RoleData[];
     errors?: any;
-    // index: number;
-    fetchTenantRoles: (tenantId: string) => Promise<void>;
   }
 
   export default function EditUser({
@@ -29,8 +27,6 @@ interface EditUserProps {
     errors: propErrors,
     tenants,
     roles,
-    // index,
-    fetchTenantRoles,
   }: EditUserProps) {
     const context = useTenantContext();
 
@@ -38,16 +34,8 @@ interface EditUserProps {
   const setUserData = propSetUserData || context.setUserData;
   const errors = propErrors || context.errors;
 
-  const { selectedTenant, setSelectedTenant, index, setIndex } = context;
-
-  const [selectedRole, setSelectedRole] = React.useState<RoleData | null>(null);
-
-  useEffect(() => {
-    const tenantId = selectedTenant[index]?.id;
-    if (tenantId) {
-      fetchTenantRoles(tenantId);
-    }
-  }, [selectedTenant[index]?.id]);
+  const [selectedRole, setSelectedRole] = useState<RoleData | null>(null);
+  const [selectedTenant, setSelectedTenant] = useState<TenantData | null>(null);
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -67,10 +55,9 @@ interface EditUserProps {
         disabled={isDisabled}
       />
 
-      {/* Tenant Dropdown */}
       <div className="gap-2 flex flex-col h-30">
         <span className="text-white">Tenant</span>
-        <DropdownMenu key={`tenant_${index}`}>
+        <DropdownMenu key="tenant">
           <DropdownMenuTrigger asChild>
             <Button
               type="button"
@@ -78,8 +65,7 @@ interface EditUserProps {
               className="bg-neutral-700 hover:bg-neutral-600 text-white border border-neutral-600 px-4 py-2 rounded-md flex items-center gap-2 justify-between"
             >
               <University className="h-4 w-4" />
-              {selectedTenant[index]?.name ||
-                tenants[index]?.name ||
+              {selectedTenant?.name ||
                 "Select a tenant"}
               <ChevronDown className="h-4 w-4" />
             </Button>
@@ -89,22 +75,16 @@ interface EditUserProps {
               <DropdownMenuItem
                 key={tenant.id}
                 onClick={() =>
-                {
-                  setIndex(index)
-                  setSelectedTenant((prev) => ({
-                    ...prev,
-                    [index]: tenant,
-                  }))
-                }
+                { context.setTenantId(tenant.id), setSelectedTenant(tenant) }
                 }
                 className={`hover:bg-neutral-700 cursor-pointer ${
-                  (selectedTenant[index] || tenants[index]) === tenant
+                  (selectedTenant) === tenant
                     ? "bg-neutral-700"
                     : ""
                 }`}
               >
                 {tenant.name}
-                {(selectedTenant[index] || tenants[index]) === tenant && (
+                {(selectedTenant) === tenant && (
                   <span className="ml-auto text-primaryOrange">●</span>
                 )}
               </DropdownMenuItem>
@@ -115,11 +95,11 @@ interface EditUserProps {
 
       <div className="gap-2 flex flex-col h-30">
         <span className="text-white">Role</span>
-        <DropdownMenu key={`role_${index}`}>
+        <DropdownMenu key="role">
           <DropdownMenuTrigger asChild>
             <Button
               type="button"
-              disabled={isDisabled || !selectedTenant[index]}
+              disabled={isDisabled || !selectedTenant}
               className="bg-neutral-700 hover:bg-neutral-600 text-white border border-neutral-600 px-4 py-2 rounded-md flex items-center gap-2 justify-between"
             >
               <Shield className="h-4 w-4" />
@@ -132,7 +112,7 @@ interface EditUserProps {
               roles.map((role) => (
                 <DropdownMenuItem
                   key={role.id}
-                  onClick={() => setSelectedRole(role)}
+                  onClick={() =>{ setSelectedRole(role), context.setRoleId(role.id) }}
                   className={`hover:bg-neutral-700 cursor-pointer ${
                     selectedRole?.id === role.id ? "bg-neutral-700" : ""
                   }`}

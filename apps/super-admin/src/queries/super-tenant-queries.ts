@@ -5,6 +5,7 @@ import type { TenantEntity } from "elysia-app/src/modules/tenants/infrastructure
 import type { TenantRoleEntity } from "elysia-app/src/modules/tenants/infrastructure/tenant-role.entity";
 import type { PermissionOption, Resource } from "../../../../packages/features/src/validation/tenantValidation";
 import { normalizeError } from "../utils/handlers/error-handlers";
+import type { TenantUserEntity } from "elysia-app/src/modules/tenants/infrastructure/tenant-user.entity";
 
 export function SuperAdminQueries() {
   const { session } = useAuthForm();
@@ -219,11 +220,45 @@ export function SuperAdminQueries() {
     },
   });
 
+  const InviteUserMutation = useMutation<
+  { tenantUser: TenantUserEntity },
+  Error,
+  {
+    email: string,
+    tenantId: string,
+    roleId: string,
+    
+  }
+>({
+  mutationFn: async ({
+    email,
+    tenantId,
+    roleId,
+  }) => {
+
+    const user = await SuperAdminApi.inviteUser(email, roleId, tenantId)
+    if (user){
+      const assignUserToTenant = await SuperAdminApi.assignUserToTenant(session,tenantId,user.id,roleId)
+      return { invitedUser: user, tenantUser: assignUserToTenant };
+    }
+    else{
+      throw Error ("Error inviting user")
+    }
+  },
+  onSuccess: ({ tenantUser }) => {
+    queryClient.setQueryData<TenantUserEntity[]>(["tenant_users"], (old = []) => [...old, tenantUser]);
+  },
+  onError: (err) => {
+    console.error("Assigning user to tenant error:", normalizeError(err));
+  },
+});
+
   return {
     tenants,
     tenantById,
     tenantRoles,
     handleCreateTenant: createTenantMutation.mutateAsync,
+    handleAssignUserTotenant: InviteUserMutation.mutateAsync,
     deleteTenant: deleteTenantMutation.mutateAsync,
     deleteTenantRole: deleteTenantRoleMutation.mutateAsync,
     updateTenantRole: updateTenantRoleMutation.mutateAsync,
@@ -232,6 +267,7 @@ export function SuperAdminQueries() {
     deleteTenantStatus: deleteTenantMutation.status,
     deleteTenantRoleStatus: deleteTenantRoleMutation.status,
     updateTenantRoleStatus: updateTenantRoleMutation.status,
-    updateTenantStatus: updateTenantMutation.status
+    updateTenantStatus: updateTenantMutation.status,
+    userTenantStatus: InviteUserMutation.status
   };
 }

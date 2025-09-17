@@ -26,13 +26,13 @@ export const baseSchema = z.object({
   SUPABASE_JWT_SECRET: z.string().min(1),
 
   // Supabase Additional (from supabase package)
-  JWT_SECRET: z.string().min(1),
-  ANON_KEY: z.string().min(1),
-  SERVICE_ROLE_KEY: z.string().min(1),
-  DASHBOARD_USERNAME: z.string().min(1),
-  DASHBOARD_PASSWORD: z.string().min(1),
-  SECRET_KEY_BASE: z.string().min(1),
-  VAULT_ENC_KEY: z.string().min(1),
+  // JWT_SECRET: z.string().min(1),
+  // ANON_KEY: z.string().min(1),
+  // SERVICE_ROLE_KEY: z.string().min(1),
+  // DASHBOARD_USERNAME: z.string().min(1),
+  // DASHBOARD_PASSWORD: z.string().min(1),
+  // SECRET_KEY_BASE: z.string().min(1),
+  // VAULT_ENC_KEY: z.string().min(1),
 
   // Supavisor Database Pooler
   POOLER_PROXY_PORT_TRANSACTION: z.coerce
@@ -112,7 +112,7 @@ export const baseSchema = z.object({
   NOTIFS_DEBUG: z.coerce.boolean().default(false),
 
   // Sentry Error Tracking
-  SENTRY_DSN: z.string().url().or(z.literal('')).optional(),
+  // SENTRY_DSN: z.string().url().or(z.literal('')).optional(),
 
   // PostHog Analytics
   POSTHOG_API_KEY: z.string().min(1),

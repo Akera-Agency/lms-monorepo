@@ -13,7 +13,15 @@
     }
   },
   "references": [
-    { "path": "../auth" }
+    { 
+      "path": "../auth" 
+    },
+    {
+      "path": "../features"
+    },
+    {
+      "path": "../env"
+    }
   ],
   "include": [
     "src/**/*.ts",
@@ -23,9 +31,4 @@
     "assets/**/*.json"
   ],
   "exclude": ["node_modules", "dist"],
-  "references": [
-    {
-      "path": "../env"
-    }
-  ]
 }
