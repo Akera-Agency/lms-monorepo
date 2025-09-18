@@ -6,6 +6,16 @@ export type UserUpdatedEvent = {
   oldUser: UserEntity;
 };
 
-app.eventBus.on('user:updated', async (u: UserUpdatedEvent) => {
-  Logger.info(`Event user:updated -> ${u.newUser.id}`);
-});
+export const userHandler = {
+  onUserUpdated: (payload: UserUpdatedEvent) => {
+    try {
+      Logger.info(`Event user:updated -> ${payload.newUser.id}`);
+    } catch (error) {
+      throw new EvalError(
+        error instanceof Error ? error.message : 'Unknown error',
+      );
+    }
+  },
+};
+
+app.eventBus.on('user:updated', userHandler.onUserUpdated);
