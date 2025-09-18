@@ -45,5 +45,7 @@
   "jwt_token_expired": "JWT token has expired",
   "invalid_jwt_token": "Invalid JWT token",
   "authentication_token_required": "Authentication token is required",
-  "anonymous_access_not_allowed": "Anonymous access is not allowed"
+  "anonymous_access_not_allowed": "Anonymous access is not allowed",
+  "activity_not_found": "Activity not found",
+  "activity_update_failed": "Failed to update activity"
 }

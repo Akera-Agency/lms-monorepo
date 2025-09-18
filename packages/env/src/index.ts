@@ -124,18 +124,13 @@ export const baseSchema = z.object({
   AWS_SECRET_ACCESS_KEY: z.string().min(1),
   AWS_REGION: z.string().min(1),
 
-  // Client-safe variables (for frontend apps)
-  NEXT_PUBLIC_API_URL: z.string().url().optional(),
-  NEXT_PUBLIC_SUPABASE_URL: z.string().url().optional(),
-  NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().optional(),
-  NEXT_PUBLIC_POSTHOG_KEY: z.string().optional(),
-  NEXT_PUBLIC_SENTRY_DSN: z.string().url().optional(),
-
   // Vite Environment Variables (for frontend apps)
-  VITE_ANON_KEY: z.string().optional(),
-  VITE_API_EXTERNAL_URL: z.string().url().optional(),
-  VITE_AUTH_APP: z.string().url().optional(),
-  VITE_USER_APP: z.string().url().optional(),
+  VITE_ANON_KEY: z.string(),
+  VITE_API_EXTERNAL_URL: z.string().url(),
+  VITE_AUTH_APP: z.string().url(),
+  VITE_USER_APP: z.string().url(),
+  VITE_TENANT_APP: z.string().url(),
+  VITE_SUPER_ADMIN_APP: z.string().url(),
 });
 
 export const schema = baseSchema.superRefine((v, ctx) => {

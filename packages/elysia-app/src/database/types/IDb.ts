@@ -8,6 +8,7 @@ import {
   KyselyNotificationLog,
   KyselyNotificationPreference,
 } from 'src/modules/notifications/infrastructure/notification.entity';
+import { KyselyActivityEntity } from '../../modules/activities/infrastructure/activity.entity';
 
 export interface IDb {
   users: KyselyUserEntity;
@@ -18,4 +19,5 @@ export interface IDb {
   notifications: KyselyNotification;
   notification_logs: KyselyNotificationLog;
   notification_preferences: KyselyNotificationPreference;
+  activities: KyselyActivityEntity;
 }

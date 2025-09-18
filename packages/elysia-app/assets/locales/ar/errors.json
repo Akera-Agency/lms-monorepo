@@ -45,5 +45,7 @@
   "jwt_token_expired": "انتهت صلاحية رمز JWT",
   "invalid_jwt_token": "رمز JWT غير صحيح",
   "authentication_token_required": "رمز المصادقة مطلوب",
-  "anonymous_access_not_allowed": "الوصول المجهول غير مسموح"
+  "anonymous_access_not_allowed": "الوصول المجهول غير مسموح",
+  "activity_not_found": "النشاط غير موجود",
+  "activity_update_failed": "فشل في تحديث النشاط"
 }

@@ -24,6 +24,7 @@ import { roleController } from './modules/roles/role.controller';
 import { userController } from './modules/users/user.controller';
 import { tenantController } from './modules/tenants/tenant.controller';
 import { notificationController } from './modules/notifications/notification.controller';
+import { activityController } from './modules/activities/activity.controller';
 
 const prefix = '/api';
 
@@ -33,12 +34,24 @@ export type ErrorResponse = {
 };
 
 export const app = new Elysia<typeof prefix, TContext>({ prefix })
-.use(cors({
-  origin: ['http://localhost:5176', 'http://localhost:5174', 'http://localhost:5175', 'http://localhost:5173'],         
-  credentials: true,
-  allowedHeaders: ['Content-Type', 'Authorization', "Accept", "accept-language"], 
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-}))
+  .use(
+    cors({
+      origin: [
+        env.VITE_AUTH_APP,
+        env.VITE_USER_APP,
+        env.VITE_TENANT_APP,
+        env.VITE_SUPER_ADMIN_APP,
+      ],
+      credentials: true,
+      allowedHeaders: [
+        'Content-Type',
+        'Authorization',
+        'Accept',
+        'accept-language',
+      ],
+      methods: ['GET', 'POST', 'DELETE', 'PATCH'],
+    }),
+  )
   .error({ AppError, PostgresError, EventError, CronError })
   .use(requestID())
   .use(swagger({ path: '/docs' }))
@@ -100,7 +113,6 @@ export const app = new Elysia<typeof prefix, TContext>({ prefix })
       },
     };
   })
-  
   .use(eventBusPlugin)
   .derive(async ({ store }) => {
     const trx = await transactionDerive();
@@ -141,7 +153,8 @@ export const app = new Elysia<typeof prefix, TContext>({ prefix })
   .use(tenantController)
   .use(roleController)
   .use(userController)
-  .use(notificationController);
+  .use(notificationController)
+  .use(activityController);
 
 export type App = typeof app;
 
