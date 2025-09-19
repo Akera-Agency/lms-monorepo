@@ -26,9 +26,7 @@ export const notificationPreferenceSchema = z.object({
 });
 
 export const updateNotificationPreferencesSchema = z.object({
-  preferences: z
-    .array(notificationPreferenceSchema)
-    .min(1, 'At least one preference is required'),
+  preferences: z.array(notificationPreferenceSchema).min(1, 'At least one preference is required'),
 });
 
 export const notificationQuerySchema = z.object({
@@ -41,9 +39,7 @@ export const notificationQuerySchema = z.object({
 });
 
 export type NotificationReadRequest = z.infer<typeof notificationReadSchema>;
-export type NotificationPreference = z.infer<
-  typeof notificationPreferenceSchema
->;
+export type NotificationPreference = z.infer<typeof notificationPreferenceSchema>;
 export type UpdateNotificationPreferencesRequest = z.infer<
   typeof updateNotificationPreferencesSchema
 >;
