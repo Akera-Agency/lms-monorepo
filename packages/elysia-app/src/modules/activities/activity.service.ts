@@ -47,7 +47,7 @@ export class ActivityService extends BaseService {
     const activity = await this.activityRepository.create(activityData);
 
     // Emit event for further processing (leaderboards, achievements, etc.)
-    eventBus.emit("activity:created", { activity });
+    eventBus.emit('activity:created', { activity });
 
     return activity;
   }
