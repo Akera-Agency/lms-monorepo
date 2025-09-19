@@ -1,48 +1,21 @@
-import Elysia, { t } from 'elysia';
+import Elysia from 'elysia';
 import { TContext } from '../../shared/types/context';
 import { authGuard } from '../../shared/guards/auth.guard';
 import { createAccessGuard } from 'src/shared/guards/permission.guard';
 import { AppError } from 'src/shared/Errors/AppError';
+import {
+  createTenantSchema,
+  updateTenantSchema,
+  createTenantRoleSchema,
+  updateTenantRoleSchema,
+  tenantUserRoleSchema,
+  tenantPaginationQuerySchema,
+  tenantParamsSchema,
+  tenantRoleParamsSchema,
+  tenantUserParamsSchema,
+} from './schemas/tenant.schema';
 
 const prefix = '/tenants';
-
-const createTenantValidationSchema = t.Object({
-  name: t.String(),
-  description: t.Optional(t.String()),
-  logo_url: t.Optional(t.String()),
-  is_public: t.Boolean(),
-});
-
-const updateTenantValidationSchema = t.Object({
-  name: t.Optional(t.String()),
-  description: t.Optional(t.String()),
-  logo_url: t.Optional(t.String()),
-  is_public: t.Optional(t.Boolean()),
-});
-
-const createTenantRoleValidationSchema = t.Object({
-  name: t.String(),
-  permissions: t.Record(
-    t.String(),           
-    t.Array(t.String()) 
-  ),
-  is_default: t.Boolean(),
-  is_system_role: t.Boolean(),
-  description: t.Optional(t.String()),
-});
-
-const updateTenantRoleValidationSchema = t.Object({
-  name: t.Optional(t.String()),
-  permissions: t.Optional(t.Object({})),
-  is_default: t.Optional(t.Boolean()),
-  is_system_role: t.Optional(t.Boolean()),
-  description: t.Optional(t.String()),
-});
-
-const tenantUserRoleValidationSchema = t.Object({
-  roleId: t.String(),
-  userId: t.String(),
-});
 
 export const tenantController = new Elysia<typeof prefix, TContext>({
   prefix,
@@ -76,11 +49,7 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
       });
     },
     {
-      query: t.Object({
-        page: t.Optional(t.Number()),
-        limit: t.Optional(t.Number()),
-        search: t.Optional(t.String()),
-      }),
+      query: tenantPaginationQuerySchema,
     },
   )
   .guard({}, (app) =>
@@ -112,11 +81,7 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
               });
             },
             {
-              query: t.Object({
-                page: t.Number(),
-                limit: t.Number(),
-                search: t.Optional(t.String()),
-              }),
+              query: tenantPaginationQuerySchema,
             },
           ),
       )
@@ -141,9 +106,7 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
               return await ctx.store.TenantService.findOne(ctx.params.id);
             },
             {
-              params: t.Object({
-                id: t.String(),
-              }),
+              params: tenantParamsSchema,
             },
           ),
       )
@@ -161,7 +124,7 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
               return await ctx.store.TenantService.create(ctx.body);
             },
             {
-              body: createTenantValidationSchema,
+              body: createTenantSchema,
             },
           ),
       )
@@ -189,10 +152,8 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
               );
             },
             {
-              params: t.Object({
-                id: t.String(),
-              }),
-              body: updateTenantValidationSchema,
+              params: tenantParamsSchema,
+              body: updateTenantSchema,
             },
           ),
       )
@@ -217,9 +178,7 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
               return await ctx.store.TenantService.delete(ctx.params.id);
             },
             {
-              params: t.Object({
-                id: t.String(),
-              }),
+              params: tenantParamsSchema,
             },
           ),
       )
@@ -246,9 +205,7 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
               );
             },
             {
-              params: t.Object({
-                id: t.String(),
-              }),
+              params: tenantParamsSchema,
             },
           ),
       )
@@ -279,10 +236,8 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
               });
             },
             {
-              params: t.Object({
-                id: t.String(),
-              }),
-              body: createTenantRoleValidationSchema,
+              params: tenantRoleParamsSchema,
+              body: createTenantRoleSchema,
             },
           ),
       )
@@ -310,11 +265,8 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
               );
             },
             {
-              params: t.Object({
-                id: t.String(),
-                roleId: t.String(),
-              }),
-              body: updateTenantRoleValidationSchema,
+              params: tenantRoleParamsSchema,
+              body: updateTenantRoleSchema,
             },
           ),
       )
@@ -341,10 +293,7 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
               );
             },
             {
-              params: t.Object({
-                id: t.String(),
-                roleId: t.String(),
-              }),
+              params: tenantRoleParamsSchema,
             },
           ),
       )
@@ -373,10 +322,8 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
               );
             },
             {
-              params: t.Object({
-                id: t.String(),
-              }),
-              body: tenantUserRoleValidationSchema,
+              params: tenantParamsSchema,
+              body: tenantUserRoleSchema,
             },
           ),
       )
@@ -404,10 +351,8 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
               );
             },
             {
-              params: t.Object({
-                id: t.String(),
-                userId: t.String(),
-              }),
+              params: tenantUserParamsSchema,
+              body: tenantUserRoleSchema,
             },
           ),
       )
@@ -438,13 +383,8 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
               );
             },
             {
-              params: t.Object({
-                id: t.String(),
-              }),
-              query: t.Object({
-                page: t.Number(),
-                limit: t.Number(),
-              }),
+              params: tenantParamsSchema,
+              query: tenantPaginationQuerySchema,
             },
           ),
       )
@@ -473,11 +413,8 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
               );
             },
             {
-              params: t.Object({
-                id: t.String(),
-                userId: t.String(),
-              }),
-              body: tenantUserRoleValidationSchema,
+              params: tenantUserParamsSchema,
+              body: tenantUserRoleSchema,
             },
           ),
       ),

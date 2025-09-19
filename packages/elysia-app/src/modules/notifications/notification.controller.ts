@@ -1,6 +1,11 @@
-import Elysia, { t } from 'elysia';
+import Elysia from 'elysia';
 import { authGuard } from 'src/shared/guards/auth.guard';
 import { TContext } from 'src/shared/types/context';
+import {
+  notificationReadSchema,
+  updateNotificationPreferencesSchema,
+  notificationQuerySchema,
+} from './schemas/notification.schema';
 
 const prefix = '/notifications';
 
@@ -10,14 +15,20 @@ export const notificationController = new Elysia<typeof prefix, TContext>({
 }).guard({}, (app) =>
   app
     .use(authGuard)
-    .get('/me', async (ctx) => {
-      const limit = Math.min(Number(ctx.query['limit'] ?? 20), 100);
-      const rows = await ctx.store.NotificationService.listMine(
-        ctx.auth.user.sub,
-        limit,
-      );
-      return { items: rows };
-    })
+    .get(
+      '/me',
+      async (ctx) => {
+        const limit = Math.min(Number(ctx.query['limit'] ?? 20), 100);
+        const rows = await ctx.store.NotificationService.listMine(
+          ctx.auth.user.sub,
+          limit,
+        );
+        return { items: rows };
+      },
+      {
+        query: notificationQuerySchema,
+      },
+    )
     .post(
       '/me/read',
       async (ctx) => {
@@ -26,7 +37,9 @@ export const notificationController = new Elysia<typeof prefix, TContext>({
           ctx.body.ids,
         );
       },
-      { body: t.Object({ ids: t.Array(t.String()) }) },
+      {
+        body: notificationReadSchema,
+      },
     )
     .get('/me/preferences', async (ctx) => {
       const preferences = await ctx.store.NotificationService.listPreferences(
@@ -50,22 +63,7 @@ export const notificationController = new Elysia<typeof prefix, TContext>({
         );
       },
       {
-        body: t.Object({
-          preferences: t.Array(
-            t.Object({
-              event: t.Union([
-                t.Literal('user:updated'),
-                t.Literal('notification:enqueue'),
-              ]),
-              channel: t.Union([
-                t.Literal('in_app'),
-                t.Literal('email'),
-                t.Literal('all'),
-              ]),
-              enabled: t.Boolean(),
-            }),
-          ),
-        }),
+        body: updateNotificationPreferencesSchema,
       },
     ),
 );

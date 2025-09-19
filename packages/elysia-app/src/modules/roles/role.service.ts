@@ -9,6 +9,7 @@ import { BaseService } from '../../shared/types/base/base.service';
 import { BasePermission } from '../../shared/constants/permissions';
 import { IDb } from '../../database/types/IDb';
 import { AppError } from 'src/shared/Errors/AppError';
+import { validatePermissions } from './schemas/role.schema';
 
 export class RoleService extends BaseService {
   constructor(private roleRepository: RoleRepository) {
@@ -66,7 +67,7 @@ export class RoleService extends BaseService {
   }
 
   async create(data: NewRole): Promise<RoleEntity> {
-    if (data.permissions && !this.validatePermissions(data.permissions)) {
+    if (data.permissions && !validatePermissions(data.permissions)) {
       throw new AppError({
         error: 'invalid_permissions_structure',
         statusCode: 400,
@@ -85,7 +86,7 @@ export class RoleService extends BaseService {
       });
     }
 
-    if (data.permissions && !this.validatePermissions(data.permissions)) {
+    if (data.permissions && !validatePermissions(data.permissions)) {
       throw new AppError({
         error: 'invalid_permissions_structure',
         statusCode: 400,
@@ -109,7 +110,7 @@ export class RoleService extends BaseService {
   async hasPermission(
     roleId: string,
     entity: keyof IDb,
-    permission: BasePermission
+    permission: BasePermission,
   ): Promise<boolean> {
     const role = await this.findOne(roleId);
     if (!role) {
@@ -120,25 +121,5 @@ export class RoleService extends BaseService {
     const entityPermissions = permissions[entity] || [];
 
     return entityPermissions.includes(permission);
-  }
-
-  private validatePermissions(permissions: Record<string, string[]>): boolean {
-    for (const [entity, perms] of Object.entries(permissions)) {
-      if (typeof entity !== 'string') {
-        return false;
-      }
-
-      if (!Array.isArray(perms)) {
-        return false;
-      }
-
-      for (const perm of perms) {
-        if (typeof perm !== 'string') {
-          return false;
-        }
-      }
-    }
-
-    return true;
   }
 }
