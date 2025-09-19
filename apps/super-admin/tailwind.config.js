@@ -3,7 +3,8 @@ const sharedConfig = require('../../packages/ui/tailwind.config');
 module.exports = {
   ...sharedConfig,
   content: [
-    '../../packages/ui/components/**/*.{js,ts,jsx,tsx}',
+    '../../packages/ui/src/components/**/*.{js,ts,jsx,tsx}',
+    '../../packages/features/src/**/*.{js,ts,jsx,tsx}',
     './src/**/*.{js,ts,tsx,jsx}',
   ],
   theme: {

@@ -72,6 +72,21 @@ export class UserRepository extends BaseRepo<KyselyUserEntity> {
     }
   }
 
+  async findTenantsByUserId(userId: string) {
+    try {
+      const tenants = await this.trx
+        .selectFrom('tenant_users')
+        .innerJoin('tenants', 'tenants.id', 'tenant_users.tenant_id')
+        .selectAll('tenants')
+        .where('tenant_users.user_id', '=', userId)
+        .execute();
+
+      return tenants;
+    } catch (error) {
+      throw new PostgresError(error);
+    }
+  }
+
   async findAll(args: FindManyArgs<UserEntity>) {
     try {
       const res = await this.trx

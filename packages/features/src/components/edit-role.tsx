@@ -89,7 +89,7 @@ export default function EditRole({
   return (
     <div
       key={index}
-      className="border border-neutral-700 rounded-md p-5 space-y-4 relative group hover:border-neutral-500 transition-colors duration-200"
+      className="border border-neutral-700 rounded-md p- space-y-4 relative group hover:border-neutral-500 transition-colors duration-200"
     >
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-medium text-white">

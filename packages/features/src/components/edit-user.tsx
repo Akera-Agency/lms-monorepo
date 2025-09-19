@@ -15,9 +15,10 @@ interface EditUserProps {
     isDisabled: boolean;
     userData?: UserData;
     setUserData?: (data: UserData) => void;
-    tenants: TenantData[];
+    tenants?: TenantData[];
     roles: RoleData[];
     errors?: any;
+    usage?: 'edit' | 'create' 
   }
 
   export default function EditUser({
@@ -27,6 +28,7 @@ interface EditUserProps {
     errors: propErrors,
     tenants,
     roles,
+    usage
   }: EditUserProps) {
     const context = useTenantContext();
 
@@ -55,6 +57,7 @@ interface EditUserProps {
         disabled={isDisabled}
       />
 
+    {usage === "create" && (
       <div className="gap-2 flex flex-col h-30">
         <span className="text-white">Tenant</span>
         <DropdownMenu key="tenant">
@@ -71,7 +74,7 @@ interface EditUserProps {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="bg-neutral-800 border-neutral-700 text-white min-w-48">
-            {tenants.map((tenant, index) => (
+            {tenants?.map((tenant, index) => (
               <DropdownMenuItem
                 key={tenant.id}
                 onClick={() =>
@@ -92,6 +95,7 @@ interface EditUserProps {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
+    )}      
 
       <div className="gap-2 flex flex-col h-30">
         <span className="text-white">Role</span>
@@ -99,7 +103,7 @@ interface EditUserProps {
           <DropdownMenuTrigger asChild>
             <Button
               type="button"
-              disabled={isDisabled || !selectedTenant}
+              disabled={isDisabled || (!selectedTenant && usage === 'create')}
               className="bg-neutral-700 hover:bg-neutral-600 text-white border border-neutral-600 px-4 py-2 rounded-md flex items-center gap-2 justify-between"
             >
               <Shield className="h-4 w-4" />

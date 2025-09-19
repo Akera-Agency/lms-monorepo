@@ -7,10 +7,13 @@ import type { TenantRoleEntity } from "elysia-app/src/modules/tenants/infrastruc
 import type { PermissionOption, Resource } from "../../../../packages/features/src/validation/tenantValidation";
 import { errorMessage } from "@/utils/handlers/error-handlers";
 import type { TenantUserEntity } from "elysia-app/src/modules/tenants/infrastructure/tenant-user.entity";
+import type { UserEntity } from "elysia-app/src/modules/users/infrastructure/user.entity";
+import type { UsersTenants } from "@/types/users-tenants";
 
 const cooldownMap = new Map<string, number>();
 
 export const SuperAdminApi = {
+
   async inviteUser(email: string, roleId: string, tenantId: string): Promise<User | null> {
     const now = Date.now();
     const last = cooldownMap.get(email);
@@ -55,6 +58,55 @@ export const SuperAdminApi = {
     return data;
   },
 
+  async fetchUsers(
+    session: Session | null,
+    page: number = 1,
+    limit: number = 10,
+  ): Promise<UserEntity[]> {
+    const { data, error } = await apiClient(session).api.users.get({
+      query: { page, limit },
+    });
+
+    if (error) {
+      throw new Error(errorMessage(error));
+    }
+    return data.data;
+  },
+
+  async fetchUsersWithTenants(
+    session: Session | null,
+    page: number = 1,
+    limit: number = 10,
+  ): Promise<UsersTenants[]> {
+    const { data, error } = await apiClient(session).api.users.users.tenants.get({
+      query: { page, limit },
+    });
+  
+    if (error) {
+      throw new Error(errorMessage(error));
+    }
+  
+    if (!data) return [];
+  
+    const resolvedData = await Promise.all(data);
+    
+    return resolvedData as UsersTenants[];
+  },
+  
+  async fetchTenantUsers(
+    session: Session | null,
+    page: number = 1,
+    limit: number = 10,
+  ): Promise<UserEntity[]> {
+    const { data, error } = await apiClient(session).api.users.get({
+      query: { page, limit },
+    });
+
+    if (error) {
+      throw new Error(errorMessage(error));
+    }
+    return data.data;
+  },
 
   async fetchTenants(
     session: Session | null,
@@ -92,6 +144,16 @@ export const SuperAdminApi = {
 
   async deleteTenant(session: Session | null, tenantId: string ): Promise<void> {
     const { error } = await apiClient(session).api.tenants({id:tenantId}).delete();
+    if (error) throw new Error(error?.value.message);
+  },
+
+  async deleteUser(session: Session | null, userId: string ): Promise<void> {
+    const { error } = await apiClient(session).api.users({id:userId}).delete();
+    if (error) throw new Error(error?.value.message);
+  },
+
+  async removeUserFromTenant(session: Session | null, tenantId: string, userId: string ): Promise<void> {
+    const { error } = await apiClient(session).api.tenants({id:tenantId}).users({userId: userId}).delete();
     if (error) throw new Error(error?.value.message);
   },
 

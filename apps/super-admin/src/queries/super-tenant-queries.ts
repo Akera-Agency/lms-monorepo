@@ -6,6 +6,9 @@ import type { TenantRoleEntity } from "elysia-app/src/modules/tenants/infrastruc
 import type { PermissionOption, Resource } from "../../../../packages/features/src/validation/tenantValidation";
 import { normalizeError } from "../utils/handlers/error-handlers";
 import type { TenantUserEntity } from "elysia-app/src/modules/tenants/infrastructure/tenant-user.entity";
+import type { UserEntity } from "elysia-app/src/modules/users/infrastructure/user.entity";
+import type { UsersTenants } from "@/types/users-tenants";
+import { useMemo } from "react";
 
 export function SuperAdminQueries() {
   const { session } = useAuthForm();
@@ -23,6 +26,34 @@ export function SuperAdminQueries() {
       enabled: !!session,
     });
     return { tenants, loading, isError,  error: error ? normalizeError(error) : null };
+  };
+
+  const users = () => {
+    const {
+      data: users = [],
+      isLoading: loading,
+      isError,
+      error,
+    } = useQuery<UserEntity[], Error>({
+      queryKey: ["users"],
+      queryFn: () => SuperAdminApi.fetchUsers(session),
+      enabled: !!session,
+    });
+    return { users, loading, isError,  error: error ? normalizeError(error) : null };
+  };
+
+  const usersWithTenants = () => {
+    const {
+      data: usersWithTenants = [],
+      isLoading: loading,
+      isError,
+      error,
+    } = useQuery<UsersTenants[], Error>({
+      queryKey: ["tenants"],
+      queryFn: () => SuperAdminApi.fetchUsersWithTenants(session),
+      enabled: !!session,
+    });
+    return { usersWithTenants, loading, isError,  error: error ? normalizeError(error) : null };
   };
 
   const tenantById = (id: string) => {
@@ -50,7 +81,7 @@ export function SuperAdminQueries() {
 
   const tenantRoles = (tenant_id: string) => {
     const {
-      data: tenantRoles = [],
+      data: rawTenantRoles = [],
       isLoading: loading,
       isError,
       error,
@@ -63,7 +94,12 @@ export function SuperAdminQueries() {
       enabled: !!session && !!tenant_id,
     });
   
-    return { tenantRoles, loading, isError,  error: error ? normalizeError(error) : null };
+    // Memoize tenantRoles to prevent unnecessary re-renders
+    const tenantRoles = useMemo(() => {
+      return rawTenantRoles;
+    }, [JSON.stringify(rawTenantRoles)]);
+  
+    return { tenantRoles, loading, isError, error: error ? normalizeError(error) : null };
   };
   
   const createTenantMutation = useMutation<
@@ -126,6 +162,16 @@ export function SuperAdminQueries() {
     mutationFn: (tenant_id) => SuperAdminApi.deleteTenant(session, tenant_id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tenants"] });
+    },
+    onError: (err) => {
+      console.error("Delete tenant error:", normalizeError(err));
+    },
+  });
+
+  const deleteUserMutation = useMutation<void, Error, string>({
+    mutationFn: (user_id) => SuperAdminApi.deleteTenant(session, user_id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["users"] });
     },
     onError: (err) => {
       console.error("Delete user error:", normalizeError(err));
@@ -253,18 +299,33 @@ export function SuperAdminQueries() {
   },
 });
 
+const removeUserFromTenantMutation = useMutation<void, Error, {tenantId: string, userId: string}>({
+  mutationFn: ({tenantId, userId}) => SuperAdminApi.removeUserFromTenant(session, tenantId, userId),
+  onSuccess: () => {
+    queryClient.invalidateQueries({ queryKey: ["tenant_users"] });
+  },
+  onError: (err) => {
+    console.error("Remove user from tenant error:", normalizeError(err));
+  },
+});
+
   return {
     tenants,
+    users,
+    usersWithTenants,
     tenantById,
     tenantRoles,
     handleCreateTenant: createTenantMutation.mutateAsync,
     handleAssignUserTotenant: InviteUserMutation.mutateAsync,
     deleteTenant: deleteTenantMutation.mutateAsync,
+    deleteUser: deleteUserMutation.mutateAsync,
     deleteTenantRole: deleteTenantRoleMutation.mutateAsync,
+    removeUserFromTenant: removeUserFromTenantMutation.mutateAsync,
     updateTenantRole: updateTenantRoleMutation.mutateAsync,
     updateTenant: updateTenantMutation.mutateAsync,
     successMessage: createTenantMutation.status,
     deleteTenantStatus: deleteTenantMutation.status,
+    deleteUserStatus: deleteUserMutation.status,
     deleteTenantRoleStatus: deleteTenantRoleMutation.status,
     updateTenantRoleStatus: updateTenantRoleMutation.status,
     updateTenantStatus: updateTenantMutation.status,

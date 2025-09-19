@@ -41,7 +41,6 @@ export const TenantsDialog = NiceModal.create((props: TenantsDialogProps) => {
         created_at: tenant.created_at,
         updated_at: tenant.updated_at
       });
-      console.log(tenant);
     }
   }, [tenant]);
 
@@ -85,12 +84,14 @@ export const TenantsDialog = NiceModal.create((props: TenantsDialogProps) => {
 
       <div className="flex justify-between gap-3 pt-4">
         <Button
+          disabled={isDisabled}
           onClick={handleClose}
           className="border-neutral-700 bg-neutral-800 hover:bg-neutral-800/80 w-1/2 cursor-pointer rounded-sm py-1"
         >
           {closeText}
         </Button>
         <Button
+          disabled={isDisabled}
           variant="destructive"
           className="w-1/2 cursor-pointer text-white rounded-sm py-1"
           onClick={handleConfirm}

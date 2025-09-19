@@ -27,6 +27,36 @@ export class UserService extends BaseService {
     return user;
   }
 
+  async findManyWithPaginationAndTenants(query: QueryUser){
+    const users = (await this.findManyWithPagination(query)).data;
+  
+    const usersWithTenants = await Promise.all(
+      users.map(async (user) => {
+        const tenants = await this.findUserTenants(user.id);
+        return {
+          user,
+          tenants
+        };
+      })
+    );
+  
+    return usersWithTenants;
+  }  
+
+  async findUserTenants(userId: string) {
+    const tenants = await this.userRepository.findTenantsByUserId(userId);
+
+    // if (!tenants || tenants.length === 0) {
+    //   throw new AppError({
+    //     error: 'tenant_not_found',
+    //     statusCode: 404,
+    //   });
+    // }
+
+    return tenants;
+  }
+
+
   async update(id: string, data: UpdateUser) {
     const oldUser = await this.findOne({ id });
     const user = await this.userRepository.update(id, data);

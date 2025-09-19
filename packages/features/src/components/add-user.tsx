@@ -26,6 +26,7 @@ export default function AddUser({
         isDisabled={isDisabled}
         tenants={tenants}
         roles={roles}
+        usage='create'
       />
     </div>
   );

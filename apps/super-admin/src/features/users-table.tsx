@@ -1,4 +1,4 @@
-import { ArrowUpDown, ChevronLeft, ChevronRight, MoreHorizontal, Trash2, University } from "lucide-react";
+import { ArrowUpDown, ChevronLeft, ChevronRight, MoreHorizontal, Trash2, Users } from "lucide-react";
 import { useState, useCallback, useMemo } from "react";
 import { SuperAdminQueries } from "@/queries/super-tenant-queries";
 import {
@@ -35,14 +35,9 @@ import { Skeleton } from "../../../../packages/ui/src/components/skeleton/skelet
 import { ConfirmDeleteDialog } from "../../../../packages/ui/src/components/dialog/confirm-dialog";
 import { EmptyState } from "../../../../packages/ui/src/components/empty-states/empty-state";
 import type { Table as TanstackTable } from "@tanstack/react-table";
-import type { TenantEntity } from "elysia-app/src/modules/tenants/infrastructure/tenant.entity";
-import { showRolesDialog } from "@/utils/dialogs/roles-dialog-utils";
-import { showTenantsDialog } from "@/utils/dialogs/tenant-dialog-utils";
-import { showUserDialog } from "@/utils/dialogs/user-dialog-utils";
+import type { UsersTenants } from "@/types/users-tenants";
 
 export default function DataTable() {
-  const { deleteTenant } = SuperAdminQueries();
-    const { tenants, loading } = SuperAdminQueries().tenants();
 
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -52,11 +47,13 @@ export default function DataTable() {
     pageIndex: 0,
     pageSize: 6,
   });
+  const { deleteUser } = SuperAdminQueries();
+  const { usersWithTenants, loading } = SuperAdminQueries().usersWithTenants();
 
-  const columns = useMemo<ColumnDef<TenantEntity>[]>(() => getColumns(deleteTenant), [deleteTenant]);
+  const columns = useMemo<ColumnDef<UsersTenants>[]>(() => getColumns(deleteUser), [deleteUser]);
 
   const table = useReactTable({
-    data: tenants,
+    data: usersWithTenants,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -70,36 +67,36 @@ export default function DataTable() {
     state: { sorting, columnFilters, columnVisibility, rowSelection, pagination },
   });
 
-  const selectedRowIds = table.getSelectedRowModel().rows.map((row) => row.original.id);
+  const selectedRowIds = table.getSelectedRowModel().rows.map((row) => row.original.user.id);
   const hasSelected = selectedRowIds.length > 0;
 
   const handleBulkDelete = useCallback(async () => {
     try {
       for (const row of table.getSelectedRowModel().rows) {
-        await deleteTenant(row.original.id);
+        await deleteUser(row.original.user.id);
       }
       table.resetRowSelection();
     } catch (error) {
       console.error("Bulk delete failed:", error);
     }
-  }, [deleteTenant, table]);
+  }, [deleteUser, table]);
 
   return (
     <div className="flex flex-col h-full overflow-auto custom-hidden-scrollbar">
       {loading ? (
         <LoadingSkeleton />
-      ) : tenants.length === 0 ? (
+      ) : usersWithTenants.length === 0 ? (
         <EmptyState
-          icon={<University />}
-          title="No tenants yet"
-          description="Tenants will appear here once they get created."
+          icon={<Users />}
+          title="No users yet"
+          description="Users will appear here once they get sign up or get invited."
         />
       ) : (
         <div className="w-full rounded-lg text-neutral-500">
           <div className="flex items-center py-4 gap-7 justify-end">
             <Input
               className="max-w-sm lg:text-sm text-xs border-neutral-700 bg-neutral-900 text-white"
-              placeholder="Filter by tenant name..."
+              placeholder="Filter by user name..."
               value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
               onChange={(e) => table.getColumn("name")?.setFilterValue(e.target.value)}
             />
@@ -148,8 +145,8 @@ export default function DataTable() {
                   title="Confirm Deletion"
                   description={
                     selectedRowIds.length === 1
-                      ? "Are you sure you want to delete this tenant?"
-                      : `Are you sure you want to delete these ${selectedRowIds.length} tenants?`
+                      ? "Are you sure you want to delete this user?"
+                      : `Are you sure you want to delete these ${selectedRowIds.length} users?`
                   }
                   closeText="Cancel"
                   confirmText="Delete"
@@ -214,9 +211,8 @@ function PaginationControls({ table }: { table: TanstackTable<any> }) {
 }
 
 function getColumns(
-  deleteTenant: (id: string) => Promise<void>,
-): ColumnDef<TenantEntity>[] {
-
+  deleteUser: (userId: string) => Promise<void>
+): ColumnDef<UsersTenants>[] {
   return [
     {
       id: "select",
@@ -240,32 +236,81 @@ function getColumns(
       enableHiding: false,
     },
     {
-      accessorKey: "name",
+      accessorKey: "user.name",
       id: "name",
       header: "Name",
-      cell: ({ getValue }) => <div className="capitalize">{getValue<string>()}</div>,
+      cell: ({ row }) => {
+        const user = row.original?.user;
+        return (
+          <div className="capitalize">
+            {user?.name ?? "—"}
+          </div>
+        );
+      },
       filterFn: "includesString",
     },
     {
-      accessorKey: "description",
-      id: "description",
-      header: "Description",
-      cell: ({ getValue }) => <div className="lowercase">{getValue<string>()}</div>,
+      accessorKey: "user.email",
+      id: "email",
+      header: "Email",
+      cell: ({ row }) => {
+        const user = row.original?.user;
+        return (
+          <div className="capitalize">
+            {user?.email ?? "—"}
+          </div>
+        );
+      },
+      filterFn: "includesString",
     },
+    
     {
-      accessorKey: "created_at",
+      accessorKey: "tenants",
       header: ({ column }) => (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           className="-ml-3 cursor-pointer"
         >
-          Date submitted
+          Tenants
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
       cell: ({ row }) => {
-        const rawDate = row.getValue("created_at") as string;
+        const tenants = row.original.tenants ?? [];
+        const tenantNames = tenants.map((t) => t?.name ?? "");
+        return (
+          <div className="flex flex-wrap gap-1">
+            {tenantNames.length > 0 ? tenantNames.join(", ") : "—"}
+          </div>
+        );
+      },
+      sortingFn: (rowA, rowB) => {
+        const a = (rowA.original.tenants ?? [])
+          .map((t) => t?.name ?? "")
+          .join(", ")
+          .toLowerCase();
+        const b = (rowB.original.tenants ?? [])
+          .map((t) => t?.name ?? "")
+          .join(", ")
+          .toLowerCase();
+        return a.localeCompare(b);
+      },
+    },
+    {
+      accessorKey: "user.created_at",
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="-ml-3 cursor-pointer"
+        >
+          SignUp Date
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
+      cell: ({ row }) => {
+        const rawDate = row.original.user?.created_at;
         const date = new Date(rawDate);
         const formatted = `${date.toLocaleDateString("en-CA")} at ${date.toLocaleTimeString("en-GB", {
           hour: "2-digit",
@@ -285,40 +330,10 @@ function getColumns(
               <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="border bg-neutral-900 border-neutral-800 text-neutral-400">
-          <DropdownMenuItem
-            onSelect={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              showUserDialog(row.original.id);
-            }}
-            className="cursor-pointer text-neutral-300 focus:bg-neutral-800 focus:text-white"
+          <DropdownMenuContent
+            align="end"
+            className="border bg-neutral-900 border-neutral-800 text-neutral-400"
           >
-            Add User
-          </DropdownMenuItem>
-
-          <DropdownMenuItem
-            onSelect={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              showTenantsDialog(row.original.id);
-            }}
-            className="cursor-pointer text-neutral-300 focus:bg-neutral-800 focus:text-white"
-          >
-            Edit Tenant
-          </DropdownMenuItem>
-
-          <DropdownMenuItem
-            onSelect={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              showRolesDialog(row.original.id);
-            }}
-            className="cursor-pointer text-neutral-300 focus:bg-neutral-800 focus:text-white"
-          >
-            Edit Roles
-          </DropdownMenuItem>
-
             <ConfirmDeleteDialog
               trigger={
                 <DropdownMenuItem
@@ -328,15 +343,15 @@ function getColumns(
                   }}
                   className="cursor-pointer text-red-500 focus:bg-neutral-800 focus:text-red-600"
                 >
-                  Remove
+                  Delete
                 </DropdownMenuItem>
               }
               title="Confirm Deletion"
-              description="Are you sure you want to delete this tenant?"
+              description="Are you sure you want to delete this user?"
               closeText="Cancel"
               confirmText="Delete"
               onConfirm={async () => {
-                await deleteTenant(row.original.id);
+                await deleteUser(row.original.user.id);
               }}
             />
           </DropdownMenuContent>
@@ -345,3 +360,4 @@ function getColumns(
     },
   ];
 }
+

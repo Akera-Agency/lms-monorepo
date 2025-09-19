@@ -1,5 +1,5 @@
 import InviteUser from '@/features/invite-user';
-import Table from '@/features/tenants-table'
+import Table from '@/features/users-table'
 export default function Tenants() {
 
 return (

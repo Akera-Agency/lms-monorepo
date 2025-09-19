@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import NiceModal, { useModal } from "@ebay/nice-modal-react";
 import { Button } from "../../../../packages/ui/src/components/shadcn/button";
 import ResponsiveDialog from "../../../../packages/ui/src/components/dialog/dialog";
@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@ui/components/shadcn/dropdown-menu";
 import { ChevronDown, Shield } from "lucide-react";
-import { type Resource, resourceList, type FormErrors } from "../../../../packages/features/src/validation/tenantValidation";
+import { type Resource, resourceList, type FormErrors, type RoleData, createEmptyPermissions } from "../../../../packages/features/src/validation/tenantValidation";
 
 type RolesDialogProps = {
   tenant_id: string;
@@ -30,13 +30,39 @@ export const RolesDialog = NiceModal.create((props: RolesDialogProps) => {
   const [selectedResource, setSelectedResource] = useState<{ [key: number]: Resource }>({
     0: resourceList[0],
   });
-  const [errors, setErrors] = useState<FormErrors>({});
+  const [errors, _setErrors] = useState<FormErrors>({});
+  const [localRoles, setLocalRoles]  = useState<RoleData[]>([{
+      name:"",
+      description:"",
+      permissions: createEmptyPermissions(),
+      is_default:true,
+      is_system_role:false
+    }]);
+
+  useEffect(() => {
+  if (modal.visible && tenantRoles) {
+    const mappedRoles = tenantRoles.map((role) => ({
+      id: role.id,
+      tenant_id: role.tenant_id,
+      name: role.name,
+      description: role.description,
+      permissions: role.permissions,
+      is_default: role.is_default,
+      is_system_role: role.is_system_role,
+      created_at: role.created_at,
+      deleted_at: role.deleted_at,
+      updated_at: role.updated_at,
+    }));
+    setLocalRoles(mappedRoles);
+  }
+}, [modal.visible, tenantRoles]);
+
 
   const selectedRole = selectedRoleId
-    ? tenantRoles.find((role) => role.id === selectedRoleId) || null
+    ? localRoles.find((role) => role.id === selectedRoleId) || null
     : null;
   const selectedRoleIndex = selectedRoleId
-    ? tenantRoles.findIndex((role) => role.id === selectedRoleId)
+    ? localRoles.findIndex((role) => role.id === selectedRoleId)
     : -1;
   const isDisabled = isSubmitting || loading;
 
@@ -106,7 +132,7 @@ export const RolesDialog = NiceModal.create((props: RolesDialogProps) => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="bg-neutral-800 border-neutral-700 text-white min-w-48">
-            {tenantRoles.map((role) => (
+            {localRoles.map((role) => (
               <DropdownMenuItem
                 key={role.id}
                 onClick={() => setSelectedRoleId(role.id || null)}
@@ -130,6 +156,8 @@ export const RolesDialog = NiceModal.create((props: RolesDialogProps) => {
           index={selectedRoleIndex}
           role={selectedRole}
           isDisabled={isDisabled}
+          localRoles={localRoles}
+          setLocalRoles={setLocalRoles}
           localSelectedResource={selectedResource}
           setLocalSelectedResource={setSelectedResource}
           localErrors={errors}
@@ -139,12 +167,14 @@ export const RolesDialog = NiceModal.create((props: RolesDialogProps) => {
 
       <div className="flex justify-between gap-3 pt-4">
         <Button
+        disabled={isDisabled}
           onClick={handleClose}
           className="border-neutral-700 bg-neutral-800 hover:bg-neutral-800/80 w-1/2 cursor-pointer rounded-sm py-1"
         >
           {closeText}
         </Button>
         <Button
+          disabled={isDisabled}
           variant="destructive"
           className="w-1/2 cursor-pointer text-white rounded-sm py-1"
           onClick={handleConfirm}

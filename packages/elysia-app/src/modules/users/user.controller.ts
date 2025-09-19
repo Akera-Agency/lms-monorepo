@@ -13,7 +13,6 @@ export const updateUserValidationSchema = t.Object({
   avatar_url: t.String(),
 });
 
-
 export const userController = new Elysia<typeof prefix, TContext>({
   prefix,
   detail: {
@@ -75,7 +74,31 @@ export const userController = new Elysia<typeof prefix, TContext>({
               id: t.String(),
             }),
           },
-        ),
+        )
+    )
+    .guard({}, (app) =>
+      app
+        .use(
+          createAccessGuard({
+            permissions: [{ entity: 'tenant_users', permission: 'read' }],
+            require: 'all',
+          }),
+        )
+        .get(
+          '/users/tenants',
+          async (ctx) => {
+            return await ctx.store.UserService.findManyWithPaginationAndTenants({
+              page: ctx.query.page,
+              limit: ctx.query.limit,
+            });
+          },
+          {
+            query: t.Object({
+              page: t.Optional(t.Number()),
+              limit: t.Optional(t.Number()),
+            }),
+          },
+        )
     )
     .guard({}, (app) =>
       app

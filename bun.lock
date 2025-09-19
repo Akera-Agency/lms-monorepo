@@ -130,7 +130,7 @@
         "next-themes": "^0.4.6",
       },
       "devDependencies": {
-        "@tailwindcss/vite": "^4.1.12",
+        "@tailwindcss/vite": "^4.1.13",
         "@types/js-cookie": "^3.0.6",
         "@vitejs/plugin-react": "^5.0.2",
         "typescript": "5.6.3",
@@ -156,7 +156,7 @@
       "name": "super-admin",
       "version": "0.0.0",
       "dependencies": {
-        "@tailwindcss/vite": "^4.1.12",
+        "@tailwindcss/vite": "^4.1.13",
         "@tanstack/react-router": "^1.131.10",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
@@ -170,7 +170,7 @@
       },
       "devDependencies": {
         "@eslint/js": "^9.33.0",
-        "@tailwindcss/postcss": "^4.1.12",
+        "@tailwindcss/postcss": "^4.1.13",
         "@types/react": "^19.1.10",
         "@types/react-dom": "^19.1.7",
         "@vitejs/plugin-react": "^5.0.0",
@@ -283,11 +283,11 @@
       },
     },
     "packages/features": {
-      "name": "@akera/features",
+      "name": "features",
       "version": "0.0.1",
       "dependencies": {
         "@radix-ui/react-toast": "^1.2.15",
-        "@tailwindcss/postcss": "^4.1.12",
+        "@tailwindcss/postcss": "^4.1.13",
         "@tanstack/react-table": "^8.21.3",
         "@tiptap/core": "^3.2.0",
         "@tiptap/extension-bullet-list": "^3.2.0",
@@ -432,8 +432,6 @@
     "@akera/auth": ["@akera/auth@workspace:packages/auth"],
 
     "@akera/env": ["@akera/env@workspace:packages/env"],
-
-    "@akera/features": ["@akera/features@workspace:packages/features"],
 
     "@akera/s3": ["@akera/s3@workspace:packages/s3"],
 
@@ -2274,6 +2272,8 @@
     "fastq": ["fastq@1.19.1", "", { "dependencies": { "reusify": "^1.0.4" } }, "sha512-GwLTyxkCXjXbxqIhTsMI2Nui8huMPtnxg7krajPJAjnEG/iiOS7i+zCtWGZR9G0NBKbXKh6X9m9UIsYX/N6vvQ=="],
 
     "fdir": ["fdir@6.5.0", "", { "peerDependencies": { "picomatch": "^3 || ^4" }, "optionalPeers": ["picomatch"] }, "sha512-tIbYtZbucOs0BRGqPJkshJUYdL+SDH7dVM8gjy+ERp3WAUjLEFJE+02kanyHtwjWOnwrKYBiwAmM0p4kLJAnXg=="],
+
+    "features": ["features@workspace:packages/features"],
 
     "fecha": ["fecha@4.2.3", "", {}, "sha512-OP2IUU6HeYKJi3i0z4A19kHMQoLVs4Hc+DPqqxI2h/DPZHTm/vjsfC6P0b4jCMy14XizLBqvndQ+UilD7707Jw=="],
 
