@@ -1,5 +1,14 @@
 # Add files here to ignore them from prettier formatting
-/dist
-/coverage
+/.nx/workspace-data
+coverage
+.nx
 /.nx/cache
 /.nx/workspace-data
+.husky
+.vscode
+build
+dist
+logs
+node_modules
+*.md
+

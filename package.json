@@ -20,7 +20,8 @@
     "dep:validate": "bun run scripts/validate-deps.ts",
     "ts:check": "nx run-many -t typecheck",
     "migrate": "nx migrate latest && bun install && nx migrate --run-migrations",
-    "release": "nx release version && nx release publish"
+    "release": "nx release version && nx release publish",
+    "format": "prettier --ignore-path .gitignore --write \"**/*.{ts,tsx}\""
   },
   "dependencies": {
     "react": "19.1.1",
