@@ -135,7 +135,6 @@ export const app = new Elysia<typeof prefix, TContext>({ prefix })
       },
     };
   })
-
   .use(tenantController)
   .use(roleController)
   .use(userController)
@@ -143,10 +142,6 @@ export const app = new Elysia<typeof prefix, TContext>({ prefix })
   .use(activityController);
 
 export type App = typeof app;
-
-export type Role = typeof roleController;
-
-export type User = typeof userController;
 
 const main = async () => {
   await initializeI18n();

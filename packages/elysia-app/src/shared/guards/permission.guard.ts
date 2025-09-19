@@ -36,6 +36,7 @@ const createEmptyPermissions = (): Record<keyof IDb, BasePermission[]> => ({
   notifications: [],
   notification_preferences: [],
   notification_logs: [],
+  activities: [],
 });
 
 const dedupePermissionSets = (
