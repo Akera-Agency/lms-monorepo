@@ -1,15 +1,17 @@
-import Elysia, { t } from 'elysia';
+import Elysia from 'elysia';
 import { createAccessGuard } from '../../shared/guards/permission.guard';
 import { authGuard } from '../../shared/guards/auth.guard';
 import { TContext } from '../../shared/types/context';
-import { ActivityTypeEnum } from './infrastructure/activity.entity';
+import {
+  createActivitySchema,
+  activityPaginationQuerySchema,
+  activityParamsSchema,
+  activityUserParamsSchema,
+  activityTypeParamsSchema,
+  activityDateQuerySchema,
+} from './schemas/activity.schema';
 
 const prefix = '/activities';
-
-export const createActivityValidationSchema = t.Object({
-  user_id: t.String(),
-  type: t.Enum(ActivityTypeEnum),
-});
 
 export const activityController = new Elysia<typeof prefix, TContext>({
   prefix,
@@ -43,9 +45,7 @@ export const activityController = new Elysia<typeof prefix, TContext>({
         return { dailyXp, date: date.toISOString().split('T')[0] };
       },
       {
-        query: t.Object({
-          date: t.Optional(t.String({ format: 'date' })),
-        }),
+        query: activityDateQuerySchema,
       },
     )
 
@@ -58,9 +58,7 @@ export const activityController = new Elysia<typeof prefix, TContext>({
         return { weeklyXp, date: date.toISOString().split('T')[0] };
       },
       {
-        query: t.Object({
-          date: t.Optional(t.String({ format: 'date' })),
-        }),
+        query: activityDateQuerySchema,
       },
     )
 
@@ -73,9 +71,7 @@ export const activityController = new Elysia<typeof prefix, TContext>({
         return { monthlyXp, date: date.toISOString().split('T')[0] };
       },
       {
-        query: t.Object({
-          date: t.Optional(t.String({ format: 'date' })),
-        }),
+        query: activityDateQuerySchema,
       },
     )
 
@@ -87,9 +83,7 @@ export const activityController = new Elysia<typeof prefix, TContext>({
         return await ctx.store.ActivityService.findByUserIdAndType(user.sub, ctx.params.type);
       },
       {
-        params: t.Object({
-          type: t.Enum(ActivityTypeEnum),
-        }),
+        params: activityTypeParamsSchema,
       },
     )
 
@@ -122,11 +116,7 @@ export const activityController = new Elysia<typeof prefix, TContext>({
             });
           },
           {
-            query: t.Object({
-              page: t.Number(),
-              limit: t.Number(),
-              user_id: t.Optional(t.String()),
-            }),
+            query: activityPaginationQuerySchema,
           },
         )
 
@@ -137,9 +127,7 @@ export const activityController = new Elysia<typeof prefix, TContext>({
             return await ctx.store.ActivityService.findOne(ctx.params.id);
           },
           {
-            params: t.Object({
-              id: t.String(),
-            }),
+            params: activityParamsSchema,
           },
         )
 
@@ -150,9 +138,7 @@ export const activityController = new Elysia<typeof prefix, TContext>({
             return await ctx.store.ActivityService.findByUserId(ctx.params.userId);
           },
           {
-            params: t.Object({
-              userId: t.String(),
-            }),
+            params: activityUserParamsSchema,
           },
         )
 
@@ -164,9 +150,7 @@ export const activityController = new Elysia<typeof prefix, TContext>({
             return { userId: ctx.params.userId, totalXp };
           },
           {
-            params: t.Object({
-              userId: t.String(),
-            }),
+            params: activityUserParamsSchema,
           },
         ),
     )
@@ -187,7 +171,7 @@ export const activityController = new Elysia<typeof prefix, TContext>({
             return await ctx.store.ActivityService.create(ctx.body);
           },
           {
-            body: createActivityValidationSchema,
+            body: createActivitySchema,
           },
         ),
     )
@@ -208,9 +192,7 @@ export const activityController = new Elysia<typeof prefix, TContext>({
             return { message: 'Activity deleted successfully' };
           },
           {
-            params: t.Object({
-              id: t.String(),
-            }),
+            params: activityParamsSchema,
           },
         ),
     ),

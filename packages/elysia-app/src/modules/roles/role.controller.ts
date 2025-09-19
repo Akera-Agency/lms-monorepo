@@ -1,23 +1,16 @@
-import Elysia, { t } from 'elysia';
+import Elysia from 'elysia';
 import { TContext } from '../../shared/types/context';
 import { authGuard } from 'src/shared/guards/auth.guard';
 import { createAccessGuard } from 'src/shared/guards/permission.guard';
+import {
+  createRoleSchema,
+  updateRoleSchema,
+  rolePaginationQuerySchema,
+  roleParamsSchema,
+  roleNameParamsSchema,
+} from './schemas/role.schema';
 
 const prefix = '/roles';
-
-const createRoleValidationSchema = t.Object({
-  name: t.String(),
-  description: t.Optional(t.String()),
-  permissions: t.Object({}),
-  is_system_role: t.Boolean(),
-});
-
-const updateRoleValidationSchema = t.Object({
-  name: t.Optional(t.String()),
-  description: t.Optional(t.String()),
-  permissions: t.Optional(t.Object({})),
-  is_system_role: t.Optional(t.Boolean()),
-});
 
 export const roleController = new Elysia<typeof prefix, TContext>({
   prefix,
@@ -62,11 +55,7 @@ export const roleController = new Elysia<typeof prefix, TContext>({
             });
           },
           {
-            query: t.Object({
-              page: t.Number(),
-              limit: t.Number(),
-              search: t.Optional(t.String()),
-            }),
+            query: rolePaginationQuerySchema,
           },
         )
         .get('/system', async (ctx) => {
@@ -81,9 +70,7 @@ export const roleController = new Elysia<typeof prefix, TContext>({
             return await ctx.store.RoleService.findOne(ctx.params.id);
           },
           {
-            params: t.Object({
-              id: t.String(),
-            }),
+            params: roleParamsSchema,
           },
         )
         .get(
@@ -92,9 +79,7 @@ export const roleController = new Elysia<typeof prefix, TContext>({
             return await ctx.store.RoleService.findByName(ctx.params.name);
           },
           {
-            params: t.Object({
-              name: t.String(),
-            }),
+            params: roleNameParamsSchema,
           },
         ),
     )
@@ -112,7 +97,7 @@ export const roleController = new Elysia<typeof prefix, TContext>({
             return await ctx.store.RoleService.create(ctx.body);
           },
           {
-            body: createRoleValidationSchema,
+            body: createRoleSchema,
           },
         ),
     )
@@ -130,10 +115,8 @@ export const roleController = new Elysia<typeof prefix, TContext>({
             return await ctx.store.RoleService.update(ctx.params.id, ctx.body);
           },
           {
-            params: t.Object({
-              id: t.String(),
-            }),
-            body: updateRoleValidationSchema,
+            params: roleParamsSchema,
+            body: updateRoleSchema,
           },
         ),
     )
@@ -151,9 +134,7 @@ export const roleController = new Elysia<typeof prefix, TContext>({
             return await ctx.store.RoleService.delete(ctx.params.id);
           },
           {
-            params: t.Object({
-              id: t.String(),
-            }),
+            params: roleParamsSchema,
           },
         ),
     ),

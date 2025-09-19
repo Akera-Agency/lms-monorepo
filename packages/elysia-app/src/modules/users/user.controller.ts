@@ -1,17 +1,14 @@
-import Elysia, { t } from 'elysia';
+import Elysia from 'elysia';
 import { createAccessGuard } from '../../shared/guards/permission.guard';
 import { authGuard } from '../../shared/guards/auth.guard';
 import { TContext } from 'src/shared/types/context';
-import { LanguagesEnum } from 'src/shared/constants/i18n';
+import {
+  updateUserSchema,
+  userPaginationQuerySchema,
+  userParamsSchema,
+} from './schemas/user.schema';
 
 const prefix = '/users';
-
-export const updateUserValidationSchema = t.Object({
-  email: t.String({ format: 'email' }),
-  name: t.String(),
-  language: t.Enum(LanguagesEnum),
-  avatar_url: t.String(),
-});
 
 export const userController = new Elysia<typeof prefix, TContext>({
   prefix,
@@ -36,7 +33,7 @@ export const userController = new Elysia<typeof prefix, TContext>({
         });
       },
       {
-        body: updateUserValidationSchema,
+        body: updateUserSchema,
       },
     )
     .guard({}, (app) =>
@@ -56,10 +53,7 @@ export const userController = new Elysia<typeof prefix, TContext>({
             });
           },
           {
-            query: t.Object({
-              page: t.Number(),
-              limit: t.Number(),
-            }),
+            query: userPaginationQuerySchema,
           },
         )
         .get(
@@ -70,9 +64,7 @@ export const userController = new Elysia<typeof prefix, TContext>({
             });
           },
           {
-            params: t.Object({
-              id: t.String(),
-            }),
+            params: userParamsSchema,
           },
         ),
     )
@@ -91,10 +83,8 @@ export const userController = new Elysia<typeof prefix, TContext>({
             return updatedUser;
           },
           {
-            params: t.Object({
-              id: t.String(),
-            }),
-            body: updateUserValidationSchema,
+            params: userParamsSchema,
+            body: updateUserSchema,
           },
         ),
     )
@@ -112,9 +102,7 @@ export const userController = new Elysia<typeof prefix, TContext>({
             return await ctx.store.UserService.delete(ctx.params.id);
           },
           {
-            params: t.Object({
-              id: t.String(),
-            }),
+            params: userParamsSchema,
           },
         ),
     ),
