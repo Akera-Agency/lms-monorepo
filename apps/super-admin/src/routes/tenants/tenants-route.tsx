@@ -3,7 +3,7 @@ import { rootRoute } from '../__root';
 import Tenants from '../../pages/tenants/tenants-page';
 
 export const tenantsRoute = createRoute({
-    getParentRoute: () => rootRoute,
-    path: '/tenants',
-    component: () => <Tenants />,
+  getParentRoute: () => rootRoute,
+  path: '/tenants',
+  component: () => <Tenants />,
 });

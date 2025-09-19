@@ -36,19 +36,9 @@ export type ErrorResponse = {
 export const app = new Elysia<typeof prefix, TContext>({ prefix })
   .use(
     cors({
-      origin: [
-        env.VITE_AUTH_APP,
-        env.VITE_USER_APP,
-        env.VITE_TENANT_APP,
-        env.VITE_SUPER_ADMIN_APP,
-      ],
+      origin: [env.VITE_AUTH_APP, env.VITE_USER_APP, env.VITE_TENANT_APP, env.VITE_SUPER_ADMIN_APP],
       credentials: true,
-      allowedHeaders: [
-        'Content-Type',
-        'Authorization',
-        'Accept',
-        'accept-language',
-      ],
+      allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'accept-language'],
       methods: ['GET', 'POST', 'DELETE', 'PATCH'],
     }),
   )
@@ -97,9 +87,7 @@ export const app = new Elysia<typeof prefix, TContext>({ prefix })
     let locale = LanguagesEnum.en;
     if (headers[LANGUAGE_HEADER]) {
       const acceptLanguage = headers[LANGUAGE_HEADER];
-      if (
-        Object.values(LanguagesEnum).includes(acceptLanguage as LanguagesEnum)
-      ) {
+      if (Object.values(LanguagesEnum).includes(acceptLanguage as LanguagesEnum)) {
         locale = acceptLanguage as LanguagesEnum;
       }
     }
@@ -129,9 +117,7 @@ export const app = new Elysia<typeof prefix, TContext>({ prefix })
 
     for (const service of services) {
       for (const [key, value] of Object.entries(service)) {
-        const deps = value.inject.map(
-          (key: { name: string }) => localStore[key.name],
-        );
+        const deps = value.inject.map((key: { name: string }) => localStore[key.name]);
         if (value.inject.length !== deps.filter(Boolean).length) {
           // Note: This error occurs during app initialization, before i18n is available
           throw new Error(`Missing dependencies for ${key}`);

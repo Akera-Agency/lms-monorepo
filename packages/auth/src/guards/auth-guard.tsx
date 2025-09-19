@@ -36,8 +36,6 @@ export const AuthGuard = ({ children }: { children: React.ReactNode }) => {
   }
 
   return (
-    <GuardContext.Provider value={{ session, sessionLoading }}>
-      {children}
-    </GuardContext.Provider>
+    <GuardContext.Provider value={{ session, sessionLoading }}>{children}</GuardContext.Provider>
   );
 };

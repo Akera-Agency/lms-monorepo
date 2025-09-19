@@ -1,10 +1,5 @@
 import { cn } from '../../lib/utils';
-import {
-  motion,
-  type MotionProps,
-  useInView,
-  type Variants,
-} from 'framer-motion';
+import { motion, type MotionProps, useInView, type Variants } from 'framer-motion';
 import { useRef } from 'react';
 
 interface WordPullUpProps extends MotionProps {
@@ -46,10 +41,7 @@ export function WordPullUp({
       initial="hidden"
       animate={shouldAnimate ? 'show' : 'hidden'}
       transition={{ staggerChildren: 0.2, ...(rest.transition ?? {}) }}
-      className={cn(
-        'text-4xl font-bold leading-[5rem] tracking-[-0.02em]',
-        className
-      )}
+      className={cn('text-4xl font-bold leading-[5rem] tracking-[-0.02em]', className)}
       {...rest}
     >
       {children.split(' ').map((word, i) => (

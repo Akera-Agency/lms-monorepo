@@ -31,12 +31,7 @@ const CustomSidebarTrigger = ({
       }}
       {...props}
     >
-      <div
-        className={cn(
-          'flex h-full w-full items-center justify-center',
-          iconWrapperStyle
-        )}
-      >
+      <div className={cn('flex h-full w-full items-center justify-center', iconWrapperStyle)}>
         {icon}
       </div>
       <span className="sr-only">Toggle Sidebar</span>

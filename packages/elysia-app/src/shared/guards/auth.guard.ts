@@ -33,9 +33,7 @@ export interface AuthContext extends TContext {
 }
 
 // Helper function to extract JWT token from headers
-const extractToken = (
-  headers: Record<string, string | undefined>,
-): string | null => {
+const extractToken = (headers: Record<string, string | undefined>): string | null => {
   const authHeader = headers.authorization || headers.Authorization;
   if (!authHeader) {
     return null;
@@ -63,9 +61,7 @@ const decodeAndVerifyToken = (token: string): ITokenPayload => {
 
   try {
     // Verify and decode the token
-    const decoded = JSON.parse(
-      JSON.stringify(jwt.verify(token, jwtSecret)),
-    ) as ITokenPayload;
+    const decoded = JSON.parse(JSON.stringify(jwt.verify(token, jwtSecret))) as ITokenPayload;
 
     // Check if token is expired
     const currentTime = Math.floor(Date.now() / 1000);

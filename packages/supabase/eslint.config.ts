@@ -47,7 +47,4 @@ const projects = [
   },
 ];
 
-export default [
-  ...compat.extends('plugin:@nx/typescript', 'plugin:@nx/javascript'),
-  ...projects,
-];
+export default [...compat.extends('plugin:@nx/typescript', 'plugin:@nx/javascript'), ...projects];

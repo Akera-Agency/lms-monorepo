@@ -38,9 +38,7 @@ export function RadialChart({
 
   const radius = size / 2 - Math.max(progressWidth, circleWidth) / 2;
   const circumference = Math.PI * radius * 2;
-  const percentage = shouldUseValue
-    ? circumference * ((total - progress) / total)
-    : circumference;
+  const percentage = shouldUseValue ? circumference * ((total - progress) / total) : circumference;
 
   return (
     <div
@@ -89,10 +87,7 @@ export function RadialChart({
   );
 }
 
-export const ProgressiveRadialChart = ({
-  total,
-  ...props
-}: Omit<RadialChartProps, 'children'>) => {
+export const ProgressiveRadialChart = ({ total, ...props }: Omit<RadialChartProps, 'children'>) => {
   return (
     <RadialChart
       total={total}

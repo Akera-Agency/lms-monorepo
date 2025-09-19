@@ -11,10 +11,7 @@ function findWorkspaceRoot() {
   if (process.env.NX_WORKSPACE_ROOT) return process.env.NX_WORKSPACE_ROOT;
   let dir = process.cwd();
   while (dir !== path.parse(dir).root) {
-    if (
-      fs.existsSync(path.join(dir, 'nx.json')) ||
-      fs.existsSync(path.join(dir, '.git'))
-    ) {
+    if (fs.existsSync(path.join(dir, 'nx.json')) || fs.existsSync(path.join(dir, '.git'))) {
       return dir;
     }
     dir = path.dirname(dir);

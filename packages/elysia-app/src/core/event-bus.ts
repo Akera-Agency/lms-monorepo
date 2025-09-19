@@ -35,10 +35,7 @@ export class TypedEventBus<Events extends Record<string, unknown>> {
     this.ee.emit(event, payload);
   }
 
-  async emitAsync<K extends keyof Events & string>(
-    event: K,
-    payload: Events[K],
-  ) {
+  async emitAsync<K extends keyof Events & string>(event: K, payload: Events[K]) {
     await this.ee.emitAsync(event, payload);
   }
 

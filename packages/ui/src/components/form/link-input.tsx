@@ -7,12 +7,7 @@ interface LinkInputProps extends Omit<InputProps, 'value' | 'onChange'> {
   onChange: (value: string) => void;
 }
 
-const LinkInput = ({
-  value,
-  onChange,
-  className,
-  ...props
-}: LinkInputProps) => {
+const LinkInput = ({ value, onChange, className, ...props }: LinkInputProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const prefix = 'http://';
 

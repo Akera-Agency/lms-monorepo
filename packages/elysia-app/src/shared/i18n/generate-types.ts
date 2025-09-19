@@ -37,7 +37,7 @@ function generateTypesFromTranslations(): void {
   try {
     // Read the first available language directory (assuming all have same structure)
     const langDirs = readdirSync(localesDir).filter((dir) =>
-      statSync(join(localesDir, dir)).isDirectory()
+      statSync(join(localesDir, dir)).isDirectory(),
     );
 
     if (langDirs.length === 0) {
@@ -58,9 +58,7 @@ function generateTypesFromTranslations(): void {
         const keys = extractKeys(translations);
 
         // Convert keys to TypeScript type
-        const typeName = `${
-          namespace.charAt(0).toUpperCase() + namespace.slice(1)
-        }Keys`;
+        const typeName = `${namespace.charAt(0).toUpperCase() + namespace.slice(1)}Keys`;
         const typeDefinition = generateTypeFromKeys(keys, typeName);
         typeDefinitions.push(typeDefinition);
 
@@ -81,9 +79,7 @@ export type AllTranslationKeysWithNs =
 ${typeDefinitions
   .map((_, index) => {
     const namespace = namespaces[index];
-    const typeName = `${
-      namespace.charAt(0).toUpperCase() + namespace.slice(1)
-    }Keys`;
+    const typeName = `${namespace.charAt(0).toUpperCase() + namespace.slice(1)}Keys`;
     return `  | \`${namespace}:\${${typeName}}\``;
   })
   .join('\n')};
@@ -93,9 +89,7 @@ export type AllTranslationKeys =
 ${typeDefinitions
   .map((_, index) => {
     const namespace = namespaces[index];
-    const typeName = `${
-      namespace.charAt(0).toUpperCase() + namespace.slice(1)
-    }Keys`;
+    const typeName = `${namespace.charAt(0).toUpperCase() + namespace.slice(1)}Keys`;
     return `  | ${typeName}`;
   })
   .join('\n')};
@@ -127,10 +121,7 @@ export type TranslationContext = CommonContext | ValidationContext | MessageCont
 `;
 
     // Write the types file
-    const typesFilePath = join(
-      process.cwd(),
-      'src/shared/i18n/generated-types.ts'
-    );
+    const typesFilePath = join(process.cwd(), 'src/shared/i18n/generated-types.ts');
     writeFileSync(typesFilePath, typesContent);
 
     console.log(`✅ Types generated successfully at ${typesFilePath}`);

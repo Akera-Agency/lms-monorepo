@@ -5,9 +5,7 @@ export async function up(db: Kysely<any>): Promise<void> {
   // Add language column to users table
   await db.schema
     .alterTable('users')
-    .addColumn('language', 'text', (col) =>
-      col.notNull().defaultTo(LanguagesEnum.en)
-    )
+    .addColumn('language', 'text', (col) => col.notNull().defaultTo(LanguagesEnum.en))
     .execute();
 }
 

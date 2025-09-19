@@ -92,16 +92,8 @@ export class ActivityService extends BaseService {
     return await this.activityRepository.getTotalXpByUserId(userId);
   }
 
-  async getUserXpInDateRange(
-    userId: string,
-    startDate: Date,
-    endDate: Date,
-  ): Promise<number> {
-    return await this.activityRepository.getXpByUserIdAndDateRange(
-      userId,
-      startDate,
-      endDate,
-    );
+  async getUserXpInDateRange(userId: string, startDate: Date, endDate: Date): Promise<number> {
+    return await this.activityRepository.getXpByUserIdAndDateRange(userId, startDate, endDate);
   }
 
   async getDailyXp(userId: string, date: Date): Promise<number> {
@@ -156,10 +148,7 @@ export class ActivityService extends BaseService {
    * Check if user has already earned XP for a specific activity today
    * Useful for activities like DAILY_LOGIN that should only be awarded once per day
    */
-  async hasEarnedTodayForType(
-    userId: string,
-    type: ActivityTypeEnum,
-  ): Promise<boolean> {
+  async hasEarnedTodayForType(userId: string, type: ActivityTypeEnum): Promise<boolean> {
     const today = new Date();
     const startOfDay = new Date(today);
     startOfDay.setHours(0, 0, 0, 0);
@@ -167,10 +156,7 @@ export class ActivityService extends BaseService {
     const endOfDay = new Date(today);
     endOfDay.setHours(23, 59, 59, 999);
 
-    const activities = await this.activityRepository.findByUserIdAndType(
-      userId,
-      type,
-    );
+    const activities = await this.activityRepository.findByUserIdAndType(userId, type);
 
     return activities.some((activity) => {
       const activityDate = new Date(activity.created_at);

@@ -1,17 +1,6 @@
-import {
-  type ColumnDef,
-  flexRender,
-  type Table as TTable,
-} from '@tanstack/react-table';
+import { type ColumnDef, flexRender, type Table as TTable } from '@tanstack/react-table';
 
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '../shadcn/table';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../shadcn/table';
 
 import { DataTablePagination } from './data-table-pagination';
 import TableRowSkeleton from './skeletons/table-skeleton';
@@ -51,10 +40,7 @@ export function DataTable<TData, TValue>({
                     <TableHead key={header.id} colSpan={header.colSpan}>
                       {header.isPlaceholder
                         ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                        : flexRender(header.column.columnDef.header, header.getContext())}
                     </TableHead>
                   );
                 })}
@@ -71,10 +57,7 @@ export function DataTable<TData, TValue>({
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   ))}
                 </TableRow>
@@ -92,10 +75,7 @@ export function DataTable<TData, TValue>({
               </>
             ) : (
               <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
+                <TableCell colSpan={columns.length} className="h-24 text-center">
                   No results.
                 </TableCell>
               </TableRow>

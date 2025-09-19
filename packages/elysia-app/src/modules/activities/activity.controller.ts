@@ -39,10 +39,7 @@ export const activityController = new Elysia<typeof prefix, TContext>({
       async (ctx) => {
         const user = ctx.auth.user;
         const date = ctx.query.date ? new Date(ctx.query.date) : new Date();
-        const dailyXp = await ctx.store.ActivityService.getDailyXp(
-          user.sub,
-          date,
-        );
+        const dailyXp = await ctx.store.ActivityService.getDailyXp(user.sub, date);
         return { dailyXp, date: date.toISOString().split('T')[0] };
       },
       {
@@ -57,10 +54,7 @@ export const activityController = new Elysia<typeof prefix, TContext>({
       async (ctx) => {
         const user = ctx.auth.user;
         const date = ctx.query.date ? new Date(ctx.query.date) : new Date();
-        const weeklyXp = await ctx.store.ActivityService.getWeeklyXp(
-          user.sub,
-          date,
-        );
+        const weeklyXp = await ctx.store.ActivityService.getWeeklyXp(user.sub, date);
         return { weeklyXp, date: date.toISOString().split('T')[0] };
       },
       {
@@ -75,10 +69,7 @@ export const activityController = new Elysia<typeof prefix, TContext>({
       async (ctx) => {
         const user = ctx.auth.user;
         const date = ctx.query.date ? new Date(ctx.query.date) : new Date();
-        const monthlyXp = await ctx.store.ActivityService.getMonthlyXp(
-          user.sub,
-          date,
-        );
+        const monthlyXp = await ctx.store.ActivityService.getMonthlyXp(user.sub, date);
         return { monthlyXp, date: date.toISOString().split('T')[0] };
       },
       {
@@ -93,10 +84,7 @@ export const activityController = new Elysia<typeof prefix, TContext>({
       '/me/type/:type',
       async (ctx) => {
         const user = ctx.auth.user;
-        return await ctx.store.ActivityService.findByUserIdAndType(
-          user.sub,
-          ctx.params.type,
-        );
+        return await ctx.store.ActivityService.findByUserIdAndType(user.sub, ctx.params.type);
       },
       {
         params: t.Object({
@@ -159,9 +147,7 @@ export const activityController = new Elysia<typeof prefix, TContext>({
         .get(
           '/user/:userId',
           async (ctx) => {
-            return await ctx.store.ActivityService.findByUserId(
-              ctx.params.userId,
-            );
+            return await ctx.store.ActivityService.findByUserId(ctx.params.userId);
           },
           {
             params: t.Object({
@@ -174,9 +160,7 @@ export const activityController = new Elysia<typeof prefix, TContext>({
         .get(
           '/user/:userId/xp',
           async (ctx) => {
-            const totalXp = await ctx.store.ActivityService.getUserTotalXp(
-              ctx.params.userId,
-            );
+            const totalXp = await ctx.store.ActivityService.getUserTotalXp(ctx.params.userId);
             return { userId: ctx.params.userId, totalXp };
           },
           {

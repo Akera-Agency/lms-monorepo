@@ -3,8 +3,7 @@ import { Badge } from '../badge/badge';
 import { cn } from '../../lib/utils';
 import type { LucideProps } from 'lucide-react';
 
-export interface LabelProps
-  extends React.LabelHTMLAttributes<HTMLLabelElement> {
+export interface LabelProps extends React.LabelHTMLAttributes<HTMLLabelElement> {
   label?: string;
   required?: boolean;
   helperText?: string;
@@ -30,10 +29,7 @@ export default function Label({
   return (
     <div className={cn('flex flex-col gap-1', wrapperClassName)}>
       <label
-        className={cn(
-          'text-sm font-medium text-neutral-800 dark:text-white',
-          className
-        )}
+        className={cn('text-sm font-medium text-neutral-800 dark:text-white', className)}
         {...props}
       >
         <span className="inline-flex items-center">
@@ -47,9 +43,7 @@ export default function Label({
           )}
         </span>
       </label>
-      {helperText && (
-        <p className="mb-1 text-sm text-secondary-text">{helperText}</p>
-      )}
+      {helperText && <p className="mb-1 text-sm text-secondary-text">{helperText}</p>}
     </div>
   );
 }

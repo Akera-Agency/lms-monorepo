@@ -5,17 +5,8 @@ import { tenantRoute } from '../../../../../packages/auth/src/utils/external-rou
 import { superAdminRoute } from '../../../../../packages/auth/src/utils/external-routes';
 
 export default function LoginPage() {
-  const {
-    email,
-    password,
-    setEmail,
-    setPassword,
-    loading,
-    setLoading,
-    error,
-    setError,
-    signIn,
-  } = useAuthForm();
+  const { email, password, setEmail, setPassword, loading, setLoading, error, setError, signIn } =
+    useAuthForm();
 
   const handleSignIn = async (e: any) => {
     e.preventDefault();
@@ -26,11 +17,9 @@ export default function LoginPage() {
         console.log('Login successful:', result.data);
         if (result.data.user?.user_metadata.role === 'student') {
           window.location.href = `${userRoute}/#access_token=${result.data.session.access_token}&refresh_token=${result.data.session.refresh_token}`;
-        }
-        else if (result.data.user?.user_metadata.role === 'admin') {
+        } else if (result.data.user?.user_metadata.role === 'admin') {
           window.location.href = `${tenantRoute}/#access_token=${result.data.session.access_token}&refresh_token=${result.data.session.refresh_token}`;
-        }
-        else if (result.data.user?.user_metadata.role === 'super_admin') {
+        } else if (result.data.user?.user_metadata.role === 'super_admin') {
           window.location.href = `${superAdminRoute}/#access_token=${result.data.session.access_token}&refresh_token=${result.data.session.refresh_token}`;
         }
       } else {

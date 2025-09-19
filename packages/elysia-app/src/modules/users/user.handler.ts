@@ -11,9 +11,7 @@ export const userHandler = {
     try {
       Logger.info(`Event user:updated -> ${payload.newUser.id}`);
     } catch (error) {
-      throw new EvalError(
-        error instanceof Error ? error.message : 'Unknown error',
-      );
+      throw new EvalError(error instanceof Error ? error.message : 'Unknown error');
     }
   },
 };

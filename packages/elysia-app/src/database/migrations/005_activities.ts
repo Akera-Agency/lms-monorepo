@@ -5,23 +5,13 @@ export async function up(db: Kysely<unknown>): Promise<void> {
   await db.schema
     .withSchema('public')
     .createTable('activities')
-    .addColumn('id', 'uuid', (col) =>
-      col.primaryKey().defaultTo(sql`gen_random_uuid()`),
-    )
-    .addColumn('user_id', 'uuid', (col) =>
-      col.notNull().references('users.id').onDelete('cascade'),
-    )
+    .addColumn('id', 'uuid', (col) => col.primaryKey().defaultTo(sql`gen_random_uuid()`))
+    .addColumn('user_id', 'uuid', (col) => col.notNull().references('users.id').onDelete('cascade'))
     .addColumn('type', 'text', (col) => col.notNull())
     .addColumn('earned_xp', 'integer', (col) => col.notNull())
-    .addColumn('earned_at', 'timestamptz', (col) =>
-      col.notNull().defaultTo(sql`now()`),
-    )
-    .addColumn('created_at', 'timestamptz', (col) =>
-      col.defaultTo(sql`now()`).notNull(),
-    )
-    .addColumn('updated_at', 'timestamptz', (col) =>
-      col.defaultTo(sql`now()`).notNull(),
-    )
+    .addColumn('earned_at', 'timestamptz', (col) => col.notNull().defaultTo(sql`now()`))
+    .addColumn('created_at', 'timestamptz', (col) => col.defaultTo(sql`now()`).notNull())
+    .addColumn('updated_at', 'timestamptz', (col) => col.defaultTo(sql`now()`).notNull())
     .addColumn('deleted_at', 'timestamptz')
     .execute();
 }

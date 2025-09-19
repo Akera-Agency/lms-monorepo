@@ -1,11 +1,6 @@
 import { Kysely } from 'kysely';
 import { IDb } from '../../../database/types/IDb';
-import {
-  UserEntity,
-  UpdateUser,
-  KyselyUserEntity,
-  QueryUser,
-} from './user.entity';
+import { UserEntity, UpdateUser, KyselyUserEntity, QueryUser } from './user.entity';
 import { BaseRepo, FindManyArgs } from '../../../shared/types/base/base.repo';
 import { infinityPagination } from '../../../shared/utils/infinityPagination';
 import { PostgresError } from '../../../shared/Errors/PostgresError';
@@ -22,45 +17,32 @@ export class UserRepository extends BaseRepo<KyselyUserEntity> {
         .where('deleted_at', 'is', null)
         .$if(!!query.filter, (q) =>
           q.where((eb) =>
-            eb.and(
-              query.filter?.map((arg) =>
-                eb(arg.column, arg.operator, arg.value)
-              ) || []
-            )
-          )
+            eb.and(query.filter?.map((arg) => eb(arg.column, arg.operator, arg.value)) || []),
+          ),
         )
         .$if(!!query.search, (q) =>
           q.where((e) =>
-            e.or(
-              query.search?.map((arg) =>
-                e(arg.column, arg.operator, arg.value)
-              ) || []
-            )
-          )
+            e.or(query.search?.map((arg) => e(arg.column, arg.operator, arg.value)) || []),
+          ),
         )
         .$if(!!query.tenantId, (q) =>
           q
             .innerJoin('tenant_users', 'tenant_users.user_id', 'users.id')
-            .where('tenant_users.tenant_id', '=', query.tenantId!)
+            .where('tenant_users.tenant_id', '=', query.tenantId!),
         );
 
       const [res, total] = await Promise.all([
         queryBuilder
           .$if(!!query.sort, (q) =>
-            query.sort!.reduce(
-              (qb, arg) => qb.orderBy(arg.orderBy, arg.sort),
-              q
-            )
+            query.sort!.reduce((qb, arg) => qb.orderBy(arg.orderBy, arg.sort), q),
           )
           .$if(!!query.limit, (q) => q.limit(query.limit as number))
           .$if(!!query.limit && !!query.page, (q) =>
-            q.offset(((query.page as number) - 1) * (query.limit as number))
+            q.offset(((query.page as number) - 1) * (query.limit as number)),
           )
           .selectAll('users')
           .execute(),
-        queryBuilder
-          .select(this.trx.fn.countAll('users').as('count'))
-          .executeTakeFirst(),
+        queryBuilder.select(this.trx.fn.countAll('users').as('count')).executeTakeFirst(),
       ]);
       return infinityPagination(res, {
         total_count: Number(total?.count ?? 0),
@@ -82,8 +64,8 @@ export class UserRepository extends BaseRepo<KyselyUserEntity> {
           eb.and(
             args.where.map((arg) => {
               return eb(arg.column, arg.operator, arg.value);
-            })
-          )
+            }),
+          ),
         )
         .execute();
       return res;
@@ -92,23 +74,17 @@ export class UserRepository extends BaseRepo<KyselyUserEntity> {
     }
   }
 
-  override async findOne(
-    args: FindManyArgs<UserEntity> & { tenantId?: string }
-  ) {
+  override async findOne(args: FindManyArgs<UserEntity> & { tenantId?: string }) {
     try {
       const res = await this.trx
         .selectFrom('users')
         .selectAll()
         .where('deleted_at', 'is', null)
-        .where((eb) =>
-          eb.and(
-            args.where.map((arg) => eb(arg.column, arg.operator, arg.value))
-          )
-        )
+        .where((eb) => eb.and(args.where.map((arg) => eb(arg.column, arg.operator, arg.value))))
         .$if(!!args.tenantId, (q) =>
           q
             .innerJoin('tenant_users', 'tenant_users.user_id', 'users.id')
-            .where('tenant_users.tenant_id', '=', args.tenantId!)
+            .where('tenant_users.tenant_id', '=', args.tenantId!),
         )
         .executeTakeFirst();
       return res ?? null;

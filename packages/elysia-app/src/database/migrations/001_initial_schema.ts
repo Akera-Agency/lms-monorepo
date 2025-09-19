@@ -2,30 +2,20 @@ import { Kysely, sql } from 'kysely';
 
 export async function up(db: Kysely<unknown>): Promise<void> {
   // Enable UUID extension
-  await db.executeQuery(
-    sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`.compile(db)
-  );
+  await db.executeQuery(sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`.compile(db));
 
   // 1. Create roles table first (users will reference it)
   await db.schema
     .withSchema('public')
     .createTable('roles')
-    .addColumn('id', 'uuid', (col) =>
-      col.primaryKey().defaultTo(sql`gen_random_uuid()`)
-    )
+    .addColumn('id', 'uuid', (col) => col.primaryKey().defaultTo(sql`gen_random_uuid()`))
     .addColumn('name', 'varchar', (col) => col.notNull())
     .addColumn('description', 'text')
     .addColumn('permissions', 'jsonb', (col) => col.notNull())
-    .addColumn('is_system_role', 'boolean', (col) =>
-      col.notNull().defaultTo(false)
-    )
+    .addColumn('is_system_role', 'boolean', (col) => col.notNull().defaultTo(false))
     .addColumn('deleted_at', 'timestamptz')
-    .addColumn('created_at', 'timestamptz', (col) =>
-      col.defaultTo(sql`now()`).notNull()
-    )
-    .addColumn('updated_at', 'timestamptz', (col) =>
-      col.defaultTo(sql`now()`).notNull()
-    )
+    .addColumn('created_at', 'timestamptz', (col) => col.defaultTo(sql`now()`).notNull())
+    .addColumn('updated_at', 'timestamptz', (col) => col.defaultTo(sql`now()`).notNull())
     .execute();
 
   // 2. Create users table with all fields
@@ -33,86 +23,62 @@ export async function up(db: Kysely<unknown>): Promise<void> {
     .withSchema('public')
     .createTable('users')
     .addColumn('id', 'uuid', (col) =>
-      col.primaryKey().references('auth.users.id').onDelete('cascade')
+      col.primaryKey().references('auth.users.id').onDelete('cascade'),
     )
     .addColumn('email', 'text')
     .addColumn('name', 'text', (col) => col.notNull().unique())
-    .addColumn('role_id', 'uuid', (col) =>
-      col.references('roles.id').onDelete('set null')
-    )
+    .addColumn('role_id', 'uuid', (col) => col.references('roles.id').onDelete('set null'))
     .addColumn('avatar_url', 'text')
     .addColumn('is_active', 'boolean', (col) => col.notNull().defaultTo(true))
     .addColumn('last_login_at', 'timestamptz')
     .addColumn('deleted_at', 'timestamptz')
-    .addColumn('created_at', 'timestamptz', (col) =>
-      col.defaultTo(sql`now()`).notNull()
-    )
-    .addColumn('updated_at', 'timestamptz', (col) =>
-      col.defaultTo(sql`now()`).notNull()
-    )
+    .addColumn('created_at', 'timestamptz', (col) => col.defaultTo(sql`now()`).notNull())
+    .addColumn('updated_at', 'timestamptz', (col) => col.defaultTo(sql`now()`).notNull())
     .execute();
 
   await db.schema
     .withSchema('public')
     .alterTable('users')
-    .addUniqueConstraint('users_email_unique', ['email'], (col) =>
-      col.nullsNotDistinct()
-    )
+    .addUniqueConstraint('users_email_unique', ['email'], (col) => col.nullsNotDistinct())
     .execute();
 
   // 3. Create tenants table for multitenancy
   await db.schema
     .withSchema('public')
     .createTable('tenants')
-    .addColumn('id', 'uuid', (col) =>
-      col.primaryKey().defaultTo(sql`gen_random_uuid()`)
-    )
+    .addColumn('id', 'uuid', (col) => col.primaryKey().defaultTo(sql`gen_random_uuid()`))
     .addColumn('name', 'text')
     .addColumn('description', 'text')
     .addColumn('logo_url', 'text')
     .addColumn('is_public', 'boolean', (col) => col.defaultTo(false))
     .addColumn('deleted_at', 'timestamptz')
-    .addColumn('created_at', 'timestamptz', (col) =>
-      col.defaultTo(sql`now()`).notNull()
-    )
-    .addColumn('updated_at', 'timestamptz', (col) =>
-      col.defaultTo(sql`now()`).notNull()
-    )
+    .addColumn('created_at', 'timestamptz', (col) => col.defaultTo(sql`now()`).notNull())
+    .addColumn('updated_at', 'timestamptz', (col) => col.defaultTo(sql`now()`).notNull())
     .execute();
 
   // Add unique constraint for slug (excluding soft-deleted records)
   await db.schema
     .withSchema('public')
     .alterTable('tenants')
-    .addUniqueConstraint('tenants_name_unique', ['name'], (col) =>
-      col.nullsNotDistinct()
-    )
+    .addUniqueConstraint('tenants_name_unique', ['name'], (col) => col.nullsNotDistinct())
     .execute();
 
   // 4. Create tenant_roles table for tenant-specific roles
   await db.schema
     .withSchema('public')
     .createTable('tenant_roles')
-    .addColumn('id', 'uuid', (col) =>
-      col.primaryKey().defaultTo(sql`gen_random_uuid()`)
-    )
+    .addColumn('id', 'uuid', (col) => col.primaryKey().defaultTo(sql`gen_random_uuid()`))
     .addColumn('tenant_id', 'uuid', (col) =>
-      col.references('tenants.id').onDelete('cascade').notNull()
+      col.references('tenants.id').onDelete('cascade').notNull(),
     )
     .addColumn('name', 'varchar', (col) => col.notNull())
     .addColumn('description', 'text')
     .addColumn('permissions', 'jsonb', (col) => col.notNull())
     .addColumn('is_default', 'boolean', (col) => col.notNull().defaultTo(false))
-    .addColumn('is_system_role', 'boolean', (col) =>
-      col.notNull().defaultTo(false)
-    )
+    .addColumn('is_system_role', 'boolean', (col) => col.notNull().defaultTo(false))
     .addColumn('deleted_at', 'timestamptz')
-    .addColumn('created_at', 'timestamptz', (col) =>
-      col.defaultTo(sql`now()`).notNull()
-    )
-    .addColumn('updated_at', 'timestamptz', (col) =>
-      col.defaultTo(sql`now()`).notNull()
-    )
+    .addColumn('created_at', 'timestamptz', (col) => col.defaultTo(sql`now()`).notNull())
+    .addColumn('updated_at', 'timestamptz', (col) => col.defaultTo(sql`now()`).notNull())
     .execute();
 
   // 5. Create tenant_users junction table
@@ -120,21 +86,15 @@ export async function up(db: Kysely<unknown>): Promise<void> {
     .withSchema('public')
     .createTable('tenant_users')
     .addColumn('tenant_id', 'uuid', (col) =>
-      col.references('tenants.id').onDelete('cascade').notNull()
+      col.references('tenants.id').onDelete('cascade').notNull(),
     )
-    .addColumn('user_id', 'uuid', (col) =>
-      col.references('users.id').onDelete('cascade').notNull()
-    )
+    .addColumn('user_id', 'uuid', (col) => col.references('users.id').onDelete('cascade').notNull())
     .addColumn('tenant_role_id', 'uuid', (col) =>
-      col.references('tenant_roles.id').onDelete('set null')
+      col.references('tenant_roles.id').onDelete('set null'),
     )
-    .addColumn('joined_at', 'timestamptz', (col) =>
-      col.defaultTo(sql`now()`).notNull()
-    )
+    .addColumn('joined_at', 'timestamptz', (col) => col.defaultTo(sql`now()`).notNull())
     .addColumn('deleted_at', 'timestamptz')
-    .addColumn('created_at', 'timestamptz', (col) =>
-      col.defaultTo(sql`now()`).notNull()
-    )
+    .addColumn('created_at', 'timestamptz', (col) => col.defaultTo(sql`now()`).notNull())
     .execute();
 
   await db.schema

@@ -25,7 +25,7 @@ const VideoPlayer = (props: VideoPlayerProps) => {
       ...props,
       fluid: true,
     }),
-    [props]
+    [props],
   );
 
   const onVideo = useCallback((el: HTMLVideoElement) => {

@@ -49,7 +49,7 @@ const DateTimePicker = ({
   const hasError = error !== undefined;
 
   const handleChangeTime = (
-    e: React.ChangeEvent<HTMLInputElement> | React.FormEvent<HTMLLabelElement>
+    e: React.ChangeEvent<HTMLInputElement> | React.FormEvent<HTMLLabelElement>,
   ) => {
     const target = e.target as HTMLInputElement;
     const value = target.value;
@@ -70,23 +70,17 @@ const DateTimePicker = ({
         <Label
           label={label}
           required={labelRequired}
-          className={cn(
-            'text-heading-color text-sm font-semibold',
-            hasError && 'text-destructive'
-          )}
+          className={cn('text-heading-color text-sm font-semibold', hasError && 'text-destructive')}
         />
       )}
       <Popover>
-        <PopoverTrigger
-          className={cn(disabled && 'pointer-events-none')}
-          asChild
-        >
+        <PopoverTrigger className={cn(disabled && 'pointer-events-none')} asChild>
           <div className="relative w-full cursor-pointer">
             {icon && (
               <div
                 className={cn(
                   'absolute inset-y-0 left-0 flex items-center pl-3',
-                  disabled && 'opacity-50'
+                  disabled && 'opacity-50',
                 )}
               >
                 <CalendarIcon className="h-4 w-4" />
@@ -101,7 +95,7 @@ const DateTimePicker = ({
                 !date && 'text-muted-foreground',
                 hasError && 'border-red-500',
                 icon && 'pl-8',
-                className
+                className,
               )}
             >
               {date && time ? (
@@ -118,7 +112,7 @@ const DateTimePicker = ({
         <PopoverContent
           className={cn(
             'dark:bg-dark-primary w-96 px-3 py-2 shadow-lg dark:border-0',
-            contentStyle
+            contentStyle,
           )}
           align={align}
         >

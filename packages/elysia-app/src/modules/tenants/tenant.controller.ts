@@ -22,10 +22,7 @@ const updateTenantValidationSchema = t.Object({
 
 const createTenantRoleValidationSchema = t.Object({
   name: t.String(),
-  permissions: t.Record(
-    t.String(),           
-    t.Array(t.String()) 
-  ),
+  permissions: t.Record(t.String(), t.Array(t.String())),
   is_default: t.Boolean(),
   is_system_role: t.Boolean(),
   description: t.Optional(t.String()),
@@ -183,10 +180,7 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
                   statusCode: 403,
                 });
               }
-              return await ctx.store.TenantService.update(
-                ctx.params.id,
-                ctx.body,
-              );
+              return await ctx.store.TenantService.update(ctx.params.id, ctx.body);
             },
             {
               params: t.Object({
@@ -241,9 +235,7 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
                   statusCode: 403,
                 });
               }
-              return await ctx.store.TenantService.getTenantRoles(
-                ctx.params.id,
-              );
+              return await ctx.store.TenantService.getTenantRoles(ctx.params.id);
             },
             {
               params: t.Object({
@@ -270,9 +262,7 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
                   statusCode: 403,
                 });
               }
-              const tenant = await ctx.store.TenantService.findOne(
-                ctx.params.id,
-              );
+              const tenant = await ctx.store.TenantService.findOne(ctx.params.id);
               return await ctx.store.TenantService.createRoleForTenant({
                 ...ctx.body,
                 tenant_id: tenant.id,
@@ -304,10 +294,7 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
                   statusCode: 403,
                 });
               }
-              return await ctx.store.TenantService.updateRoleForTenant(
-                ctx.params.roleId,
-                ctx.body,
-              );
+              return await ctx.store.TenantService.updateRoleForTenant(ctx.params.roleId, ctx.body);
             },
             {
               params: t.Object({
@@ -336,9 +323,7 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
                   statusCode: 403,
                 });
               }
-              await ctx.store.TenantService.removeRoleFromTenant(
-                ctx.params.roleId,
-              );
+              await ctx.store.TenantService.removeRoleFromTenant(ctx.params.roleId);
             },
             {
               params: t.Object({
@@ -429,13 +414,10 @@ export const tenantController = new Elysia<typeof prefix, TContext>({
                   statusCode: 403,
                 });
               }
-              return await ctx.store.TenantService.getTenantUsers(
-                ctx.params.id,
-                {
-                  page: ctx.query.page,
-                  limit: ctx.query.limit,
-                },
-              );
+              return await ctx.store.TenantService.getTenantUsers(ctx.params.id, {
+                page: ctx.query.page,
+                limit: ctx.query.limit,
+              });
             },
             {
               params: t.Object({

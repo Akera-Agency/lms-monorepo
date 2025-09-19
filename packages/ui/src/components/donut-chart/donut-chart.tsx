@@ -38,9 +38,7 @@ export default function DonutChart({
 
   const radius = size / 2 - Math.max(progressWidth, circleWidth) / 2;
   const circumference = Math.PI * radius * 2;
-  const percentage = shouldUseValue
-    ? circumference * ((total - progress) / total)
-    : circumference;
+  const percentage = shouldUseValue ? circumference * ((total - progress) / total) : circumference;
 
   return (
     <div
@@ -88,7 +86,7 @@ export default function DonutChart({
           className={cn(
             'duration-500',
             progressClassName,
-            'stroke-[url(#lightGradient)] dark:stroke-[url(#darkGradient)]'
+            'stroke-[url(#lightGradient)] dark:stroke-[url(#darkGradient)]',
           )}
           strokeWidth={`${progressWidth}px`}
           strokeLinecap={rounded ? 'round' : 'butt'}
@@ -105,17 +103,9 @@ export default function DonutChart({
   );
 }
 
-export const ProgressiveDonutChart = ({
-  total,
-  ...props
-}: Omit<DonutChartProps, 'children'>) => {
+export const ProgressiveDonutChart = ({ total, ...props }: Omit<DonutChartProps, 'children'>) => {
   return (
-    <DonutChart
-      total={total}
-      {...props}
-      className="text-primary"
-      trackClassName="text-track-color"
-    >
+    <DonutChart total={total} {...props} className="text-primary" trackClassName="text-track-color">
       <Counter
         targetValue={props.progress || 1}
         className="text-center text-[32px] font-medium dark:text-white"
@@ -131,37 +121,23 @@ export const ProgressiveDonutChart = ({
   );
 };
 
-export const PercentageDonutChart = ({
-  ...props
-}: Omit<DonutChartProps, 'children'>) => {
+export const PercentageDonutChart = ({ ...props }: Omit<DonutChartProps, 'children'>) => {
   return (
-    <DonutChart
-      {...props}
-      className='"text-custom-primary'
-      trackClassName="text-track-color "
-    >
+    <DonutChart {...props} className='"text-custom-primary' trackClassName="text-track-color ">
       <div className="flex items-center">
         <Counter
           targetValue={props.progress}
           className="font-medium text-purple-500 text-md dark:text-white"
         />
-        <span className="text-[1.75rem] font-medium text-purple-500 dark:text-zinc-400">
-          %
-        </span>
+        <span className="text-[1.75rem] font-medium text-purple-500 dark:text-zinc-400">%</span>
       </div>
     </DonutChart>
   );
 };
 
-export const StreakDonutChart = ({
-  ...props
-}: Omit<DonutChartProps, 'children'>) => {
+export const StreakDonutChart = ({ ...props }: Omit<DonutChartProps, 'children'>) => {
   return (
-    <DonutChart
-      {...props}
-      className='"text-custom-primary'
-      trackClassName="text-track-color "
-    >
+    <DonutChart {...props} className='"text-custom-primary' trackClassName="text-track-color ">
       <div className="flex flex-col gap-2 items-center">
         <svg
           xmlns="http://www.w3.org/2000/svg"

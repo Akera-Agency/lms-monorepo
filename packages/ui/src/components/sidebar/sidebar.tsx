@@ -14,11 +14,7 @@ import {
 } from '../shadcn/sidebar';
 
 import { ChevronRight, PanelRightClose } from 'lucide-react';
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '../shadcn/collapsible';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '../shadcn/collapsible';
 import { useState, useRef, useEffect } from 'react';
 import CustomSidebarTrigger from './custom-sidebar-trigger';
 import { groupLinksByLabel } from '../../helpers/group-links';
@@ -85,14 +81,9 @@ const Sidebar = ({ navigationLinks, className }: SidebarProps) => {
   useEffect(() => {
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
-        if (
-          mutation.type === 'attributes' &&
-          mutation.attributeName === 'data-state'
-        ) {
+        if (mutation.type === 'attributes' && mutation.attributeName === 'data-state') {
           const target = mutation.target as HTMLElement;
-          setIsSidebarCollapsed(
-            target.getAttribute('data-state') === 'collapsed'
-          );
+          setIsSidebarCollapsed(target.getAttribute('data-state') === 'collapsed');
         }
       });
     });
@@ -110,22 +101,14 @@ const Sidebar = ({ navigationLinks, className }: SidebarProps) => {
   const { theme } = useTheme();
 
   return (
-    <ShadSidebar
-      ref={sidebarRef}
-      className={cn('group', className)}
-      collapsible="icon"
-    >
+    <ShadSidebar ref={sidebarRef} className={cn('group', className)} collapsible="icon">
       <SidebarHeader className="flex flex-row items-center justify-between p-4 group-data-[state=collapsed]:px-2">
         <SidebarMenu>
           <SidebarMenuItem>
             <a href={'/'} className="flex gap-2">
               <div className="flex h-8 w-8 items-center justify-center rounded-md">
                 <img
-                  src={
-                    theme === 'dark'
-                      ? '/images/akera-dark.png'
-                      : '/images/akera.png'
-                  }
+                  src={theme === 'dark' ? '/images/akera-dark.png' : '/images/akera.png'}
                   alt="Akera UI"
                   className="h-8 w-8"
                 />
@@ -157,17 +140,11 @@ const Sidebar = ({ navigationLinks, className }: SidebarProps) => {
                 {/* @typescript-eslint/no-explicit-any */}
                 {links.map((link: any) =>
                   link.items ? (
-                    <Collapsible
-                      key={link.title}
-                      defaultOpen
-                      className="group/collapsible"
-                    >
+                    <Collapsible key={link.title} defaultOpen className="group/collapsible">
                       <SidebarMenuItem>
                         <div
                           className="group/hover relative"
-                          onMouseEnter={() =>
-                            link.title && setHoveredItem(link.title)
-                          }
+                          onMouseEnter={() => link.title && setHoveredItem(link.title)}
                           onMouseLeave={() => setHoveredItem(null)}
                           ref={(el) => {
                             if (link.title) {
@@ -179,9 +156,7 @@ const Sidebar = ({ navigationLinks, className }: SidebarProps) => {
                             href={link.url}
                             className={cn(
                               'hover:bg-sidebar-hover relative w-full hover:text-neutral-800',
-                              isLinkActive(link.url)
-                                ? 'bg-sidebar-active-item'
-                                : ''
+                              isLinkActive(link.url) ? 'bg-sidebar-active-item' : '',
                             )}
                             //@ts-ignore
                             params={link.params}
@@ -190,9 +165,7 @@ const Sidebar = ({ navigationLinks, className }: SidebarProps) => {
                           >
                             <HoverPopup
                               items={link.items}
-                              isVisible={
-                                link.title ? shouldShowPopup(link.title) : false
-                              }
+                              isVisible={link.title ? shouldShowPopup(link.title) : false}
                               triggerRef={{
                                 current: link.title,
                               }}
@@ -211,17 +184,13 @@ const Sidebar = ({ navigationLinks, className }: SidebarProps) => {
                               <SidebarMenuButton
                                 className={cn(
                                   'hover:bg-sidebar-hover group px-2 py-5',
-                                  isLinkActive(link.url)
-                                    ? 'bg-sidebar-active-item'
-                                    : ''
+                                  isLinkActive(link.url) ? 'bg-sidebar-active-item' : '',
                                 )}
                               >
                                 <span
                                   className={cn(
                                     'flex items-center justify-center group-data-[state=collapsed]:-ml-0.5',
-                                    isLinkActive(link.url)
-                                      ? 'text-primary-base'
-                                      : ''
+                                    isLinkActive(link.url) ? 'text-primary-base' : '',
                                   )}
                                 >
                                   {link.icon}
@@ -249,7 +218,7 @@ const Sidebar = ({ navigationLinks, className }: SidebarProps) => {
                                       'hover:bg-sidebar-hover',
                                       isLinkActive(subItem.url)
                                         ? 'bg-sidebar-active-item text-neutral-800'
-                                        : 'text-secondary-text'
+                                        : 'text-secondary-text',
                                     )}
                                   >
                                     {subItem.title}
@@ -275,13 +244,13 @@ const Sidebar = ({ navigationLinks, className }: SidebarProps) => {
                             'hover:bg-sidebar-hover group px-2 py-5 hover:text-neutral-800',
                             isLinkActive(link.url)
                               ? 'bg-sidebar-active-item text-primary-base'
-                              : 'text-secondary-text'
+                              : 'text-secondary-text',
                           )}
                         >
                           <span
                             className={cn(
                               'flex items-center justify-center group-data-[state=collapsed]:-ml-0.5',
-                              isLinkActive(link.url) ? 'text-primary-base' : ''
+                              isLinkActive(link.url) ? 'text-primary-base' : '',
                             )}
                           >
                             {link.icon}
@@ -289,7 +258,7 @@ const Sidebar = ({ navigationLinks, className }: SidebarProps) => {
                           <p
                             className={cn(
                               'font-medium',
-                              isLinkActive(link.url) ? 'text-primary-base' : ''
+                              isLinkActive(link.url) ? 'text-primary-base' : '',
                             )}
                           >
                             {link.title}
@@ -297,7 +266,7 @@ const Sidebar = ({ navigationLinks, className }: SidebarProps) => {
                         </SidebarMenuButton>
                       </a>
                     </SidebarMenuItem>
-                  )
+                  ),
                 )}
               </SidebarMenu>
             </SidebarGroupContent>

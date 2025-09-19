@@ -1,11 +1,4 @@
-import {
-  useState,
-  useRef,
-  type ChangeEvent,
-  type FormEvent,
-  useEffect,
-  useCallback,
-} from 'react';
+import { useState, useRef, type ChangeEvent, type FormEvent, useEffect, useCallback } from 'react';
 import { CloudUpload, File, Trash2 } from 'lucide-react';
 import { Input } from '../shadcn/input';
 import { Button } from '../button/button';
@@ -48,7 +41,7 @@ const FileUploader = ({
   const inputFileRef = useRef<HTMLInputElement | null>(null);
 
   const handleMultipleFileChange = (
-    event: ChangeEvent<HTMLInputElement> | FormEvent<HTMLLabelElement>
+    event: ChangeEvent<HTMLInputElement> | FormEvent<HTMLLabelElement>,
   ) => {
     const fileList = (event.target as HTMLInputElement).files;
     if (!fileList || fileList.length === 0) return;
@@ -64,10 +57,7 @@ const FileUploader = ({
       const updatedFiles = [
         ...prevFiles.filter(
           (file) =>
-            !newFiles.some(
-              (newFile) =>
-                file.name === newFile.name && file.size === newFile.size
-            )
+            !newFiles.some((newFile) => file.name === newFile.name && file.size === newFile.size),
         ),
         ...newFiles,
       ];
@@ -102,8 +92,7 @@ const FileUploader = ({
   const handleRemoveFile = (fileToRemove: { name: string; size: number }) => {
     setFiles((prevFiles) => {
       const updatedFiles = prevFiles.filter(
-        (file) =>
-          file.name !== fileToRemove.name || file.size !== fileToRemove.size
+        (file) => file.name !== fileToRemove.name || file.size !== fileToRemove.size,
       );
       return updatedFiles;
     });
@@ -146,10 +135,7 @@ const FileUploader = ({
       </div>
 
       {files.map((file) => (
-        <div
-          key={file.name}
-          className="flex w-full gap-4 rounded-lg border p-4"
-        >
+        <div key={file.name} className="flex w-full gap-4 rounded-lg border p-4">
           <span className="bg-secondary-hover flex h-8 w-8 items-center justify-center rounded-full">
             <File className="h-4 w-4 text-secondary-foreground" />
           </span>
@@ -158,9 +144,7 @@ const FileUploader = ({
               <div className="flex items-center gap-2">
                 <div>
                   <p className="text-sm font-medium">{file.name}</p>
-                  <p className="text-secondary-text text-xs">
-                    {Math.round(file.size / 1024)} KB
-                  </p>
+                  <p className="text-secondary-text text-xs">{Math.round(file.size / 1024)} KB</p>
                 </div>
               </div>
               <Button
@@ -179,9 +163,7 @@ const FileUploader = ({
             </div>
             <div className="flex w-full gap-3">
               <Progress value={file.progress} className="mt-2 h-2" />
-              <p className="text-secondary-text text-sm font-semibold">
-                {file.progress}%
-              </p>
+              <p className="text-secondary-text text-sm font-semibold">{file.progress}%</p>
             </div>
           </div>
         </div>

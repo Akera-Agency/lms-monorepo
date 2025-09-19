@@ -1,6 +1,6 @@
 import { useAuthForm } from '../../../../packages/auth/src/hooks/use.auth';
 import { authRoute } from '../../../../packages/auth/src/utils/external-routes';
-import { Navbar as NavbarComponent } from '../../../../packages/ui/src/components/navbar/navbar'
+import { Navbar as NavbarComponent } from '../../../../packages/ui/src/components/navbar/navbar';
 
 export function Navbar() {
   const { signOut, setError } = useAuthForm();
@@ -8,7 +8,7 @@ export function Navbar() {
     { title: 'Users', href: '/users' },
     { title: 'Roles', href: '/roles' },
   ];
-  
+
   const handleSignOut = async (e: any) => {
     e.preventDefault();
     try {
@@ -25,10 +25,5 @@ export function Navbar() {
     }
   };
 
-  return (
-    <NavbarComponent
-    handleSignOut={handleSignOut}
-    links={links}
-    />
-  );
+  return <NavbarComponent handleSignOut={handleSignOut} links={links} />;
 }

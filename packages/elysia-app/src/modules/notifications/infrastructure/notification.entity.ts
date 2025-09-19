@@ -1,10 +1,4 @@
-import {
-  ColumnType,
-  GeneratedAlways,
-  Insertable,
-  Selectable,
-  Updateable,
-} from 'kysely';
+import { ColumnType, GeneratedAlways, Insertable, Selectable, Updateable } from 'kysely';
 import { AppEvents } from 'src/core/event-bus';
 import { ChannelMap } from '../types/types';
 
@@ -45,9 +39,6 @@ export interface KyselyNotificationPreference {
   enabled: boolean;
 }
 
-export type NotificationPreferenceEntity =
-  Selectable<KyselyNotificationPreference>;
-export type NewNotificationPreference =
-  Insertable<KyselyNotificationPreference>;
-export type UpdateNotificationPreference =
-  Updateable<KyselyNotificationPreference>;
+export type NotificationPreferenceEntity = Selectable<KyselyNotificationPreference>;
+export type NewNotificationPreference = Insertable<KyselyNotificationPreference>;
+export type UpdateNotificationPreference = Updateable<KyselyNotificationPreference>;

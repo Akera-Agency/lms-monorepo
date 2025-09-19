@@ -22,9 +22,7 @@ type ColorSelectProps = {
 };
 
 export function ColorSelect({ editor }: ColorSelectProps) {
-  const [selectedColor, setSelectedColor] = useState<string | null>(
-    'bg-slate-700'
-  );
+  const [selectedColor, setSelectedColor] = useState<string | null>('bg-slate-700');
 
   const handleColorSelect = (color: string) => {
     if (!editor) return;
@@ -46,19 +44,12 @@ export function ColorSelect({ editor }: ColorSelectProps) {
           <ChevronDown className="h-4 w-4" />
         </div>
       </PopoverTrigger>
-      <PopoverContent
-        className="grid w-[5rem] grid-cols-3 gap-2 p-2 shadow-lg"
-        align="start"
-      >
+      <PopoverContent className="grid w-[5rem] grid-cols-3 gap-2 p-2 shadow-lg" align="start">
         {colors.map((color) => (
           <Button
             key={color.name}
             variant={'ghost'}
-            className={cn(
-              'h-4 w-4 rounded-full p-2',
-              color.color,
-              'hover:bg-opacity-75'
-            )}
+            className={cn('h-4 w-4 rounded-full p-2', color.color, 'hover:bg-opacity-75')}
             onClick={() => handleColorSelect(color.color)}
             aria-label={color.name}
           />

@@ -8,9 +8,7 @@ import { Button } from '../button/button';
 import { Calendar } from '../shadcn/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '../shadcn/popover';
 
-export function DatePickerWithRange({
-  className,
-}: React.HTMLAttributes<HTMLDivElement>) {
+export function DatePickerWithRange({ className }: React.HTMLAttributes<HTMLDivElement>) {
   const [date, setDate] = React.useState<DateRange | undefined>({
     from: new Date(2024, 0, 1),
     to: addDays(new Date(2024, 0, 1), 20),
@@ -25,15 +23,14 @@ export function DatePickerWithRange({
             variant={'outline'}
             className={cn(
               'w-[300px] justify-start text-left font-normal border-0',
-              !date && 'text-muted-foreground'
+              !date && 'text-muted-foreground',
             )}
           >
             <CalendarIcon />
             {date?.from ? (
               date.to ? (
                 <>
-                  {format(date.from, 'LLL dd, y')} -{' '}
-                  {format(date.to, 'LLL dd, y')}
+                  {format(date.from, 'LLL dd, y')} - {format(date.to, 'LLL dd, y')}
                 </>
               ) : (
                 format(date.from, 'LLL dd, y')

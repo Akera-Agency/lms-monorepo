@@ -4,9 +4,7 @@ import { loadSharedEnv } from './utils';
 // ---- Zod schema: comprehensive schema including all packages
 export const baseSchema = z.object({
   // Node Environment
-  NODE_ENV: z
-    .enum(['production', 'development', 'test'])
-    .default('development'),
+  NODE_ENV: z.enum(['production', 'development', 'test']).default('development'),
 
   // Postgres Database
   POSTGRES_PASSWORD: z.string().min(1),
@@ -35,11 +33,7 @@ export const baseSchema = z.object({
   VAULT_ENC_KEY: z.string().min(1),
 
   // Supavisor Database Pooler
-  POOLER_PROXY_PORT_TRANSACTION: z.coerce
-    .number()
-    .int()
-    .positive()
-    .default(6543),
+  POOLER_PROXY_PORT_TRANSACTION: z.coerce.number().int().positive().default(6543),
   POOLER_DEFAULT_POOL_SIZE: z.coerce.number().int().positive().default(20),
   POOLER_MAX_CLIENT_CONN: z.coerce.number().int().positive().default(100),
   POOLER_DB_POOL_SIZE: z.coerce.number().int().positive().default(5),
@@ -53,9 +47,7 @@ export const baseSchema = z.object({
 
   // Auth (GoTrue)
   SITE_URL: z.string().url().default('http://localhost:3000'),
-  ADDITIONAL_REDIRECT_URLS: z
-    .string()
-    .default('http://localhost:3000/auth/callback'),
+  ADDITIONAL_REDIRECT_URLS: z.string().default('http://localhost:3000/auth/callback'),
   JWT_EXPIRY: z.coerce.number().int().positive().default(3600),
   DISABLE_SIGNUP: z.coerce.boolean().default(false),
   API_EXTERNAL_URL: z.string().url().default('http://localhost:8000'),

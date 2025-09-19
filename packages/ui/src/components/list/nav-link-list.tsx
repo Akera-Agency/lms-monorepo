@@ -16,11 +16,13 @@ const NavLinkList = ({ links, containerStyle, linkStyle, openLink }: NavLinkList
   return (
     <div className={containerStyle}>
       {links.map((link, index) => (
-        <div
-          key={index}
-          className={linkStyle}
-        >
-          <Link to={`${link.href}`} className={openLink === link.href ? "text-[#F3562E]" : "font-normal"}>{link.title}</Link>
+        <div key={index} className={linkStyle}>
+          <Link
+            to={`${link.href}`}
+            className={openLink === link.href ? 'text-[#F3562E]' : 'font-normal'}
+          >
+            {link.title}
+          </Link>
         </div>
       ))}
     </div>

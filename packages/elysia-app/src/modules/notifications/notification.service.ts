@@ -21,10 +21,7 @@ export class NotificationService extends BaseService {
     return this.notificationRepository.listPreferences(userId);
   }
 
-  async updatePreferences(
-    userId: string,
-    preferences: NewNotificationPreference[]
-  ) {
+  async updatePreferences(userId: string, preferences: NewNotificationPreference[]) {
     return this.notificationRepository.updatePreferences(userId, preferences);
   }
 

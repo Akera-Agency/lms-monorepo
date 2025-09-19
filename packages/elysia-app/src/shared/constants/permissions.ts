@@ -3,12 +3,7 @@ import { IDb } from 'src/database/types/IDb';
 // Permission types for type safety
 export type BasePermission = 'create' | 'read' | 'update' | 'delete';
 
-export const PERMISSIONS: BasePermission[] = [
-  'create',
-  'read',
-  'update',
-  'delete',
-];
+export const PERMISSIONS: BasePermission[] = ['create', 'read', 'update', 'delete'];
 
 export const ENTITIES: (keyof IDb)[] = [
   'users',
@@ -74,8 +69,6 @@ export const DEFAULT_ROLE_PERMISSIONS = {
 } as const satisfies Record<ROLES, Record<keyof IDb, BasePermission[]>>;
 
 // Helper function to get permissions for a role
-export function getRolePermissions(
-  role: ROLES
-): Record<keyof IDb, BasePermission[]> {
+export function getRolePermissions(role: ROLES): Record<keyof IDb, BasePermission[]> {
   return DEFAULT_ROLE_PERMISSIONS[role];
 }

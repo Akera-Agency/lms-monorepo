@@ -23,10 +23,7 @@ export interface TypeSafeI18nService {
 
   error<T extends ErrorsKeys>(key: T, context?: ErrorsContext): string;
 
-  validation<T extends ValidationKeys>(
-    field: T,
-    context?: ValidationContext
-  ): string;
+  validation<T extends ValidationKeys>(field: T, context?: ValidationContext): string;
 
   message<T extends MessagesKeys>(key: T, context?: MessageContext): string;
 
@@ -43,15 +40,14 @@ export class TypeSafeI18nServiceImpl implements TypeSafeI18nService {
   private currentLanguage: LanguagesEnum = LanguagesEnum.en;
 
   constructor() {
-    this.currentLanguage =
-      (i18next.language as LanguagesEnum) || LanguagesEnum.en;
+    this.currentLanguage = (i18next.language as LanguagesEnum) || LanguagesEnum.en;
   }
 
   t<T extends AllTranslationKeys>(
     key: T,
     context?: TranslationContext & {
       ns: Namespace;
-    }
+    },
   ): string {
     const result = i18next.t(key, {
       lng: this.currentLanguage,
@@ -68,10 +64,7 @@ export class TypeSafeI18nServiceImpl implements TypeSafeI18nService {
     return this.t(`${key}` as const, { ...context, ns: 'errors' });
   }
 
-  validation<T extends ValidationKeys>(
-    field: T,
-    context?: ValidationContext
-  ): string {
+  validation<T extends ValidationKeys>(field: T, context?: ValidationContext): string {
     return this.t(`${field}` as const, { ...context, ns: 'validation' });
   }
 

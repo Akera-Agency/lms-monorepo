@@ -1,10 +1,5 @@
 import { RoleRepository } from './infrastructure/role.repository';
-import {
-  NewRole,
-  QueryRole,
-  UpdateRole,
-  RoleEntity,
-} from './infrastructure/role.entity';
+import { NewRole, QueryRole, UpdateRole, RoleEntity } from './infrastructure/role.entity';
 import { BaseService } from '../../shared/types/base/base.service';
 import { BasePermission } from '../../shared/constants/permissions';
 import { IDb } from '../../database/types/IDb';
@@ -109,7 +104,7 @@ export class RoleService extends BaseService {
   async hasPermission(
     roleId: string,
     entity: keyof IDb,
-    permission: BasePermission
+    permission: BasePermission,
   ): Promise<boolean> {
     const role = await this.findOne(roleId);
     if (!role) {

@@ -69,7 +69,7 @@ const Combobox: React.FC<ComboboxProps> = ({
           className={cn(
             'min-w-[250px] justify-between shadow-sm truncate',
             buttonClassName,
-            hasError && 'border-destructive'
+            hasError && 'border-destructive',
           )}
         >
           {isLoading ? (
@@ -88,10 +88,7 @@ const Combobox: React.FC<ComboboxProps> = ({
           {error}
         </p>
       )}
-      <PopoverContent
-        align={align}
-        className={cn('min-w-[250px] p-0', commandClassName)}
-      >
+      <PopoverContent align={align} className={cn('min-w-[250px] p-0', commandClassName)}>
         <Command>
           <CommandInput placeholder={`${placeholder}...`} />
           <CommandList>
@@ -108,10 +105,7 @@ const Combobox: React.FC<ComboboxProps> = ({
               {isLoading
                 ? Array.from({ length: 5 }).map((_, index) => (
                     <CommandItem key={index} className="justify-between">
-                      <Skeleton
-                        variant="foreground"
-                        className="h-4 w-[100px]"
-                      />
+                      <Skeleton variant="foreground" className="h-4 w-[100px]" />
                       <Skeleton variant="foreground" className="h-4 w-4" />
                     </CommandItem>
                   ))
@@ -127,7 +121,7 @@ const Combobox: React.FC<ComboboxProps> = ({
                       <Check
                         className={cn(
                           'mr-2 h-4 w-4',
-                          value === item.value ? 'opacity-100' : 'opacity-0'
+                          value === item.value ? 'opacity-100' : 'opacity-0',
                         )}
                       />
                     </CommandItem>

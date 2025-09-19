@@ -1,27 +1,19 @@
 import { TenantRepository } from './infrastructure/tenant.repository';
 import { TenantRoleRepository } from './infrastructure/tenant-role.repository';
-import {
-  NewTenant,
-  QueryTenant,
-  UpdateTenant,
-  TenantEntity,
-} from './infrastructure/tenant.entity';
+import { NewTenant, QueryTenant, UpdateTenant, TenantEntity } from './infrastructure/tenant.entity';
 import {
   NewTenantRole,
   TenantRoleEntity,
   UpdateTenantRole,
 } from './infrastructure/tenant-role.entity';
-import {
-  TenantUserEntity,
-  QueryTenantUser,
-} from './infrastructure/tenant-user.entity';
+import { TenantUserEntity, QueryTenantUser } from './infrastructure/tenant-user.entity';
 import { BaseService } from '../../shared/types/base/base.service';
 import { AppError } from 'src/shared/Errors/AppError';
 
 export class TenantService extends BaseService {
   constructor(
     private tenantRepository: TenantRepository,
-    private tenantRoleRepository: TenantRoleRepository
+    private tenantRoleRepository: TenantRoleRepository,
   ) {
     super();
   }
@@ -68,7 +60,7 @@ export class TenantService extends BaseService {
   async assignUserToTenant(
     tenantId: string,
     userId: string,
-    roleId: string
+    roleId: string,
   ): Promise<TenantUserEntity> {
     return await this.tenantRepository.addUsersToTenant([
       {
@@ -87,16 +79,13 @@ export class TenantService extends BaseService {
   }
 
   async getTenantUsers(tenantId: string, query: QueryTenantUser) {
-    return await this.tenantRepository.getTenantUsersWithInfinityPagination(
-      tenantId,
-      query
-    );
+    return await this.tenantRepository.getTenantUsersWithInfinityPagination(tenantId, query);
   }
 
   async updateUserRoleInTenant(
     tenantId: string,
     userId: string,
-    roleId: string
+    roleId: string,
   ): Promise<TenantUserEntity> {
     return await this.tenantRepository.updateUserInTenant({
       tenant_id: tenantId,

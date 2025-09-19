@@ -48,10 +48,7 @@ export class NotificationRepository extends BaseRepo<KyselyNotification> {
 
   override async createMany(notifications: NewNotification[]) {
     try {
-      await this.trx
-        .insertInto('notifications')
-        .values(notifications)
-        .execute();
+      await this.trx.insertInto('notifications').values(notifications).execute();
     } catch (error) {
       throw new PostgresError(error);
     }
@@ -60,7 +57,7 @@ export class NotificationRepository extends BaseRepo<KyselyNotification> {
   async isChannelEnabled(
     userId: string,
     event: keyof AppEvents,
-    channel: 'in_app' | 'email'
+    channel: 'in_app' | 'email',
   ): Promise<boolean> {
     try {
       const pref = await this.trx
@@ -88,7 +85,7 @@ export class NotificationRepository extends BaseRepo<KyselyNotification> {
           .$if(!!audience.tenantId, (qb) =>
             qb
               .innerJoin('tenant_users', 'tenant_users.user_id', 'users.id')
-              .where('tenant_users.tenant_id', '=', audience.tenantId!)
+              .where('tenant_users.tenant_id', '=', audience.tenantId!),
           )
           .execute();
         return users;
@@ -119,10 +116,7 @@ export class NotificationRepository extends BaseRepo<KyselyNotification> {
     }
   }
 
-  async updatePreferences(
-    userId: string,
-    preferences: NewNotificationPreference[]
-  ) {
+  async updatePreferences(userId: string, preferences: NewNotificationPreference[]) {
     try {
       await this.trx
         .insertInto('notification_preferences')
@@ -130,7 +124,7 @@ export class NotificationRepository extends BaseRepo<KyselyNotification> {
         .onConflict((oc) =>
           oc.columns(['user_id', 'event', 'channel']).doUpdateSet((eb) => ({
             enabled: eb.ref('excluded.enabled'),
-          }))
+          })),
         )
         .execute();
     } catch (error) {

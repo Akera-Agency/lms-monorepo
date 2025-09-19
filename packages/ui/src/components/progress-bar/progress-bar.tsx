@@ -14,9 +14,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
   color = 'bg-primary',
   className = '',
 }) => {
-  const percentage = Number(
-    Math.min(Math.max((progress / total) * 100, 0), 100).toFixed(1)
-  );
+  const percentage = Number(Math.min(Math.max((progress / total) * 100, 0), 100).toFixed(1));
 
   return (
     <div className="flex w-full items-center gap-2">
@@ -24,11 +22,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
         <motion.div
           initial={{ width: 0 }}
           animate={{ width: `${percentage}%` }}
-          className={cn(
-            'h-2 w-full rounded-full transition-all duration-300',
-            color,
-            className
-          )}
+          className={cn('h-2 w-full rounded-full transition-all duration-300', color, className)}
         />
       </div>
       <h3 className="text-sm text-primary-text">{percentage}%</h3>

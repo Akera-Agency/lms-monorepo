@@ -17,19 +17,22 @@ export const AuthContext = createContext<{
   user: User | null;
   sessionLoading: boolean;
   tenants: User[];
-  signUp: (email: string, password: string, name:string, role:ROLES, tenant: string) => Promise<AuthResponse>;
+  signUp: (
+    email: string,
+    password: string,
+    name: string,
+    role: ROLES,
+    tenant: string,
+  ) => Promise<AuthResponse>;
   signOut: () => Promise<{ error: AuthError | null }>;
   signIn: (email: string, password: string) => Promise<AuthResponse>;
-  signInWithOAuth: (
-    provider: Provider,
-    redirectPath: string
-  ) => Promise<OAuthResponse>;
+  signInWithOAuth: (provider: Provider, redirectPath: string) => Promise<OAuthResponse>;
   resetPassword: (
     email: string,
-    redirectPath: string
+    redirectPath: string,
   ) => Promise<{ data: {}; error: AuthError | null }>;
   updatePassword: (
-    newPassword: string
+    newPassword: string,
   ) => Promise<{ data: { user: User | null }; error: AuthError | null }>;
 }>({
   session: null,
@@ -58,25 +61,22 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
     password: string,
     name: string,
     role: ROLES,
-    tenant: string
+    tenant: string,
   ): Promise<AuthResponse> => {
-    return await supabase.auth.signUp({ 
+    return await supabase.auth.signUp({
       email,
       password,
-      options:{
-        data:{
+      options: {
+        data: {
           name: name,
           role: role,
-          tenant: tenant
-        }
-      } 
+          tenant: tenant,
+        },
+      },
     });
   };
 
-  const signIn = async (
-    email: string,
-    password: string
-  ): Promise<AuthResponse> => {
+  const signIn = async (email: string, password: string): Promise<AuthResponse> => {
     const result = await supabase.auth.signInWithPassword({ email, password });
     if (!result.error) setSession(result.data.session);
     return result;
@@ -84,7 +84,7 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
 
   const signInWithOAuth = async (
     provider: Provider,
-    redirectPath: string = '/'
+    redirectPath: string = '/',
   ): Promise<OAuthResponse> => {
     try {
       const { data, error } = await supabase.auth.signInWithOAuth({
@@ -114,10 +114,7 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
     return { error };
   };
 
-  const resetPassword = async (
-    email: string,
-    redirectPath = '/reset-password'
-  ) => {
+  const resetPassword = async (email: string, redirectPath = '/reset-password') => {
     try {
       const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: `${window.location.origin}${redirectPath}`,
@@ -150,18 +147,17 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
-    
     const fetchTenants = async () => {
       try {
         const { data, error } = await supabaseAdmin.auth.admin.listUsers();
-    
+
         if (error) {
           console.error('Error listing users:', error.message);
           setTenants([]);
           return [];
         }
-  
-        setTenants(data.users.filter(user => user.user_metadata?.role === 'tenant'));
+
+        setTenants(data.users.filter((user) => user.user_metadata?.role === 'tenant'));
         return data.users;
       } catch (err) {
         console.error('Unexpected error listing tenants:', err);
@@ -171,8 +167,7 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
     };
     fetchTenants();
   }, []);
-  
-  
+
   useEffect(() => {
     let cancelled = false;
     let unsub: (() => void) | undefined;
@@ -195,11 +190,7 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
             if (!error && !cancelled) {
               setSession(data.session);
             }
-            window.history.replaceState(
-              {},
-              document.title,
-              window.location.pathname
-            );
+            window.history.replaceState({}, document.title, window.location.pathname);
           }
         }
       } catch (e) {
@@ -252,9 +243,5 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
     updatePassword,
   };
 
-  return (
-    <AuthContext.Provider value={authContextValues}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={authContextValues}>{children}</AuthContext.Provider>;
 };

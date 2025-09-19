@@ -64,12 +64,7 @@ function checkPackage(path: string, pkg: PackageJson) {
   if (isRoot) return;
 
   // Rule 1: Non-publishable libs should not have dependencies
-  if (
-    isLib &&
-    !isPublishable &&
-    pkg.dependencies &&
-    Object.keys(pkg.dependencies).length > 0
-  ) {
+  if (isLib && !isPublishable && pkg.dependencies && Object.keys(pkg.dependencies).length > 0) {
     const nonInternalDeps = Object.keys(pkg.dependencies).filter(
       (dep) => !dep.startsWith('@akera/'),
     );
@@ -83,12 +78,9 @@ function checkPackage(path: string, pkg: PackageJson) {
   // Rule 2: Publishable libs using React should have it in peerDependencies
   if (isPublishable && isLib) {
     const deps = { ...pkg.dependencies, ...pkg.devDependencies };
-    const hasReact = Object.keys(deps).some(
-      (dep) => dep === 'react' || dep === 'react-dom',
-    );
+    const hasReact = Object.keys(deps).some((dep) => dep === 'react' || dep === 'react-dom');
     const hasReactInPeer =
-      pkg.peerDependencies &&
-      (pkg.peerDependencies['react'] || pkg.peerDependencies['react-dom']);
+      pkg.peerDependencies && (pkg.peerDependencies['react'] || pkg.peerDependencies['react-dom']);
 
     if (hasReact && !hasReactInPeer) {
       errors.push(
@@ -148,12 +140,7 @@ function findPackageJsonFiles(dir: string): string[] {
       const fullPath = join(currentDir, entry);
       const stat = statSync(fullPath);
 
-      if (
-        stat.isDirectory() &&
-        entry !== 'node_modules' &&
-        entry !== 'dist' &&
-        entry !== '.git'
-      ) {
+      if (stat.isDirectory() && entry !== 'node_modules' && entry !== 'dist' && entry !== '.git') {
         walk(fullPath);
       } else if (entry === 'package.json') {
         files.push(fullPath);

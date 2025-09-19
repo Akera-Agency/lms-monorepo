@@ -1,10 +1,7 @@
 import { cn } from '../../lib/utils';
 import { type UseFormRegisterReturn } from 'react-hook-form';
 import Label from '../label/label';
-import {
-  Textarea as ShadTextarea,
-  type TextareaProps,
-} from '../shadcn/textarea';
+import { Textarea as ShadTextarea, type TextareaProps } from '../shadcn/textarea';
 
 export interface ITextareaProps extends TextareaProps {
   label?: string;
@@ -19,10 +16,7 @@ const Textarea = ({ className, ...props }: ITextareaProps) => {
       {props.label && (
         <Label
           label={props.label}
-          className={cn(
-            'text-heading-color text-sm font-semibold',
-            hasError && 'text-destructive'
-          )}
+          className={cn('text-heading-color text-sm font-semibold', hasError && 'text-destructive')}
           required={props.required ?? false}
         />
       )}
@@ -34,8 +28,7 @@ const Textarea = ({ className, ...props }: ITextareaProps) => {
           'bg-glass-input-bg-color placeholder-light-gray-100 dark:focus:border-custom-primary border p-4 text-sm ring-0 placeholder:text-sm placeholder:font-normal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 dark:border-0 dark:border-white/20',
 
           className,
-          hasError &&
-            'resize-none border-destructive focus-visible:ring-offset-0'
+          hasError && 'resize-none border-destructive focus-visible:ring-offset-0',
         )}
         {...props}
         {...props.register}

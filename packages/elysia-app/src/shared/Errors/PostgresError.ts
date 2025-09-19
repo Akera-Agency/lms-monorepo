@@ -15,9 +15,7 @@ export interface DatabaseError {
   table: string;
 }
 
-export function isDatabaseError(
-  exception: unknown
-): exception is DatabaseError {
+export function isDatabaseError(exception: unknown): exception is DatabaseError {
   return exception instanceof Error && exception.name === 'PostgresError';
 }
 

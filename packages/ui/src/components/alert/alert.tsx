@@ -1,13 +1,7 @@
 import { forwardRef } from 'react';
 import { cn } from '../../lib/utils';
 import { cva, type VariantProps } from 'class-variance-authority';
-import {
-  ChevronRight,
-  CircleAlert,
-  OctagonAlert,
-  CircleCheck,
-  TriangleAlert,
-} from 'lucide-react';
+import { ChevronRight, CircleAlert, OctagonAlert, CircleCheck, TriangleAlert } from 'lucide-react';
 
 const variants = {
   default: ' bg-background ',
@@ -53,12 +47,7 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
     return (
       <div className={cn(alertVariants({ variant }), className)} {...props}>
         <div className={cn('flex gap-2', !description && 'items-center')}>
-          <span
-            className={cn(
-              'mt-0.5 flex h-10 w-fit',
-              !description && 'mt-0 items-center'
-            )}
-          >
+          <span className={cn('mt-0.5 flex h-10 w-fit', !description && 'mt-0 items-center')}>
             {variant == 'default' && <CircleAlert className="h-5 w-5" />}
             {variant == 'warning' && <OctagonAlert className="h-5 w-5" />}
             {variant == 'success' && <CircleCheck className="h-5 w-5" />}
@@ -66,10 +55,7 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
           </span>
           <div className={cn(description && '', 'w-full')}>
             <div className="flex w-full justify-between">
-              <div
-                className="primary-text text-base"
-                style={{ fontSize: '500' }}
-              >
+              <div className="primary-text text-base" style={{ fontSize: '500' }}>
                 {title}
               </div>
               {dismissable && (
@@ -96,9 +82,7 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
                 </div>
               )}
             </div>
-            {description && (
-              <div className="text-sm text-neutral-500">{description}</div>
-            )}
+            {description && <div className="text-sm text-neutral-500">{description}</div>}
             {redirectTo && (
               <a
                 href={redirectTo}
@@ -113,7 +97,7 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
         <div />
       </div>
     );
-  }
+  },
 );
 
 Alert.displayName = 'Alert';

@@ -1,17 +1,10 @@
 import * as path from 'path';
 import { promises as fs } from 'fs';
-import {
-  Migrator,
-  FileMigrationProvider,
-  NO_MIGRATIONS,
-  NoMigrations,
-} from 'kysely';
+import { Migrator, FileMigrationProvider, NO_MIGRATIONS, NoMigrations } from 'kysely';
 import { database } from '../datasource';
 import { Logger } from 'src/shared/logger/logger';
 
-async function migrateTo(
-  targetMigration: string | NoMigrations = NO_MIGRATIONS,
-) {
+async function migrateTo(targetMigration: string | NoMigrations = NO_MIGRATIONS) {
   const migrator = new Migrator({
     db: database,
     provider: new FileMigrationProvider({
@@ -26,18 +19,12 @@ async function migrateTo(
   results?.forEach((migrationResult) => {
     if (migrationResult.status === 'Success') {
       if (migrationResult.direction === 'Up') {
-        Logger.info(
-          `Migration "${migrationResult.migrationName}" was applied successfully`,
-        );
+        Logger.info(`Migration "${migrationResult.migrationName}" was applied successfully`);
       } else if (migrationResult.direction === 'Down') {
-        Logger.info(
-          `Migration "${migrationResult.migrationName}" was reverted successfully`,
-        );
+        Logger.info(`Migration "${migrationResult.migrationName}" was reverted successfully`);
       }
     } else if (migrationResult.status === 'Error') {
-      Logger.error(
-        `Failed to apply/revert migration "${migrationResult.migrationName}"`,
-      );
+      Logger.error(`Failed to apply/revert migration "${migrationResult.migrationName}"`);
     }
   });
 

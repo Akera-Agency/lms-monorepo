@@ -74,8 +74,7 @@ export default function Counter({
   // Set initial value
   useEffect(() => {
     if (ref.current) {
-      ref.current.textContent =
-        format(isGoingUp ? 0 : targetValue) + (isPercentage ? '%' : '');
+      ref.current.textContent = format(isGoingUp ? 0 : targetValue) + (isPercentage ? '%' : '');
     }
   }, [format, isGoingUp, targetValue, isPercentage]);
 
@@ -99,10 +98,5 @@ export default function Counter({
     });
   }, [springValue, format, isPercentage]);
 
-  return (
-    <span
-      ref={ref}
-      className={cn('text-4xl font-bold text-foreground', className)}
-    />
-  );
+  return <span ref={ref} className={cn('text-4xl font-bold text-foreground', className)} />;
 }

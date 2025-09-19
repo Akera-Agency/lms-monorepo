@@ -1,14 +1,17 @@
-import { SuperAdminQueries } from "@/queries/super-tenant-queries";
-import { Button } from "@ui/components/button/button";
-import { validateTenantForm, createEmptyPermissions } from "../../../../packages/features/src/validation/tenantValidation";
-import { useToastNotifications } from "../../../../packages/features/src/hooks/use.toast-notification";
-import AddTenant from "../../../../packages/features/src/components/add-tenant"
-import AddRoles from "../../../../packages/features/src/components/add-roles"
-import { useTenantContext } from "../../../../packages/features/src/providers/tenant-provider";
+import { SuperAdminQueries } from '@/queries/super-tenant-queries';
+import { Button } from '@ui/components/button/button';
+import {
+  validateTenantForm,
+  createEmptyPermissions,
+} from '../../../../packages/features/src/validation/tenantValidation';
+import { useToastNotifications } from '../../../../packages/features/src/hooks/use.toast-notification';
+import AddTenant from '../../../../packages/features/src/components/add-tenant';
+import AddRoles from '../../../../packages/features/src/components/add-roles';
+import { useTenantContext } from '../../../../packages/features/src/providers/tenant-provider';
 
 export default function CreateTenant() {
-
-  const {setErrors, tenantData, setTenantData, roles, setRoles, isSubmitting, setIsSubmitting } = useTenantContext();
+  const { setErrors, tenantData, setTenantData, roles, setRoles, isSubmitting, setIsSubmitting } =
+    useTenantContext();
 
   const { successMessage, handleCreateTenant } = SuperAdminQueries();
   const { error, loading } = SuperAdminQueries().tenants();
@@ -39,11 +42,11 @@ export default function CreateTenant() {
         tenantDescription: tenantData.description?.trim(),
       });
 
-      setTenantData({ name: "", description: "", logo_url: "", is_public: true});
+      setTenantData({ name: '', description: '', logo_url: '', is_public: true });
       setRoles([
         {
-          name: "",
-          description: "",
+          name: '',
+          description: '',
           permissions: createEmptyPermissions(),
           is_default: true,
           is_system_role: false,
@@ -51,7 +54,7 @@ export default function CreateTenant() {
       ]);
       setErrors({});
     } catch (err) {
-      console.error("Error creating tenant:", err);
+      console.error('Error creating tenant:', err);
     } finally {
       setIsSubmitting(false);
     }
@@ -75,13 +78,9 @@ export default function CreateTenant() {
           }}
           noValidate
         >
-          <AddTenant
-          isDisabled={isDisabled}
-          />
+          <AddTenant isDisabled={isDisabled} />
 
-          <AddRoles
-          isDisabled={isDisabled}
-          />
+          <AddRoles isDisabled={isDisabled} />
           <div className="flex justify-center pt-4">
             <Button
               type="submit"
@@ -94,14 +93,10 @@ export default function CreateTenant() {
             >
               {isSubmitting || loading ? (
                 <span className="flex items-center gap-3">
-                  <svg 
-                    className="animate-spin h-5 w-5" 
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                  >
-                    <path 
-                      className="opacity-75" 
-                      fill="currentColor" 
+                  <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24" aria-hidden="true">
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
                       d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4m2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                     />
                   </svg>

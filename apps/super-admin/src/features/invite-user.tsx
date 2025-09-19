@@ -1,10 +1,14 @@
-import { SuperAdminQueries } from "@/queries/super-tenant-queries";
-import { Button } from "@ui/components/button/button";
-import { validateTenantForm, createEmptyPermissions, type RoleData } from "../../../../packages/features/src/validation/tenantValidation";
-import { useToastNotifications } from "../../../../packages/features/src/hooks/use.toast-notification";
-import { useTenantContext } from "../../../../packages/features/src/providers/tenant-provider";
-import AddUser from "../../../../packages/features/src/components/add-user"
-import { useEffect, useState } from "react";
+import { SuperAdminQueries } from '@/queries/super-tenant-queries';
+import { Button } from '@ui/components/button/button';
+import {
+  validateTenantForm,
+  createEmptyPermissions,
+  type RoleData,
+} from '../../../../packages/features/src/validation/tenantValidation';
+import { useToastNotifications } from '../../../../packages/features/src/hooks/use.toast-notification';
+import { useTenantContext } from '../../../../packages/features/src/providers/tenant-provider';
+import AddUser from '../../../../packages/features/src/components/add-user';
+import { useEffect, useState } from 'react';
 
 export default function InviteUser() {
   const {
@@ -16,15 +20,13 @@ export default function InviteUser() {
     isSubmitting,
     setIsSubmitting,
     selectedTenant,
-    index
+    index,
   } = useTenantContext();
 
   const { successMessage, handleCreateTenant } = SuperAdminQueries();
   const { error, loading, tenants: tenantList } = SuperAdminQueries().tenants();
 
-  const [tenantRolesById, setTenantRolesById] = useState<
-    Record<string, RoleData[]>
-  >({});
+  const [tenantRolesById, setTenantRolesById] = useState<Record<string, RoleData[]>>({});
 
   useToastNotifications({ successMessage, error });
 
@@ -68,15 +70,15 @@ export default function InviteUser() {
       });
 
       setTenantData({
-        name: "",
-        description: "",
-        logo_url: "",
+        name: '',
+        description: '',
+        logo_url: '',
         is_public: true,
       });
       setRoles([
         {
-          name: "",
-          description: "",
+          name: '',
+          description: '',
           permissions: createEmptyPermissions(),
           is_default: true,
           is_system_role: false,
@@ -84,7 +86,7 @@ export default function InviteUser() {
       ]);
       setErrors({});
     } catch (err) {
-      console.error("Error creating tenant:", err);
+      console.error('Error creating tenant:', err);
     } finally {
       setIsSubmitting(false);
     }
@@ -95,9 +97,7 @@ export default function InviteUser() {
       <div className="w-full max-w-4xl space-y-8">
         <div className="text-center">
           <h1 className="text-3xl font-bold text-white mb-2">Invite a user</h1>
-          <p className="text-gray-400 text-base">
-            Enter the user email and assign a role
-          </p>
+          <p className="text-gray-400 text-base">Enter the user email and assign a role</p>
         </div>
 
         <form
@@ -112,10 +112,8 @@ export default function InviteUser() {
             isDisabled={isDisabled}
             tenants={tenantList}
             // index={2}
-            roles={
-              tenantRolesById[selectedTenant[index]?.id || ""] || [] 
-            }
-            fetchTenantRoles={fetchTenantRoles} 
+            roles={tenantRolesById[selectedTenant[index]?.id || ''] || []}
+            fetchTenantRoles={fetchTenantRoles}
           />
 
           <div className="flex justify-center pt-4">
@@ -124,17 +122,13 @@ export default function InviteUser() {
               disabled={isDisabled}
               className={`px-12 py-4 text-base font-semibold rounded-md transition-all duration-300 ${
                 isDisabled
-                  ? "bg-neutral-500 cursor-not-allowed opacity-50"
-                  : "bg-gradient-to-r from-primaryOrange to-[#e94e26] hover:from-transparent hover:to-transparent border-2 border-transparent hover:border-primaryOrange hover:text-primaryOrange shadow-lg hover:shadow-primaryOrange/25 active:scale-95"
+                  ? 'bg-neutral-500 cursor-not-allowed opacity-50'
+                  : 'bg-gradient-to-r from-primaryOrange to-[#e94e26] hover:from-transparent hover:to-transparent border-2 border-transparent hover:border-primaryOrange hover:text-primaryOrange shadow-lg hover:shadow-primaryOrange/25 active:scale-95'
               }`}
             >
               {isSubmitting || loading ? (
                 <span className="flex items-center gap-3">
-                  <svg
-                    className="animate-spin h-5 w-5"
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                  >
+                  <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24" aria-hidden="true">
                     <path
                       className="opacity-75"
                       fill="currentColor"
@@ -144,7 +138,7 @@ export default function InviteUser() {
                   Creating Tenant...
                 </span>
               ) : (
-                "Create Tenant"
+                'Create Tenant'
               )}
             </Button>
           </div>

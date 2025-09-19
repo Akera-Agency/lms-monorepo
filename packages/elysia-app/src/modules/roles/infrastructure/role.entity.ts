@@ -1,10 +1,4 @@
-import {
-  ColumnType,
-  GeneratedAlways,
-  Insertable,
-  Selectable,
-  Updateable,
-} from 'kysely';
+import { ColumnType, GeneratedAlways, Insertable, Selectable, Updateable } from 'kysely';
 import { BaseQuery } from '../../../shared/types/base/base.query';
 
 export interface KyselyRoleEntity {

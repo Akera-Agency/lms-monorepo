@@ -10,11 +10,7 @@ import {
 import { BaseRepo, FindManyArgs } from '../../../shared/types/base/base.repo';
 import { infinityPagination } from '../../../shared/utils/infinityPagination';
 import { PostgresError } from '../../../shared/Errors/PostgresError';
-import {
-  NewTenantUser,
-  QueryTenantUser,
-  UpdateTenantUser,
-} from './tenant-user.entity';
+import { NewTenantUser, QueryTenantUser, UpdateTenantUser } from './tenant-user.entity';
 
 export class TenantRepository extends BaseRepo<KyselyTenantEntity> {
   constructor(trx: Kysely<IDb>) {
@@ -28,40 +24,27 @@ export class TenantRepository extends BaseRepo<KyselyTenantEntity> {
         .where('deleted_at', 'is', null)
         .$if(!!query.filter, (q) =>
           q.where((eb) =>
-            eb.and(
-              query.filter?.map((arg) =>
-                eb(arg.column, arg.operator, arg.value)
-              ) || []
-            )
-          )
+            eb.and(query.filter?.map((arg) => eb(arg.column, arg.operator, arg.value)) || []),
+          ),
         )
         .$if(!!query.search, (q) =>
           q.where((e) =>
-            e.or(
-              query.search?.map((arg) =>
-                e(arg.column, arg.operator, arg.value)
-              ) || []
-            )
-          )
+            e.or(query.search?.map((arg) => e(arg.column, arg.operator, arg.value)) || []),
+          ),
         );
 
       const [res, total] = await Promise.all([
         queryBuilder
           .$if(!!query.sort, (q) =>
-            query.sort!.reduce(
-              (qb, arg) => qb.orderBy(arg.orderBy, arg.sort),
-              q
-            )
+            query.sort!.reduce((qb, arg) => qb.orderBy(arg.orderBy, arg.sort), q),
           )
           .$if(!!query.limit, (q) => q.limit(query.limit as number))
           .$if(!!query.limit && !!query.page, (q) =>
-            q.offset(((query.page as number) - 1) * (query.limit as number))
+            q.offset(((query.page as number) - 1) * (query.limit as number)),
           )
           .selectAll('tenants')
           .execute(),
-        queryBuilder
-          .select(this.trx.fn.countAll('tenants').as('count'))
-          .executeTakeFirst(),
+        queryBuilder.select(this.trx.fn.countAll('tenants').as('count')).executeTakeFirst(),
       ]);
       return infinityPagination(res, {
         total_count: Number(total?.count ?? 0),
@@ -83,8 +66,8 @@ export class TenantRepository extends BaseRepo<KyselyTenantEntity> {
           eb.and(
             args.where.map((arg) => {
               return eb(arg.column, arg.operator, arg.value);
-            })
-          )
+            }),
+          ),
         )
         .execute();
       return res;
@@ -99,11 +82,7 @@ export class TenantRepository extends BaseRepo<KyselyTenantEntity> {
         .selectFrom('tenants')
         .selectAll()
         .where('deleted_at', 'is', null)
-        .where((eb) =>
-          eb.and(
-            args.where.map((arg) => eb(arg.column, arg.operator, arg.value))
-          )
-        )
+        .where((eb) => eb.and(args.where.map((arg) => eb(arg.column, arg.operator, arg.value))))
         .executeTakeFirst();
       return res ?? null;
     } catch (error) {
@@ -113,11 +92,7 @@ export class TenantRepository extends BaseRepo<KyselyTenantEntity> {
 
   async create(data: NewTenant) {
     try {
-      const [inserted] = await this.trx
-        .insertInto('tenants')
-        .values(data)
-        .returningAll()
-        .execute();
+      const [inserted] = await this.trx.insertInto('tenants').values(data).returningAll().execute();
       return inserted;
     } catch (error) {
       throw new PostgresError(error);
@@ -189,10 +164,7 @@ export class TenantRepository extends BaseRepo<KyselyTenantEntity> {
     }
   }
 
-  async getTenantUsersWithInfinityPagination(
-    tenantId: string,
-    query: QueryTenantUser
-  ) {
+  async getTenantUsersWithInfinityPagination(tenantId: string, query: QueryTenantUser) {
     try {
       const queryBuilder = this.trx
         .selectFrom('tenant_users')
@@ -200,39 +172,26 @@ export class TenantRepository extends BaseRepo<KyselyTenantEntity> {
         .where('tenant_id', '=', tenantId)
         .$if(!!query.filter, (q) =>
           q.where((eb) =>
-            eb.and(
-              query.filter?.map((arg) =>
-                eb(arg.column, arg.operator, arg.value)
-              ) || []
-            )
-          )
+            eb.and(query.filter?.map((arg) => eb(arg.column, arg.operator, arg.value)) || []),
+          ),
         )
         .$if(!!query.search, (q) =>
           q.where((e) =>
-            e.or(
-              query.search?.map((arg) =>
-                e(arg.column, arg.operator, arg.value)
-              ) || []
-            )
-          )
+            e.or(query.search?.map((arg) => e(arg.column, arg.operator, arg.value)) || []),
+          ),
         );
 
       const [res, total] = await Promise.all([
         queryBuilder
           .$if(!!query.sort, (q) =>
-            query.sort!.reduce(
-              (qb, arg) => qb.orderBy(arg.orderBy, arg.sort),
-              q
-            )
+            query.sort!.reduce((qb, arg) => qb.orderBy(arg.orderBy, arg.sort), q),
           )
           .$if(!!query.limit, (q) => q.limit(query.limit as number))
           .$if(!!query.limit && !!query.page, (q) =>
-            q.offset(((query.page as number) - 1) * (query.limit as number))
+            q.offset(((query.page as number) - 1) * (query.limit as number)),
           )
           .execute(),
-        queryBuilder
-          .select(this.trx.fn.countAll().as('count'))
-          .executeTakeFirst(),
+        queryBuilder.select(this.trx.fn.countAll().as('count')).executeTakeFirst(),
       ]);
 
       return infinityPagination(res, {

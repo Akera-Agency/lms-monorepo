@@ -1,17 +1,21 @@
-import { useState } from "react";
-import NiceModal, { useModal } from "@ebay/nice-modal-react";
-import { Button } from "../../../../packages/ui/src/components/shadcn/button";
-import ResponsiveDialog from "../../../../packages/ui/src/components/dialog/dialog";
-import EditRole from "../../../../packages/features/src/components/edit-role";
-import { SuperAdminQueries } from "@/queries/super-tenant-queries";
+import { useState } from 'react';
+import NiceModal, { useModal } from '@ebay/nice-modal-react';
+import { Button } from '../../../../packages/ui/src/components/shadcn/button';
+import ResponsiveDialog from '../../../../packages/ui/src/components/dialog/dialog';
+import EditRole from '../../../../packages/features/src/components/edit-role';
+import { SuperAdminQueries } from '@/queries/super-tenant-queries';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@ui/components/shadcn/dropdown-menu";
-import { ChevronDown, Shield } from "lucide-react";
-import { type Resource, resourceList, type FormErrors } from "../../../../packages/features/src/validation/tenantValidation";
+} from '@ui/components/shadcn/dropdown-menu';
+import { ChevronDown, Shield } from 'lucide-react';
+import {
+  type Resource,
+  resourceList,
+  type FormErrors,
+} from '../../../../packages/features/src/validation/tenantValidation';
 
 type RolesDialogProps = {
   tenant_id: string;
@@ -46,9 +50,9 @@ export const RolesDialog = NiceModal.create((props: RolesDialogProps) => {
     try {
       await updateTenantRole({
         tenant_id,
-        id: selectedRole.id ?? "",
+        id: selectedRole.id ?? '',
         name: selectedRole.name,
-        description: selectedRole.description ?? "",
+        description: selectedRole.description ?? '',
         permissions: selectedRole.permissions,
         is_default: selectedRole.is_default,
         is_system_role: selectedRole.is_system_role,
@@ -56,7 +60,7 @@ export const RolesDialog = NiceModal.create((props: RolesDialogProps) => {
       modal.hide();
       setSelectedRoleId(null);
     } catch (error) {
-      console.error("Failed to update role:", error);
+      console.error('Failed to update role:', error);
     } finally {
       setIsSubmitting(false);
     }
@@ -69,7 +73,7 @@ export const RolesDialog = NiceModal.create((props: RolesDialogProps) => {
 
   const handleRemoveRole = async () => {
     if (!selectedRole?.tenant_id || !selectedRole?.id) {
-      console.error("Cannot delete role: missing required fields");
+      console.error('Cannot delete role: missing required fields');
       return;
     }
     setIsSubmitting(true);
@@ -78,7 +82,7 @@ export const RolesDialog = NiceModal.create((props: RolesDialogProps) => {
       modal.hide();
       setSelectedRoleId(null);
     } catch (error) {
-      console.error("Failed to delete role:", error);
+      console.error('Failed to delete role:', error);
     } finally {
       setIsSubmitting(false);
     }
@@ -100,8 +104,8 @@ export const RolesDialog = NiceModal.create((props: RolesDialogProps) => {
             >
               <Shield className="h-4 w-4" />
               {selectedRole
-                ? selectedRole.name.replace("_", " ").replace(/^\w/, (c) => c.toUpperCase())
-                : "Select Role"}
+                ? selectedRole.name.replace('_', ' ').replace(/^\w/, (c) => c.toUpperCase())
+                : 'Select Role'}
               <ChevronDown className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
@@ -111,10 +115,10 @@ export const RolesDialog = NiceModal.create((props: RolesDialogProps) => {
                 key={role.id}
                 onClick={() => setSelectedRoleId(role.id || null)}
                 className={`hover:bg-neutral-700 cursor-pointer ${
-                  selectedRoleId === role.id ? "bg-neutral-700" : ""
+                  selectedRoleId === role.id ? 'bg-neutral-700' : ''
                 }`}
               >
-                {role.name.replace("_", " ").replace(/^\w/, (c) => c.toUpperCase())}
+                {role.name.replace('_', ' ').replace(/^\w/, (c) => c.toUpperCase())}
                 {selectedRoleId === role.id && (
                   <span className="ml-auto text-primaryOrange">●</span>
                 )}

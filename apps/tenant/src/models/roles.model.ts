@@ -1,6 +1,6 @@
 export interface Role {
-    id: string;
-    name: string;
-    description: string;
-    isSystemRole: boolean;
+  id: string;
+  name: string;
+  description: string;
+  isSystemRole: boolean;
 }

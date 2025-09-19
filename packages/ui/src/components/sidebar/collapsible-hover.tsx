@@ -54,9 +54,7 @@ const HoverPopup = ({
               <SidebarMenuButton
                 className={cn(
                   'w-full justify-start hover:bg-sidebar-hover',
-                  isActive
-                    ? 'bg-sidebar-active-item text-neutral-800'
-                    : 'text-secondary-text'
+                  isActive ? 'bg-sidebar-active-item text-neutral-800' : 'text-secondary-text',
                 )}
               >
                 {subItem.title}
@@ -66,7 +64,7 @@ const HoverPopup = ({
         );
       })}
     </div>,
-    document.body
+    document.body,
   );
 };
 
