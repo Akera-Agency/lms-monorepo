@@ -13,11 +13,7 @@ type RadioListProps = {
   handleOptionChange: (value: string | number | boolean) => void;
 };
 
-const RadioList = ({
-  options,
-  selectedOption,
-  handleOptionChange,
-}: RadioListProps) => {
+const RadioList = ({ options, selectedOption, handleOptionChange }: RadioListProps) => {
   return (
     <div>
       {options.map((option) => (
@@ -26,7 +22,7 @@ const RadioList = ({
           onClick={() => handleOptionChange(option.value)}
           className={cn(
             'relative flex cursor-pointer select-none items-start space-x-2 py-2',
-            option.disabled && 'pointer-events-none opacity-50'
+            option.disabled && 'pointer-events-none opacity-50',
           )}
         >
           <span
@@ -34,7 +30,7 @@ const RadioList = ({
               'relative mt-1.5 flex h-4 min-h-4 w-4 min-w-4 items-center justify-center rounded-full border-2 transition-all',
               selectedOption === option.value
                 ? 'border border-secondary-foreground bg-primary'
-                : 'bg-white'
+                : 'bg-white',
             )}
           >
             {selectedOption === option.value && (

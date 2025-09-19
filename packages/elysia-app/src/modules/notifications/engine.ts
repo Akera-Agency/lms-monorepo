@@ -6,9 +6,7 @@ import { notificationRepository } from './infrastructure/notification.repository
 
 export function createNotifier() {
   async function notify(input: NotifyInput) {
-    const allRecipients = await notificationRepository.resolveAudience(
-      input.audience,
-    );
+    const allRecipients = await notificationRepository.resolveAudience(input.audience);
     const wantsInApp = input.channel === 'in_app' || input.channel === 'all';
     const wantsEmail = input.channel === 'email' || input.channel === 'all';
 
@@ -16,30 +14,18 @@ export function createNotifier() {
       allRecipients.map(async (u) => {
         const [inAppOk, emailOk] = await Promise.all([
           wantsInApp
-            ? notificationRepository.isChannelEnabled(
-                u.id,
-                input.event,
-                'in_app',
-              )
+            ? notificationRepository.isChannelEnabled(u.id, input.event, 'in_app')
             : Promise.resolve(false),
           wantsEmail
-            ? notificationRepository.isChannelEnabled(
-                u.id,
-                input.event,
-                'email',
-              )
+            ? notificationRepository.isChannelEnabled(u.id, input.event, 'email')
             : Promise.resolve(false),
         ]);
         return { user: u, inAppOk, emailOk };
       }),
     );
 
-    const inAppRecipients = perRecipient
-      .filter((r) => r.inAppOk)
-      .map((r) => r.user);
-    const emailRecipients = perRecipient
-      .filter((r) => r.emailOk)
-      .map((r) => r.user);
+    const inAppRecipients = perRecipient.filter((r) => r.inAppOk).map((r) => r.user);
+    const emailRecipients = perRecipient.filter((r) => r.emailOk).map((r) => r.user);
 
     const results = await Promise.allSettled([
       wantsInApp && inAppRecipients.length
@@ -56,8 +42,7 @@ export function createNotifier() {
         ? emailChannel.sendEmails({
             input,
             users: emailRecipients,
-            templateName: (input.channel_payload as ChannelMap['email'])
-              .templateName,
+            templateName: (input.channel_payload as ChannelMap['email']).templateName,
             subject: (input.channel_payload as ChannelMap['email']).subject,
           })
         : Promise.resolve(undefined),
@@ -72,9 +57,7 @@ export function createNotifier() {
             inApp: inAppRecipients.length,
             email: emailRecipients.length,
           },
-          outcomes: results.map((r) =>
-            r.status === 'fulfilled' ? 'ok' : 'error',
-          ),
+          outcomes: results.map((r) => (r.status === 'fulfilled' ? 'ok' : 'error')),
         }),
       );
     }

@@ -39,9 +39,7 @@ const DropdownRadio = ({
 
   return (
     <DropdownMenuPrimitive.Root>
-      <DropdownMenuPrimitive.Trigger asChild>
-        {children}
-      </DropdownMenuPrimitive.Trigger>
+      <DropdownMenuPrimitive.Trigger asChild>{children}</DropdownMenuPrimitive.Trigger>
       <DropdownMenuPrimitive.Portal>
         <motion.div
           initial={{ opacity: 0 }}
@@ -52,7 +50,7 @@ const DropdownRadio = ({
           <DropdownMenuPrimitive.Content
             className={cn(
               'z-50 min-w-[8rem] rounded-md border bg-white px-2 py-1 text-popover-foreground shadow-lg',
-              className
+              className,
             )}
             sideOffset={4}
             align={align}
@@ -62,10 +60,7 @@ const DropdownRadio = ({
                 {label}
               </DropdownMenuPrimitive.Label>
             )}
-            <DropdownMenuPrimitive.RadioGroup
-              value={value}
-              onValueChange={handleChange}
-            >
+            <DropdownMenuPrimitive.RadioGroup value={value} onValueChange={handleChange}>
               {options.map((option) => (
                 <DropdownMenuPrimitive.RadioItem
                   key={option.value}
@@ -73,7 +68,7 @@ const DropdownRadio = ({
                   disabled={option.disabled}
                   className={cn(
                     'relative flex cursor-default select-none items-center rounded-sm py-1.5 text-sm font-medium outline-none transition-colors focus:bg-accent',
-                    option.disabled && 'pointer-events-none opacity-50'
+                    option.disabled && 'pointer-events-none opacity-50',
                   )}
                 >
                   <span
@@ -81,7 +76,7 @@ const DropdownRadio = ({
                       'relative flex h-4 w-4 items-center justify-center rounded-full border-2 transition-all',
                       value === option.value
                         ? 'border-secondary-foreground bg-primary'
-                        : 'bg-white'
+                        : 'bg-white',
                     )}
                   >
                     {value === option.value && (

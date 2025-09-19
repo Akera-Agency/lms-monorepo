@@ -1,10 +1,4 @@
-import {
-  COMPARISON_OPERATORS,
-  Insertable,
-  Kysely,
-  Selectable,
-  Updateable,
-} from 'kysely';
+import { COMPARISON_OPERATORS, Insertable, Kysely, Selectable, Updateable } from 'kysely';
 import { IDb } from '../../../database/types/IDb';
 import { BaseQuery } from './base.query';
 import { InfinityPaginationResultType } from 'src/shared/utils/infinityPagination';
@@ -51,16 +45,10 @@ export class BaseRepo<TEntity extends IDb[keyof IDb]> {
     args: UpdateArgs<Selectable<TEntity>, Updateable<TEntity>>,
     ...other_args: unknown[]
   ): Promise<Selectable<TEntity> | null>;
-  deleteOne?(
-    args: FindManyArgs<Selectable<TEntity>>,
-    ...other_args: unknown[]
-  ): Promise<void>;
+  deleteOne?(args: FindManyArgs<Selectable<TEntity>>, ...other_args: unknown[]): Promise<void>;
   createMany?(
     payload: Insertable<TEntity>[],
     ...other_args: unknown[]
   ): Promise<Selectable<TEntity>[]> | Promise<void>;
-  deleteMany?(
-    args: FindManyArgs<Selectable<TEntity>>,
-    ...other_args: unknown[]
-  ): Promise<void>;
+  deleteMany?(args: FindManyArgs<Selectable<TEntity>>, ...other_args: unknown[]): Promise<void>;
 }

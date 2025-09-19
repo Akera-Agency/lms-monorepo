@@ -1,6 +1,6 @@
-import { ChevronLeft, ChevronRight, MoreHorizontal, Trash2, UserCog } from "lucide-react";
-import { useState, useCallback, useMemo } from "react";
-import { useTenant } from "@/hooks/use.tenant";
+import { ChevronLeft, ChevronRight, MoreHorizontal, Trash2, UserCog } from 'lucide-react';
+import { useState, useCallback, useMemo } from 'react';
+import { useTenant } from '@/hooks/use.tenant';
 import {
   type ColumnDef,
   type ColumnFiltersState,
@@ -13,16 +13,16 @@ import {
   useReactTable,
   type VisibilityState,
   type PaginationState,
-} from "@tanstack/react-table";
-import { Button } from "../../../../packages/ui/src/components/shadcn/button";
-import { Checkbox } from "../../../../packages/ui/src/components/shadcn/checkbox";
+} from '@tanstack/react-table';
+import { Button } from '../../../../packages/ui/src/components/shadcn/button';
+import { Checkbox } from '../../../../packages/ui/src/components/shadcn/checkbox';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "../../../../packages/ui/src/components/shadcn/dropdown-menu";
-import { Input } from "../../../../packages/ui/src/components/shadcn/input";
+} from '../../../../packages/ui/src/components/shadcn/dropdown-menu';
+import { Input } from '../../../../packages/ui/src/components/shadcn/input';
 import {
   Table,
   TableBody,
@@ -30,13 +30,13 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../../../../packages/ui/src/components/table/table";
-import { Skeleton } from "../../../../packages/ui/src/components/skeleton/skeleton";
-import { ConfirmDeleteDialog } from "../../../../packages/ui/src/components/dialog/confirm-dialog";
-import { EmptyState } from "../../../../packages/ui/src/components/empty-states/empty-state";
-import type { Table as TanstackTable } from "@tanstack/react-table";
-import type { Role } from "../models/roles.model";
-import { showPermissionsDialog } from "@/utils/permission-dialog-utils";
+} from '../../../../packages/ui/src/components/table/table';
+import { Skeleton } from '../../../../packages/ui/src/components/skeleton/skeleton';
+import { ConfirmDeleteDialog } from '../../../../packages/ui/src/components/dialog/confirm-dialog';
+import { EmptyState } from '../../../../packages/ui/src/components/empty-states/empty-state';
+import type { Table as TanstackTable } from '@tanstack/react-table';
+import type { Role } from '../models/roles.model';
+import { showPermissionsDialog } from '@/utils/permission-dialog-utils';
 
 export default function DataTable() {
   const { loading, roles, setRoles } = useTenant();
@@ -74,7 +74,7 @@ export default function DataTable() {
       setRoles((prev) => prev.filter((role) => !selectedRowIds.includes(role.id)));
       table.resetRowSelection();
     } catch (error) {
-      console.error("Bulk delete failed:", error);
+      console.error('Bulk delete failed:', error);
     }
   }, [selectedRowIds, table, setRoles]);
 
@@ -84,7 +84,7 @@ export default function DataTable() {
         <LoadingSkeleton />
       ) : roles.length === 0 ? (
         <EmptyState
-          icon={<UserCog/>}
+          icon={<UserCog />}
           title="No roles found"
           description="Roles will appear here once you add them."
         />
@@ -94,8 +94,8 @@ export default function DataTable() {
             <Input
               className="max-w-sm lg:text-sm text-xs border-neutral-700 bg-neutral-900 text-white"
               placeholder="Filter by role name..."
-              value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-              onChange={(e) => table.getColumn("name")?.setFilterValue(e.target.value)}
+              value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
+              onChange={(e) => table.getColumn('name')?.setFilterValue(e.target.value)}
             />
           </div>
 
@@ -122,7 +122,7 @@ export default function DataTable() {
                   table.getRowModel().rows.map((row) => (
                     <TableRow
                       key={row.id}
-                      data-state={row.getIsSelected() && "selected"}
+                      data-state={row.getIsSelected() && 'selected'}
                       className="border-b border-neutral-700 transition-colors"
                     >
                       {row.getVisibleCells().map((cell) => (
@@ -151,7 +151,7 @@ export default function DataTable() {
                   title="Confirm Deletion"
                   description={
                     selectedRowIds.length === 1
-                      ? "Are you sure you want to delete this role?"
+                      ? 'Are you sure you want to delete this role?'
                       : `Are you sure you want to delete these ${selectedRowIds.length} roles?`
                   }
                   closeText="Cancel"
@@ -159,7 +159,7 @@ export default function DataTable() {
                   onConfirm={handleBulkDelete}
                 />
               )}
-              {table.getFilteredSelectedRowModel().rows.length} of{" "}
+              {table.getFilteredSelectedRowModel().rows.length} of{' '}
               {table.getFilteredRowModel().rows.length} row(s) selected.
             </div>
             <PaginationControls table={table} />
@@ -225,21 +225,22 @@ function PaginationControls({ table }: { table: TanstackTable<Role> }) {
   );
 }
 
-function getColumns({ setRoles }: { setRoles: React.Dispatch<React.SetStateAction<Role[]>> }): ColumnDef<Role>[] {
-  
+function getColumns({
+  setRoles,
+}: {
+  setRoles: React.Dispatch<React.SetStateAction<Role[]>>;
+}): ColumnDef<Role>[] {
   const role_permissions = {
-    admin: ["Create", "Read", "Update", "Delete"],
-    editor: ["Read", "Update"],
-    user: ["Read"],
+    admin: ['Create', 'Read', 'Update', 'Delete'],
+    editor: ['Read', 'Update'],
+    user: ['Read'],
   };
 
   return [
     {
-      id: "select",
+      id: 'select',
       header: ({ table }) => {
-        const selectableRows = table.getRowModel().rows.filter(
-          (row) => !row.original.isSystemRole
-        );
+        const selectableRows = table.getRowModel().rows.filter((row) => !row.original.isSystemRole);
 
         const allSelected = selectableRows.every((row) => row.getIsSelected());
 
@@ -267,21 +268,21 @@ function getColumns({ setRoles }: { setRoles: React.Dispatch<React.SetStateActio
       enableHiding: false,
     },
     {
-      accessorKey: "name",
-      id: "name",
-      header: "Name",
+      accessorKey: 'name',
+      id: 'name',
+      header: 'Name',
       cell: ({ getValue }) => <div className="capitalize">{getValue<string>()}</div>,
-      filterFn: "includesString",
+      filterFn: 'includesString',
     },
     {
-      accessorKey: "description",
-      id: "description",
-      header: "Description",
+      accessorKey: 'description',
+      id: 'description',
+      header: 'Description',
       cell: ({ getValue }) => <div className="lowercase">{getValue<string>()}</div>,
     },
     {
-      id: "actions",
-      header: "Actions",
+      id: 'actions',
+      header: 'Actions',
       enableHiding: false,
       cell: ({ row }) => (
         <DropdownMenu modal={false}>
@@ -298,7 +299,10 @@ function getColumns({ setRoles }: { setRoles: React.Dispatch<React.SetStateActio
               onSelect={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                showPermissionsDialog(row.original.name,role_permissions[row.original.name as keyof typeof role_permissions] || []);
+                showPermissionsDialog(
+                  row.original.name,
+                  role_permissions[row.original.name as keyof typeof role_permissions] || [],
+                );
               }}
               className="cursor-pointer focus:bg-neutral-800 focus:text-white"
             >

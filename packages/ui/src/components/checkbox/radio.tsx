@@ -32,7 +32,7 @@ const Radio = ({
       className={cn(
         'relative flex select-none items-start',
 
-        disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
+        disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer',
       )}
     >
       <span
@@ -42,7 +42,7 @@ const Radio = ({
           checked && !disabled
             ? 'bg-[#F3562E] border-[#F3562E]'
             : 'border-neutral-300 bg-primary-foreground ',
-          disabled && 'border-neutral-200 bg-neutral-100'
+          disabled && 'border-neutral-200 bg-neutral-100',
         )}
       >
         {checked && !disabled && (

@@ -4,8 +4,7 @@ import { cn } from '../../lib/utils';
 import { DropdownMenu } from '../dropdown/dropdown-menu';
 import { ChevronsUpDown } from 'lucide-react';
 
-interface DataTableColumnHeaderProps<TData, TValue>
-  extends React.HTMLAttributes<HTMLDivElement> {
+interface DataTableColumnHeaderProps<TData, TValue> extends React.HTMLAttributes<HTMLDivElement> {
   column: Column<TData, TValue>;
   title: string;
 }
@@ -16,11 +15,7 @@ export function DataTableColumnHeader<TData, TValue>({
   className,
 }: DataTableColumnHeaderProps<TData, TValue>) {
   if (!column.getCanSort()) {
-    return (
-      <div className={cn('text-sm font-bold text-secondary-text', className)}>
-        {title}
-      </div>
-    );
+    return <div className={cn('text-sm font-bold text-secondary-text', className)}>{title}</div>;
   }
 
   const options = [

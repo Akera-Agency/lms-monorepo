@@ -70,14 +70,7 @@ const SENSITIVE_KEYS = new Set([
 ]);
 
 // Services that should be simplified
-const SIMPLIFIED_SERVICES = new Set([
-  'stripe',
-  'openai',
-  'rmq',
-  'mailer',
-  'storage',
-  'database',
-]);
+const SIMPLIFIED_SERVICES = new Set(['stripe', 'openai', 'rmq', 'mailer', 'storage', 'database']);
 
 // Create a simplified version of an object that may contain circular references
 function safeStringify(obj: any, seen = new WeakSet(), depth = 0): any {
@@ -121,11 +114,7 @@ function safeStringify(obj: any, seen = new WeakSet(), depth = 0): any {
   }
 
   // Stripe client
-  if (
-    obj.VERSION &&
-    obj._api &&
-    (obj.account || obj.charges || obj.customers)
-  ) {
+  if (obj.VERSION && obj._api && (obj.account || obj.charges || obj.customers)) {
     return { type: 'StripeClient', initialized: true, version: obj.VERSION };
   }
 
@@ -139,11 +128,7 @@ function safeStringify(obj: any, seen = new WeakSet(), depth = 0): any {
     }
 
     // Simplify service objects
-    if (
-      SIMPLIFIED_SERVICES.has(key) &&
-      typeof obj[key] === 'object' &&
-      obj[key] !== null
-    ) {
+    if (SIMPLIFIED_SERVICES.has(key) && typeof obj[key] === 'object' && obj[key] !== null) {
       result[key] = {
         type: key.charAt(0).toUpperCase() + key.slice(1),
         initialized: true,
@@ -209,11 +194,7 @@ methods.forEach((method) => {
       return original.apply(this, sanitizedArgs as any);
     } catch (e) {
       // If sanitization fails, log with simplified error info
-      return original.call(
-        this,
-        `${method.toUpperCase()} logging failed`,
-        String(e),
-      );
+      return original.call(this, `${method.toUpperCase()} logging failed`, String(e));
     }
   };
 });

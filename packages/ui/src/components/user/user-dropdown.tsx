@@ -45,20 +45,10 @@ const UserDropdown = ({ user }: { user: any }) => {
 
   return (
     <DropdownMenu open={isCollapsed}>
-      <DropdownMenuTrigger
-        onClick={() => handleCollapse()}
-        onBlur={() => handleCollapse()}
-        asChild
-      >
+      <DropdownMenuTrigger onClick={() => handleCollapse()} onBlur={() => handleCollapse()} asChild>
         <div className="flex cursor-pointer items-center gap-3">
           <Avatar>
-            <AvatarImage
-              loading="lazy"
-              className="h-10 w-10"
-              src={''}
-              width={200}
-              height={200}
-            />
+            <AvatarImage loading="lazy" className="h-10 w-10" src={''} width={200} height={200} />
             <AvatarFallback className="bg-primary text-white">
               {user?.firstName[0].toUpperCase()}
               {user?.lastName[0].toUpperCase()}
@@ -105,9 +95,7 @@ const UserDropdown = ({ user }: { user: any }) => {
             <p className="text-sm font-medium leading-none">
               {user?.firstName} {user?.lastName}
             </p>
-            <p className="text-sm leading-none text-muted-foreground">
-              {user?.email}
-            </p>
+            <p className="text-sm leading-none text-muted-foreground">{user?.email}</p>
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator className="bg-neutral-200 dark:bg-white/20" />

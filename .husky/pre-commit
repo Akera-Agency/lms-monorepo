@@ -1,0 +1,12 @@
+# #!/usr/bin/env sh
+# . "$(dirname -- "$0")/_/husky.sh"
+
+# --- Pre-commit Checks ---
+
+# 1. Formats all project files to maintain a consistent code style.
+#    → Ensures cleaner pull requests, easier code reviews, and standardized formatting on GitHub.
+bun run format
+
+# 2. Runs linting to detect code issues and enforce best practices.
+#    → Helps prevent bugs and keeps the codebase healthy.
+# 

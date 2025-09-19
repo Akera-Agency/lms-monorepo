@@ -6,12 +6,12 @@ import Aurora from '@/utils/aurora-bg';
 
 export const rootRoute = createRootRoute({
   component: () => (
-    <AuthGuard>  
-    <Aurora
-      colorStops={['#c80206', '#ffffff', '#da3300', '#000000']}
-      blend={0.5}
-      amplitude={1.7}
-      speed={0.7}
+    <AuthGuard>
+      <Aurora
+        colorStops={['#c80206', '#ffffff', '#da3300', '#000000']}
+        blend={0.5}
+        amplitude={1.7}
+        speed={0.7}
       />
       <Navbar />
       <main>

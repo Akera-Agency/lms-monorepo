@@ -1,10 +1,5 @@
 import { RoleRepository } from './infrastructure/role.repository';
-import {
-  NewRole,
-  QueryRole,
-  UpdateRole,
-  RoleEntity,
-} from './infrastructure/role.entity';
+import { NewRole, QueryRole, UpdateRole, RoleEntity } from './infrastructure/role.entity';
 import { BaseService } from '../../shared/types/base/base.service';
 import { BasePermission } from '../../shared/constants/permissions';
 import { IDb } from '../../database/types/IDb';

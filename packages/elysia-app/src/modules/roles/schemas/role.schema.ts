@@ -32,10 +32,7 @@ export const createRoleSchema = z.object({
     .string()
     .min(1, 'Role name is required')
     .max(255, 'Role name cannot exceed 255 characters'),
-  description: z
-    .string()
-    .max(1000, 'Description cannot exceed 1000 characters')
-    .optional(),
+  description: z.string().max(1000, 'Description cannot exceed 1000 characters').optional(),
   permissions: permissionsSchema,
   is_system_role: z.boolean(),
 });
@@ -46,10 +43,7 @@ export const updateRoleSchema = z.object({
     .min(1, 'Role name is required')
     .max(255, 'Role name cannot exceed 255 characters')
     .optional(),
-  description: z
-    .string()
-    .max(1000, 'Description cannot exceed 1000 characters')
-    .optional(),
+  description: z.string().max(1000, 'Description cannot exceed 1000 characters').optional(),
   permissions: permissionsSchema.optional(),
   is_system_role: z.boolean().optional(),
 });
@@ -76,9 +70,7 @@ export const roleNameParamsSchema = z.object({
 });
 
 // Helper function to validate permissions (to replace the service method)
-export const validatePermissions = (
-  permissions: Record<string, string[]>,
-): boolean => {
+export const validatePermissions = (permissions: Record<string, string[]>): boolean => {
   try {
     permissionsSchema.parse(permissions);
     return true;

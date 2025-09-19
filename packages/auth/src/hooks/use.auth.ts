@@ -1,7 +1,7 @@
 import { useContext, useState } from 'react';
 import { AuthContext } from '../providers/auth-provider';
 import { useNavigate } from '@tanstack/react-router';
-import { providers } from '../constants/oauth-config'
+import { providers } from '../constants/oauth-config';
 import type { Provider } from '@supabase/supabase-js';
 
 const useAuth = () => useContext(AuthContext);
@@ -17,20 +17,18 @@ export const useAuthForm = () => {
   const [selectedType, setSelectedType] = useState(userTypes[0]);
   const [tenant, setTenant] = useState<string>('');
 
-    const [providersList, setProvidersList] = useState(
-      providers.map((p) => ({
-        ...p,
-        enabled: p.defaultEnabled,
-      }))
+  const [providersList, setProvidersList] = useState(
+    providers.map((p) => ({
+      ...p,
+      enabled: p.defaultEnabled,
+    })),
+  );
+
+  const toggleProvider = (ProviderName: Provider) => {
+    setProvidersList((prev) =>
+      prev.map((p) => (p.name === ProviderName ? { ...p, enabled: !p.enabled } : p)),
     );
-  
-    const toggleProvider = (ProviderName: Provider) => {
-      setProvidersList((prev) =>
-        prev.map((p) =>
-          p.name === ProviderName ? { ...p, enabled: !p.enabled } : p
-        )
-      );
-    };
+  };
 
   const {
     sessionLoading,
@@ -46,24 +44,24 @@ export const useAuthForm = () => {
   } = useAuth();
 
   const navigate = useNavigate();
-  
+
   return {
     successMessage,
     email,
     password,
     name,
-    loading,    
-    error,    
-    session,    
-    user,    
-    sessionLoading,    
-    userTypes,    
-    selectedType,    
+    loading,
+    error,
+    session,
+    user,
+    sessionLoading,
+    userTypes,
+    selectedType,
     tenant,
     tenants,
     providersList,
     toggleProvider,
-    setEmail,    
+    setEmail,
     setSuccessMessage,
     setPassword,
     setName,

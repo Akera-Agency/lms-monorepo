@@ -1,14 +1,8 @@
 import { z } from 'zod';
 
 export const createTenantSchema = z.object({
-  name: z
-    .string()
-    .min(1, 'Name is required')
-    .max(255, 'Name cannot exceed 255 characters'),
-  description: z
-    .string()
-    .max(1000, 'Description cannot exceed 1000 characters')
-    .optional(),
+  name: z.string().min(1, 'Name is required').max(255, 'Name cannot exceed 255 characters'),
+  description: z.string().max(1000, 'Description cannot exceed 1000 characters').optional(),
   logo_url: z.string().url('Invalid URL format').optional(),
   is_public: z.boolean(),
 });
@@ -19,10 +13,7 @@ export const updateTenantSchema = z.object({
     .min(1, 'Name is required')
     .max(255, 'Name cannot exceed 255 characters')
     .optional(),
-  description: z
-    .string()
-    .max(1000, 'Description cannot exceed 1000 characters')
-    .optional(),
+  description: z.string().max(1000, 'Description cannot exceed 1000 characters').optional(),
   logo_url: z.string().url('Invalid URL format').optional(),
   is_public: z.boolean().optional(),
 });
@@ -42,10 +33,7 @@ export const createTenantRoleSchema = z.object({
     }),
   is_default: z.boolean(),
   is_system_role: z.boolean(),
-  description: z
-    .string()
-    .max(1000, 'Description cannot exceed 1000 characters')
-    .optional(),
+  description: z.string().max(1000, 'Description cannot exceed 1000 characters').optional(),
 });
 
 export const updateTenantRoleSchema = z.object({
@@ -62,10 +50,7 @@ export const updateTenantRoleSchema = z.object({
     .optional(),
   is_default: z.boolean().optional(),
   is_system_role: z.boolean().optional(),
-  description: z
-    .string()
-    .max(1000, 'Description cannot exceed 1000 characters')
-    .optional(),
+  description: z.string().max(1000, 'Description cannot exceed 1000 characters').optional(),
 });
 
 export const tenantUserRoleSchema = z.object({
@@ -74,11 +59,7 @@ export const tenantUserRoleSchema = z.object({
 });
 
 export const tenantPaginationQuerySchema = z.object({
-  page: z.coerce
-    .number()
-    .int()
-    .positive('Page must be a positive integer')
-    .default(1),
+  page: z.coerce.number().int().positive('Page must be a positive integer').default(1),
   limit: z.coerce
     .number()
     .int()

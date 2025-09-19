@@ -1,9 +1,4 @@
-import {
-  Kysely,
-  ParseJSONResultsPlugin,
-  PostgresDialect,
-  LogEvent,
-} from 'kysely';
+import { Kysely, ParseJSONResultsPlugin, PostgresDialect, LogEvent } from 'kysely';
 import { Pool } from 'pg';
 import { IDb } from './types/IDb';
 import { Logger } from 'src/shared/logger/logger';

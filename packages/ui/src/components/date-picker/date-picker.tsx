@@ -47,23 +47,17 @@ const DatePicker = ({
       {label && (
         <Label
           label={label}
-          className={cn(
-            'text-heading-color text-sm font-semibold',
-            hasError && 'text-destructive'
-          )}
+          className={cn('text-heading-color text-sm font-semibold', hasError && 'text-destructive')}
         />
       )}
       <Popover>
-        <PopoverTrigger
-          className={cn(disabled && 'pointer-events-none')}
-          asChild
-        >
+        <PopoverTrigger className={cn(disabled && 'pointer-events-none')} asChild>
           <div className="relative cursor-pointer">
             {icon && (
               <div
                 className={cn(
                   'absolute inset-y-0 left-0 flex items-center pl-3',
-                  disabled && 'opacity-50'
+                  disabled && 'opacity-50',
                 )}
               >
                 <CalendarIcon className="h-4 w-4" />
@@ -78,7 +72,7 @@ const DatePicker = ({
                 !date && 'text-muted-foreground',
                 hasError && 'border-red-500',
                 icon && 'pl-8',
-                className
+                className,
               )}
             >
               {formatDate(date) ? formatDate(date) : <span>Pick a date</span>}
@@ -89,23 +83,13 @@ const DatePicker = ({
           </div>
         </PopoverTrigger>
         <PopoverContent
-          className={cn(
-            'dark:bg-dark-primary w-auto p-0 shadow-lg dark:border-0',
-            contentStyle
-          )}
+          className={cn('dark:bg-dark-primary w-auto p-0 shadow-lg dark:border-0', contentStyle)}
           align={align}
         >
-          <Calendar
-            mode="single"
-            selected={date}
-            onSelect={setDate}
-            initialFocus
-          />
+          <Calendar mode="single" selected={date} onSelect={setDate} initialFocus />
         </PopoverContent>
       </Popover>
-      {hasError && (
-        <p className="text-sm font-semibold text-destructive">{error}</p>
-      )}
+      {hasError && <p className="text-sm font-semibold text-destructive">{error}</p>}
     </div>
   );
 };

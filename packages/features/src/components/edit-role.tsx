@@ -1,23 +1,23 @@
-import React from "react";
-import { Button } from "../../../ui/src/components/button/button";
-import Input from "../../../../packages/ui/src/components/form/input";
-import Switch from "../../../../packages/ui/src/components/switch/switch";
-import Radio from "../../../../packages/ui/src/components/checkbox/radio";
+import React from 'react';
+import { Button } from '../../../ui/src/components/button/button';
+import Input from '../../../../packages/ui/src/components/form/input';
+import Switch from '../../../../packages/ui/src/components/switch/switch';
+import Radio from '../../../../packages/ui/src/components/checkbox/radio';
 import {
   PermissionOption,
   permissionOptions,
   type Resource,
   resourceList,
   type RoleData,
-} from "../validation/tenantValidation";
-import { Trash2, ChevronDown, Settings, TriangleAlert } from "lucide-react";
+} from '../validation/tenantValidation';
+import { Trash2, ChevronDown, Settings, TriangleAlert } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "../../../../packages/ui/src/components/shadcn/dropdown-menu";
-import { useTenantContext } from "../providers/tenant-provider";
+} from '../../../../packages/ui/src/components/shadcn/dropdown-menu';
+import { useTenantContext } from '../providers/tenant-provider';
 
 interface EditRoleProps {
   index?: number;
@@ -29,7 +29,7 @@ interface EditRoleProps {
   localSelectedResource?: { [key: number]: Resource };
   setLocalSelectedResource?: (resources: { [key: number]: Resource }) => void;
   localErrors?: any;
-  handleRemove?: (id: string) => void 
+  handleRemove?: (id: string) => void;
 }
 
 export default function EditRole({
@@ -42,32 +42,23 @@ export default function EditRole({
   localSelectedResource,
   setLocalSelectedResource,
   localErrors,
-  handleRemove
+  handleRemove,
 }: EditRoleProps) {
-
   const context = useTenantContext();
-  
+
   const errors = localErrors || context.errors;
   const selectedResource = localSelectedResource || context.selectedResource;
   const setSelectedResource = setLocalSelectedResource || context.setSelectedResource;
   const roles = localRoles || context.roles;
   const setRoles = setLocalRoles || context.setRoles;
 
-  const handleRoleChange = (
-    roleIndex: number,
-    field: keyof RoleData,
-    value: any
-  ) => {
+  const handleRoleChange = (roleIndex: number, field: keyof RoleData, value: any) => {
     const updated = [...roles];
     updated[roleIndex] = { ...updated[roleIndex], [field]: value };
     setRoles(updated);
   };
 
-  const togglePermission = (
-    roleIndex: number,
-    resource: Resource,
-    perm: PermissionOption
-  ) => {
+  const togglePermission = (roleIndex: number, resource: Resource, perm: PermissionOption) => {
     const updated = [...roles];
     const current = updated[roleIndex].permissions[resource];
     updated[roleIndex].permissions[resource] = current.includes(perm)
@@ -77,14 +68,15 @@ export default function EditRole({
   };
 
   const removeRole = (roleIndex: number, roleId: string) => {
-    usage === 'create' ?
-    setRoles(roles.filter((_, i) => i !== roleIndex)) :
-    handleRemove ? handleRemove(roleId) : null
+    usage === 'create'
+      ? setRoles(roles.filter((_, i) => i !== roleIndex))
+      : handleRemove
+        ? handleRemove(roleId)
+        : null;
   };
-  
 
   if (index === undefined || !role) {
-    return null; 
+    return null;
   }
 
   return (
@@ -97,10 +89,10 @@ export default function EditRole({
           {usage === 'create' ? `Role ${index + 1}` : role.name}
         </h3>
 
-        {(roles.length > 1 || usage === 'edit' )&&(
+        {(roles.length > 1 || usage === 'edit') && (
           <Button
             type="button"
-            onClick={() => removeRole(index, role.id ?? "")}
+            onClick={() => removeRole(index, role.id ?? '')}
             disabled={isDisabled}
             className="bg-red-600/50 hover:bg-red-600 text-white/50 hover:text-white p-2 rounded-md transition-all duration-200 "
           >
@@ -120,7 +112,7 @@ export default function EditRole({
           error={errors.roles?.[index]?.name || errors.roles?.[index]?.role_name}
           onChange={(e) => {
             const value = (e.target as HTMLInputElement).value;
-            handleRoleChange(index, "name", value);
+            handleRoleChange(index, 'name', value);
           }}
           disabled={isDisabled}
         />
@@ -131,11 +123,11 @@ export default function EditRole({
           placeholder="Enter role description..."
           labelClassName="text-white font-medium"
           className="border-neutral-700 text-white"
-          value={role.description ?? ""}
+          value={role.description ?? ''}
           error={errors.roles?.[index]?.description || errors.roles?.[index]?.role_description}
           onChange={(e) => {
             const value = (e.target as HTMLInputElement).value;
-            handleRoleChange(index, "description", value);
+            handleRoleChange(index, 'description', value);
           }}
           disabled={isDisabled}
         />
@@ -153,7 +145,7 @@ export default function EditRole({
               >
                 <Settings className="h-4 w-4" />
                 {(selectedResource[index] || resourceList[0])
-                  .replace("_", " ")
+                  .replace('_', ' ')
                   .replace(/^\w/, (c) => c.toUpperCase())}
                 <ChevronDown className="h-4 w-4" />
               </Button>
@@ -162,20 +154,19 @@ export default function EditRole({
               {resourceList.map((resource) => (
                 <DropdownMenuItem
                   key={resource}
-                  onClick={() =>
-                  { setSelectedResource({
+                  onClick={() => {
+                    setSelectedResource({
                       ...selectedResource,
                       [index]: resource,
                     });
-                    }
-                  }
+                  }}
                   className={`hover:bg-neutral-700 cursor-pointer ${
                     (selectedResource[index] || resourceList[0]) === resource
-                      ? "bg-neutral-700"
-                      : ""
+                      ? 'bg-neutral-700'
+                      : ''
                   }`}
                 >
-                  {resource.replace("_", " ").replace(/^\w/, (c) => c.toUpperCase())}
+                  {resource.replace('_', ' ').replace(/^\w/, (c) => c.toUpperCase())}
                   {(selectedResource[index] || resourceList[0]) === resource && (
                     <span className="ml-auto text-primaryOrange">●</span>
                   )}
@@ -194,11 +185,7 @@ export default function EditRole({
 
         <div className="border border-neutral-600 rounded-lg p-4 space-y-3 bg-neutral-800/30">
           <h5 className="text-white font-medium capitalize">
-            {(selectedResource[index] || resourceList?.[0] || "").replace(
-              "_",
-              " "
-            )}{" "}
-            Permissions
+            {(selectedResource[index] || resourceList?.[0] || '').replace('_', ' ')} Permissions
           </h5>
 
           <div className="flex flex-wrap gap-3">
@@ -214,11 +201,9 @@ export default function EditRole({
                   }
                   className={`flex items-center gap-2 px-3 py-2 rounded-md border cursor-pointer transition-all duration-200 ${
                     selectedResource[index] &&
-                    role.permissions[selectedResource[index] as Resource]?.includes(
-                      perm
-                    )
-                      ? "bg-neutral-900 border-neutral-500 text-neutral-300"
-                      : "border-neutral-700 text-gray-300 hover:border-gray-500"
+                    role.permissions[selectedResource[index] as Resource]?.includes(perm)
+                      ? 'bg-neutral-900 border-neutral-500 text-neutral-300'
+                      : 'border-neutral-700 text-gray-300 hover:border-gray-500'
                   }`}
                 >
                   <Radio
@@ -226,9 +211,8 @@ export default function EditRole({
                     title=""
                     checked={
                       selectedResource[index]
-                        ? role.permissions[selectedResource[index] as Resource]?.includes(
-                            perm
-                          ) || false
+                        ? role.permissions[selectedResource[index] as Resource]?.includes(perm) ||
+                          false
                         : false
                     }
                     disabled={isDisabled || !selectedResource[index]}
@@ -247,19 +231,17 @@ export default function EditRole({
             id={`is_default_${index}`}
             label=""
             checked={role.is_default}
-            onCheckedChange={(checked) =>
-              handleRoleChange(index, "is_default", checked)
-            }
+            onCheckedChange={(checked) => handleRoleChange(index, 'is_default', checked)}
             className="sr-only"
           />
           <div
             className={`relative w-12 h-6 rounded-full transition-colors duration-200 ${
-              role.is_default ? "bg-primaryOrange" : "bg-neutral-600"
-            } ${isDisabled ? "opacity-50" : ""}`}
+              role.is_default ? 'bg-primaryOrange' : 'bg-neutral-600'
+            } ${isDisabled ? 'opacity-50' : ''}`}
           >
             <div
               className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform duration-200 ${
-                role.is_default ? "translate-x-6" : "translate-x-0"
+                role.is_default ? 'translate-x-6' : 'translate-x-0'
               }`}
             />
           </div>
@@ -271,19 +253,17 @@ export default function EditRole({
             id={`is_system_role_${index}`}
             label=""
             checked={role.is_system_role}
-            onCheckedChange={(checked) =>
-              handleRoleChange(index, "is_system_role", checked)
-            }
+            onCheckedChange={(checked) => handleRoleChange(index, 'is_system_role', checked)}
             className="sr-only"
           />
           <div
             className={`relative w-12 h-6 rounded-full transition-colors duration-200 ${
-              role.is_system_role ? "bg-primaryOrange" : "bg-neutral-600"
-            } ${isDisabled ? "opacity-50" : ""}`}
+              role.is_system_role ? 'bg-primaryOrange' : 'bg-neutral-600'
+            } ${isDisabled ? 'opacity-50' : ''}`}
           >
             <div
               className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform duration-200 ${
-                role.is_system_role ? "translate-x-6" : "translate-x-0"
+                role.is_system_role ? 'translate-x-6' : 'translate-x-0'
               }`}
             />
           </div>

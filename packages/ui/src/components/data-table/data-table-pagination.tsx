@@ -14,10 +14,7 @@ type DataTablePaginationProps<TData> = {
   };
 };
 
-export function DataTablePagination<TData>({
-  table,
-  meta,
-}: DataTablePaginationProps<TData>) {
+export function DataTablePagination<TData>({ table, meta }: DataTablePaginationProps<TData>) {
   const { pageIndex } = table.getState().pagination;
   const totalPages = meta?.totalPages ?? 1;
 
@@ -30,53 +27,31 @@ export function DataTablePagination<TData>({
     }
 
     if (pageIndex < pagesToShow) {
-      pageNumbers.push(
-        ...Array.from({ length: pagesToShow }, (_, i) => i + 1),
-        '...',
-        totalPages
-      );
+      pageNumbers.push(...Array.from({ length: pagesToShow }, (_, i) => i + 1), '...', totalPages);
     } else if (pageIndex >= totalPages - pagesToShow) {
       pageNumbers.push(
         1,
         '...',
-        ...Array.from(
-          { length: pagesToShow },
-          (_, i) => totalPages - pagesToShow + i + 1
-        )
+        ...Array.from({ length: pagesToShow }, (_, i) => totalPages - pagesToShow + i + 1),
       );
     } else {
-      pageNumbers.push(
-        1,
-        '...',
-        pageIndex,
-        pageIndex + 1,
-        pageIndex + 2,
-        '...',
-        totalPages
-      );
+      pageNumbers.push(1, '...', pageIndex, pageIndex + 1, pageIndex + 2, '...', totalPages);
     }
 
     return pageNumbers;
   };
-  const totalCount = meta?.totalCount
-    ? meta?.totalCount
-    : table.getFilteredRowModel().rows.length;
+  const totalCount = meta?.totalCount ? meta?.totalCount : table.getFilteredRowModel().rows.length;
   return (
     <div className="flex items-center justify-between rounded-b-2xl  border-neutral-700 px-4 py-3">
       <div>
         <span className="text-sm font-normal text-neutral-400">
-          Showing{' '}
-          {table.getState().pagination.pageIndex *
-            table.getState().pagination.pageSize +
-            1}
+          Showing {table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1}
           -
           {Math.min(
-            (table.getState().pagination.pageIndex + 1) *
-              table.getState().pagination.pageSize,
-            totalCount
+            (table.getState().pagination.pageIndex + 1) * table.getState().pagination.pageSize,
+            totalCount,
           )}{' '}
-          of {' '}
-          {totalCount} results
+          of {totalCount} results
         </span>
       </div>
 
@@ -105,12 +80,12 @@ export function DataTablePagination<TData>({
                   'h-9 w-9 p-0 text-sm transition-colors',
                   pageIndex === page - 1
                     ? 'bg-primary text-white hover:bg-primary'
-                    : 'text-neutral-800'
+                    : 'text-neutral-800',
                 )}
               >
                 {page}
               </Button>
-            )
+            ),
           )}
         </div>
 

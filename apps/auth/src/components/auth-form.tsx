@@ -1,7 +1,7 @@
 import { cn } from '../../../../packages/ui/src/lib/utils';
 import { Button } from '../../../../packages/ui/src/components/shadcn/button';
 import Input from '../../../../packages/ui/src/components/form/input';
-import {DropdownMenu} from '../../../../packages/ui/src/components/dropdown/dropdown-menu';
+import { DropdownMenu } from '../../../../packages/ui/src/components/dropdown/dropdown-menu';
 import type React from 'react';
 import { useAuthForm } from '../../../../packages/auth/src/hooks/use.auth';
 import type { Provider } from '@supabase/supabase-js';
@@ -22,7 +22,7 @@ interface AuthFormProps {
   isLoading: boolean;
   loadingText: string;
   OAuth: boolean;
-  toggle?:boolean;
+  toggle?: boolean;
   passwordInput: boolean;
   emailInput: boolean;
   nameInput?: boolean;
@@ -31,7 +31,7 @@ interface AuthFormProps {
   handleTypeChange?: (type: string) => void;
   handleAuth: (e: React.FormEvent<HTMLFormElement>) => void;
   handleInputChange?: (
-    e: React.ChangeEvent<HTMLInputElement> & React.FormEvent<HTMLLabelElement>
+    e: React.ChangeEvent<HTMLInputElement> & React.FormEvent<HTMLLabelElement>,
   ) => void;
   handleSelect?: (value: string) => void;
 }
@@ -69,13 +69,13 @@ export function AuthForm({
         title: 'Success',
         description: successMessage,
         variant: 'success',
-        className:
-          'bg-[#ECFDF5] text-white py-4 border text-[#065F46] border border-[#10B981]',
+        className: 'bg-[#ECFDF5] text-white py-4 border text-[#065F46] border border-[#10B981]',
       });
     }
   }, [successMessage, toast]);
 
-  const { setLoading, setError, signInWithOAuth, providersList, tenants, tenant, setTenant } = useAuthForm();
+  const { setLoading, setError, signInWithOAuth, providersList, tenants, tenant, setTenant } =
+    useAuthForm();
 
   const handleOAuthSignUp = async (provider: Provider) => {
     setLoading(true);
@@ -96,10 +96,7 @@ export function AuthForm({
   return (
     <form
       onSubmit={handleAuth}
-      className={cn(
-        `flex flex-col ${!passwordInput ? 'gap-12' : 'gap-6'}`,
-        className
-      )}
+      className={cn(`flex flex-col ${!passwordInput ? 'gap-12' : 'gap-6'}`, className)}
       {...props}
     >
       <div className="flex flex-col items-center gap-2 text-center">
@@ -146,36 +143,38 @@ export function AuthForm({
           </div>
         )}
 
-
-{selectedType === 'student' && (
-  <div className="grid gap-3">
-    <label className="text-white font-semibold">Tenant</label>
-    <div className="w-full"> 
-      <DropdownMenu
-        options={
-          tenants.length === 0
-            ? [{ label: 'No Tenant', value: '' }]
-            : tenants.map((tenant) => ({
-                label: tenant.user_metadata.name,
-                value: tenant.user_metadata.name,
-              }))
-        }
-        className="w-full bg-neutral-950 text-white border-white" 
-        onSelect={(value) => {setTenant(value) ; handleSelect && handleSelect(value)}}
-      >
-        <div
-          className={cn(
-            'w-full rounded-md border-white border px-3 py-2 text-white placeholder:text-neutral-500 cursor-pointer',
-            'flex items-center justify-between min-h-[40px]' 
-          )}
-        >
-          {tenant || 'Select a type'}
-          <ChevronDown className="ml-2 size-4" />
-        </div>
-      </DropdownMenu>
-    </div>
-  </div>
-)}
+        {selectedType === 'student' && (
+          <div className="grid gap-3">
+            <label className="text-white font-semibold">Tenant</label>
+            <div className="w-full">
+              <DropdownMenu
+                options={
+                  tenants.length === 0
+                    ? [{ label: 'No Tenant', value: '' }]
+                    : tenants.map((tenant) => ({
+                        label: tenant.user_metadata.name,
+                        value: tenant.user_metadata.name,
+                      }))
+                }
+                className="w-full bg-neutral-950 text-white border-white"
+                onSelect={(value) => {
+                  setTenant(value);
+                  handleSelect && handleSelect(value);
+                }}
+              >
+                <div
+                  className={cn(
+                    'w-full rounded-md border-white border px-3 py-2 text-white placeholder:text-neutral-500 cursor-pointer',
+                    'flex items-center justify-between min-h-[40px]',
+                  )}
+                >
+                  {tenant || 'Select a type'}
+                  <ChevronDown className="ml-2 size-4" />
+                </div>
+              </DropdownMenu>
+            </div>
+          </div>
+        )}
 
         {emailInput && (
           <div className="grid gap-3">
@@ -210,45 +209,34 @@ export function AuthForm({
             )}
           </div>
         )}
-        <Button
-          type="submit"
-          disabled={isLoading}
-          className="w-full bg-neutral-800"
-        >
+        <Button type="submit" disabled={isLoading} className="w-full bg-neutral-800">
           {isLoading ? `${loadingText}` : `${submitText}`}
         </Button>
-        {error && (
-          <p className="text-red-500 text-sm text-center -mt-2 -mb-2">
-            {error}
-          </p>
-        )}
+        {error && <p className="text-red-500 text-sm text-center -mt-2 -mb-2">{error}</p>}
       </div>
       {OAuth && (
         <>
           <div className="relative flex items-center justify-center text-sm my-2">
             <div className="flex-grow border-t border-neutral-700" />
-            <span className="text-muted-foreground mx-3 bg-transparent">
-              Or continue with
-            </span>
+            <span className="text-muted-foreground mx-3 bg-transparent">Or continue with</span>
             <div className="flex-grow border-t border-neutral-700" />
           </div>
           <div className="grid grid-cols-2 gap-4">
-          {providersList
-            .filter((provider) => provider.enabled)
-            .map((provider) => (
-            <Button
-              key={provider.name}
-              variant="outline"
-              type="button"
-              className="w-full"
-              onClick={() => handleOAuthSignUp(provider.name)}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-              <path d={provider.icon} fill="currentColor" />
-              </svg>
-          </Button>
-          ))}
-
+            {providersList
+              .filter((provider) => provider.enabled)
+              .map((provider) => (
+                <Button
+                  key={provider.name}
+                  variant="outline"
+                  type="button"
+                  className="w-full"
+                  onClick={() => handleOAuthSignUp(provider.name)}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d={provider.icon} fill="currentColor" />
+                  </svg>
+                </Button>
+              ))}
           </div>
         </>
       )}

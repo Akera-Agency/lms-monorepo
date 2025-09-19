@@ -138,18 +138,11 @@ const Toolbar = ({ editor }: ToolbarProps) => {
           <Paperclip className="h-4 w-4" />
         </Toggle> */}
 
-        <Toggle
-          pressed={false}
-          onClick={() => editor.chain().focus().undo().run()}
-        >
+        <Toggle pressed={false} onClick={() => editor.chain().focus().undo().run()}>
           <Undo className="h-4 w-4" />
         </Toggle>
 
-        <Toggle
-          pressed={false}
-          onClick={() => editor.chain().focus().redo().run()}
-          className=""
-        >
+        <Toggle pressed={false} onClick={() => editor.chain().focus().redo().run()} className="">
           <Redo className="h-4 w-4" />
         </Toggle>
         <TableSelect editor={editor} />

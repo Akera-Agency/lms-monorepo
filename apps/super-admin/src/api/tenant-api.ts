@@ -27,13 +27,10 @@ export const SuperAdminApi = {
       );
     }
 
-    const { data, error } = await supabaseAdmin.auth.admin.inviteUserByEmail(
-      email,
-      {
-        redirectTo: `${authRoute}${redirectPath}`,
-        data: { roleId: roleId },
-      },
-    );
+    const { data, error } = await supabaseAdmin.auth.admin.inviteUserByEmail(email, {
+      redirectTo: `${authRoute}${redirectPath}`,
+      data: { roleId: roleId },
+    });
 
     if (error) {
       throw new Error(error.message);
@@ -59,13 +56,8 @@ export const SuperAdminApi = {
     return data.data;
   },
 
-  async fetchTenantRoles(
-    session: Session | null,
-    tenant_id: string,
-  ): Promise<TenantRoleEntity[]> {
-    const { data, error } = await apiClient(session)
-      .api.tenants({ id: tenant_id })
-      .roles.get();
+  async fetchTenantRoles(session: Session | null, tenant_id: string): Promise<TenantRoleEntity[]> {
+    const { data, error } = await apiClient(session).api.tenants({ id: tenant_id }).roles.get();
 
     if (error) {
       throw new Error(errorMessage(error));
@@ -73,13 +65,8 @@ export const SuperAdminApi = {
     return data;
   },
 
-  async fetchTenantById(
-    session: Session | null,
-    id: string,
-  ): Promise<TenantEntity> {
-    const { data, error } = await apiClient(session)
-      .api.tenants({ id: id })
-      .get();
+  async fetchTenantById(session: Session | null, id: string): Promise<TenantEntity> {
+    const { data, error } = await apiClient(session).api.tenants({ id: id }).get();
 
     if (error) {
       throw new Error(errorMessage(error));
@@ -88,9 +75,7 @@ export const SuperAdminApi = {
   },
 
   async deleteTenant(session: Session | null, tenantId: string): Promise<void> {
-    const { error } = await apiClient(session)
-      .api.tenants({ id: tenantId })
-      .delete();
+    const { error } = await apiClient(session).api.tenants({ id: tenantId }).delete();
     if (error) throw new Error(error?.value.message);
   },
 
@@ -118,22 +103,18 @@ export const SuperAdminApi = {
     session: Session | null,
     tenant_id: string,
     name: string,
-    permissions:
-      | Record<Resource, PermissionOption[]>
-      | Record<string, string[]>,
+    permissions: Record<Resource, PermissionOption[]> | Record<string, string[]>,
     is_default: boolean,
     is_system_role: boolean,
     description?: string,
   ): Promise<TenantRoleEntity> {
-    const { data, error } = await apiClient(session)
-      .api.tenants({ id: tenant_id })
-      .roles.post({
-        name,
-        description,
-        permissions,
-        is_default,
-        is_system_role,
-      });
+    const { data, error } = await apiClient(session).api.tenants({ id: tenant_id }).roles.post({
+      name,
+      description,
+      permissions,
+      is_default,
+      is_system_role,
+    });
 
     if (error) {
       throw new Error(errorMessage(error));
@@ -141,11 +122,7 @@ export const SuperAdminApi = {
     return data;
   },
 
-  async deleteTenantRole(
-    session: Session | null,
-    tenant_id: string,
-    id: string,
-  ): Promise<void> {
+  async deleteTenantRole(session: Session | null, tenant_id: string, id: string): Promise<void> {
     const { error } = await apiClient(session)
       .api.tenants({ id: tenant_id })
       .roles({ roleId: id })
@@ -159,9 +136,7 @@ export const SuperAdminApi = {
     tenant_id: string,
     id: string,
     name: string,
-    permissions:
-      | Record<Resource, PermissionOption[]>
-      | Record<string, string[]>,
+    permissions: Record<Resource, PermissionOption[]> | Record<string, string[]>,
     is_default: boolean,
     is_system_role: boolean,
     description?: string,
@@ -191,14 +166,12 @@ export const SuperAdminApi = {
     description?: string,
     logo_url?: string,
   ): Promise<TenantEntity> {
-    const { data, error } = await apiClient(session)
-      .api.tenants({ id: id })
-      .patch({
-        name,
-        description,
-        is_public,
-        logo_url,
-      });
+    const { data, error } = await apiClient(session).api.tenants({ id: id }).patch({
+      name,
+      description,
+      is_public,
+      logo_url,
+    });
 
     if (error) {
       throw new Error(errorMessage(error));

@@ -19,13 +19,9 @@ async function migrateToLatest() {
 
   results?.forEach((migrationResult) => {
     if (migrationResult.status === 'Success') {
-      Logger.info(
-        `migration "${migrationResult.migrationName}" was executed successfully`,
-      );
+      Logger.info(`migration "${migrationResult.migrationName}" was executed successfully`);
     } else if (migrationResult.status === 'Error') {
-      Logger.error(
-        `failed to execute migration "${migrationResult.migrationName}"`,
-      );
+      Logger.error(`failed to execute migration "${migrationResult.migrationName}"`);
     }
   });
 

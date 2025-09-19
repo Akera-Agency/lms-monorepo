@@ -25,12 +25,7 @@ type TipTapProps = {
   wrapperClassName?: string;
 };
 
-const Tiptap = ({
-  onChange,
-  content,
-  className,
-  wrapperClassName,
-}: TipTapProps) => {
+const Tiptap = ({ onChange, content, className, wrapperClassName }: TipTapProps) => {
   const handleChange = (newContent: string) => {
     onChange(newContent);
   };
@@ -87,10 +82,7 @@ const Tiptap = ({
 
   return (
     <div
-      className={cn(
-        'flex h-full w-full grow flex-col [&>*:nth-child(2)]:grow',
-        wrapperClassName
-      )}
+      className={cn('flex h-full w-full grow flex-col [&>*:nth-child(2)]:grow', wrapperClassName)}
     >
       <Toolbar editor={editor} content={content} />
       <EditorContent editor={editor} />

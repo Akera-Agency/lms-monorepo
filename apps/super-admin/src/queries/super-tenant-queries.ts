@@ -1,10 +1,13 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { SuperAdminApi } from "../api/tenant-api";
-import { useAuthForm } from "../../../../packages/auth/src/hooks/use.auth";
-import type { TenantEntity } from "elysia-app/src/modules/tenants/infrastructure/tenant.entity";
-import type { TenantRoleEntity } from "elysia-app/src/modules/tenants/infrastructure/tenant-role.entity";
-import type { PermissionOption, Resource } from "../../../../packages/features/src/validation/tenantValidation";
-import { normalizeError } from "../utils/handlers/error-handlers";
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { SuperAdminApi } from '../api/tenant-api';
+import { useAuthForm } from '../../../../packages/auth/src/hooks/use.auth';
+import type { TenantEntity } from 'elysia-app/src/modules/tenants/infrastructure/tenant.entity';
+import type { TenantRoleEntity } from 'elysia-app/src/modules/tenants/infrastructure/tenant-role.entity';
+import type {
+  PermissionOption,
+  Resource,
+} from '../../../../packages/features/src/validation/tenantValidation';
+import { normalizeError } from '../utils/handlers/error-handlers';
 
 export function SuperAdminQueries() {
   const { session } = useAuthForm();
@@ -17,11 +20,11 @@ export function SuperAdminQueries() {
       isError,
       error,
     } = useQuery<TenantEntity[], Error>({
-      queryKey: ["tenants"],
+      queryKey: ['tenants'],
       queryFn: () => SuperAdminApi.fetchTenants(session),
       enabled: !!session,
     });
-    return { tenants, loading, isError,  error: error ? normalizeError(error) : null };
+    return { tenants, loading, isError, error: error ? normalizeError(error) : null };
   };
 
   const tenantById = (id: string) => {
@@ -31,19 +34,19 @@ export function SuperAdminQueries() {
       isError,
       error,
     } = useQuery({
-      queryKey: ["tenants", id],
+      queryKey: ['tenants', id],
       queryFn: () => {
-        if (!id) throw new Error("Tenant ID is required");
+        if (!id) throw new Error('Tenant ID is required');
         return SuperAdminApi.fetchTenantById(session, id);
       },
-      enabled: !!session && !!id, 
+      enabled: !!session && !!id,
     });
-    
-    return { 
-      tenant, 
-      loading, 
-      isError,  
-      error: error ? normalizeError(error) : null 
+
+    return {
+      tenant,
+      loading,
+      isError,
+      error: error ? normalizeError(error) : null,
     };
   };
 
@@ -54,17 +57,17 @@ export function SuperAdminQueries() {
       isError,
       error,
     } = useQuery<TenantRoleEntity[], Error>({
-      queryKey: ["tenant_roles", tenant_id],
+      queryKey: ['tenant_roles', tenant_id],
       queryFn: () => {
-        if (!tenant_id) throw new Error("Tenant ID is required");
+        if (!tenant_id) throw new Error('Tenant ID is required');
         return SuperAdminApi.fetchTenantRoles(session, tenant_id);
       },
       enabled: !!session && !!tenant_id,
     });
-  
-    return { tenantRoles, loading, isError,  error: error ? normalizeError(error) : null };
+
+    return { tenantRoles, loading, isError, error: error ? normalizeError(error) : null };
   };
-  
+
   const createTenantMutation = useMutation<
     { tenant: TenantEntity; roles: TenantRoleEntity[] },
     Error,
@@ -82,19 +85,13 @@ export function SuperAdminQueries() {
       logo_url?: string;
     }
   >({
-    mutationFn: async ({
-      tenantName,
-      is_public,
-      roles,
-      tenantDescription,
-      logo_url,
-    }) => {
+    mutationFn: async ({ tenantName, is_public, roles, tenantDescription, logo_url }) => {
       const createdTenant = await SuperAdminApi.createTenant(
         session,
         tenantName,
         is_public,
         tenantDescription,
-        logo_url
+        logo_url,
       );
 
       const createdRoles = await Promise.all(
@@ -106,116 +103,104 @@ export function SuperAdminQueries() {
             role.permissions,
             role.is_default,
             role.is_system_role,
-            role.roleDescription
-          )
-        )
+            role.roleDescription,
+          ),
+        ),
       );
 
       return { tenant: createdTenant, roles: createdRoles };
     },
     onSuccess: ({ tenant }) => {
-      queryClient.setQueryData<TenantEntity[]>(["tenants"], (old = []) => [...old, tenant]);
+      queryClient.setQueryData<TenantEntity[]>(['tenants'], (old = []) => [...old, tenant]);
     },
     onError: (err) => {
-      console.error("Create tenant error:", normalizeError(err));
+      console.error('Create tenant error:', normalizeError(err));
     },
   });
 
   const deleteTenantMutation = useMutation<void, Error, string>({
     mutationFn: (tenant_id) => SuperAdminApi.deleteTenant(session, tenant_id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["tenants"] });
+      queryClient.invalidateQueries({ queryKey: ['tenants'] });
     },
     onError: (err) => {
-      console.error("Delete user error:", normalizeError(err));
+      console.error('Delete user error:', normalizeError(err));
     },
   });
 
-  const deleteTenantRoleMutation = useMutation<void, Error, {tenant_id: string, id: string}>({
-    mutationFn: ({tenant_id, id}) => SuperAdminApi.deleteTenantRole(session, tenant_id, id),
+  const deleteTenantRoleMutation = useMutation<void, Error, { tenant_id: string; id: string }>({
+    mutationFn: ({ tenant_id, id }) => SuperAdminApi.deleteTenantRole(session, tenant_id, id),
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["tenant_roles", variables.tenant_id] });
+      queryClient.invalidateQueries({ queryKey: ['tenant_roles', variables.tenant_id] });
     },
     onError: (err) => {
-      console.error("Delete tenant role error:", normalizeError(err));
+      console.error('Delete tenant role error:', normalizeError(err));
     },
   });
 
-  const updateTenantRoleMutation = useMutation<TenantRoleEntity, Error, 
-  {
-    tenant_id: string;
-    id: string;
-    name: string;
-    permissions: Record<Resource, PermissionOption[]> | Record<string, string[]>;
-    is_default: boolean;
-    is_system_role: boolean;
-    description?: string;
-  }
+  const updateTenantRoleMutation = useMutation<
+    TenantRoleEntity,
+    Error,
+    {
+      tenant_id: string;
+      id: string;
+      name: string;
+      permissions: Record<Resource, PermissionOption[]> | Record<string, string[]>;
+      is_default: boolean;
+      is_system_role: boolean;
+      description?: string;
+    }
   >({
-    mutationFn: async({ 
+    mutationFn: async ({
       tenant_id,
       id,
       name,
       permissions,
       is_default,
       is_system_role,
-      description
-    }) => SuperAdminApi.updateTenantRole(
-      session,
-      tenant_id,
-      id,
-      name,
-      permissions,
-      is_default,
-      is_system_role,
-      description
-    ),
+      description,
+    }) =>
+      SuperAdminApi.updateTenantRole(
+        session,
+        tenant_id,
+        id,
+        name,
+        permissions,
+        is_default,
+        is_system_role,
+        description,
+      ),
     onSuccess: (updatedRole, variables) => {
       queryClient.setQueryData<TenantRoleEntity[]>(
-        ["tenant_roles", variables.tenant_id],
-        (old = []) => old.map(role => 
-          role.id === variables.id ? updatedRole : role
-        )
+        ['tenant_roles', variables.tenant_id],
+        (old = []) => old.map((role) => (role.id === variables.id ? updatedRole : role)),
       );
     },
     onError: (err) => {
-      console.error("Update tenant role error:", normalizeError(err));
+      console.error('Update tenant role error:', normalizeError(err));
     },
   });
 
-  const updateTenantMutation = useMutation<TenantEntity, Error, 
-  {
-    id: string,
-    name: string,
-    is_public: boolean,
-    description?: string,
-    logo_url?: string
-  }
+  const updateTenantMutation = useMutation<
+    TenantEntity,
+    Error,
+    {
+      id: string;
+      name: string;
+      is_public: boolean;
+      description?: string;
+      logo_url?: string;
+    }
   >({
-    mutationFn: async({ 
-      id,
-      name,
-      is_public,
-      description,
-      logo_url
-    }) => SuperAdminApi.updateTenant(
-      session,
-      id,
-      name,
-      is_public,
-      description,
-      logo_url
-    ),
+    mutationFn: async ({ id, name, is_public, description, logo_url }) =>
+      SuperAdminApi.updateTenant(session, id, name, is_public, description, logo_url),
     onSuccess: (updatedTenant, variables) => {
-      queryClient.setQueryData<TenantEntity[]>(
-        ["tenant", variables.id],
-        (old = []) => old.map(tenant => 
-          tenant.id === variables.id ? updatedTenant : tenant
-        )
+      queryClient.setQueryData<TenantEntity[]>(['tenant', variables.id], (old = []) =>
+        old.map((tenant) => (tenant.id === variables.id ? updatedTenant : tenant)),
       );
     },
     onError: (err) => {
-      console.error("Update tenant error:", normalizeError(err));
+      console.error('Update tenant error:', normalizeError(err));
     },
   });
 
@@ -232,6 +217,6 @@ export function SuperAdminQueries() {
     deleteTenantStatus: deleteTenantMutation.status,
     deleteTenantRoleStatus: deleteTenantRoleMutation.status,
     updateTenantRoleStatus: updateTenantRoleMutation.status,
-    updateTenantStatus: updateTenantMutation.status
+    updateTenantStatus: updateTenantMutation.status,
   };
 }

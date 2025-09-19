@@ -5,13 +5,7 @@ import type { LabelProps } from '../label/label';
 import Label from '../label/label';
 import type { UseFormRegisterReturn } from 'react-hook-form';
 import { cn } from '../../lib/utils';
-import {
-  ChevronDown,
-  ChevronUp,
-  TriangleAlert,
-  Eye,
-  EyeOff,
-} from 'lucide-react';
+import { ChevronDown, ChevronUp, TriangleAlert, Eye, EyeOff } from 'lucide-react';
 
 interface InputComponentProps {
   error?: string;
@@ -48,8 +42,7 @@ const Input: React.FC<InputProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const [showPassword, setShowPassword] = useState(false);
 
-  const inputType =
-    type === 'password' ? (showPassword ? 'text' : 'password') : type;
+  const inputType = type === 'password' ? (showPassword ? 'text' : 'password') : type;
   const togglePassword = () => {
     setShowPassword(!showPassword);
   };
@@ -91,7 +84,7 @@ const Input: React.FC<InputProps> = ({
       type === 'password' && 'pr-12',
       className,
       hasError && 'border-destructive',
-      inputIcon && 'pl-9'
+      inputIcon && 'pl-9',
     ),
     ...(register ? { ...register } : {}),
   };
@@ -131,11 +124,7 @@ const Input: React.FC<InputProps> = ({
               className="text-secondary-text hover:text-neutral-800 cursor-pointer"
               onClick={togglePassword}
             >
-              {showPassword ? (
-                <Eye className="h-4 w-4" />
-              ) : (
-                <EyeOff className="h-4 w-4" />
-              )}
+              {showPassword ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
             </button>
           </div>
         )}

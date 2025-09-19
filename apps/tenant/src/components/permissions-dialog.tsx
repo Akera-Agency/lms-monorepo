@@ -1,8 +1,8 @@
-import { useState } from "react";
-import NiceModal, { useModal } from "@ebay/nice-modal-react";
-import { Button } from "../../../../packages/ui/src/components/shadcn/button";
-import ResponsiveDialog from "../../../../packages/ui/src/components/dialog/dialog";
-import Switch from "../../../../packages/ui/src/components/switch/switch";
+import { useState } from 'react';
+import NiceModal, { useModal } from '@ebay/nice-modal-react';
+import { Button } from '../../../../packages/ui/src/components/shadcn/button';
+import ResponsiveDialog from '../../../../packages/ui/src/components/dialog/dialog';
+import Switch from '../../../../packages/ui/src/components/switch/switch';
 
 type PermissionsDialogProps = {
   role_permissions: string[];
@@ -27,7 +27,7 @@ export const PermissionsDialog = NiceModal.create(
 
     const togglePermission = (permission: string, checked: boolean) => {
       setSelected((prev) =>
-        checked ? [...prev, permission] : prev.filter((p) => p !== permission)
+        checked ? [...prev, permission] : prev.filter((p) => p !== permission),
       );
     };
 
@@ -52,9 +52,7 @@ export const PermissionsDialog = NiceModal.create(
               <p className="mb-2">{permission}</p>
               <Switch
                 checked={selected.includes(permission)}
-                onCheckedChange={(checked) =>
-                  togglePermission(permission, checked)
-                }
+                onCheckedChange={(checked) => togglePermission(permission, checked)}
                 className="data-[state=checked]:bg-[#F3562E] bg-neutral-800"
                 thumbClassName="data-[state=checked]:bg-white"
               />
@@ -62,7 +60,7 @@ export const PermissionsDialog = NiceModal.create(
           ))}
 
           <div className="flex justify-between gap-3 pt-4">
-            <Button 
+            <Button
               onClick={() => modal.hide()}
               className="border-neutral-700 bg-neutral-800 hover:bg-neutral-800/80 w-1/2 cursor-pointer rounded-sm py-1"
             >
@@ -79,7 +77,7 @@ export const PermissionsDialog = NiceModal.create(
         </div>
       </ResponsiveDialog>
     );
-  }
+  },
 );
 
 export default PermissionsDialog;

@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
-import NiceModal, { useModal } from "@ebay/nice-modal-react";
-import { Button } from "../../../../packages/ui/src/components/shadcn/button";
-import ResponsiveDialog from "../../../../packages/ui/src/components/dialog/dialog";
-import { SuperAdminQueries } from "@/queries/super-tenant-queries";
-import { type TenantData } from "../../../../packages/features/src/validation/tenantValidation";
-import EditTenant from "../../../../packages/features/src/components/edit-tenant";
+import { useEffect, useState } from 'react';
+import NiceModal, { useModal } from '@ebay/nice-modal-react';
+import { Button } from '../../../../packages/ui/src/components/shadcn/button';
+import ResponsiveDialog from '../../../../packages/ui/src/components/dialog/dialog';
+import { SuperAdminQueries } from '@/queries/super-tenant-queries';
+import { type TenantData } from '../../../../packages/features/src/validation/tenantValidation';
+import EditTenant from '../../../../packages/features/src/components/edit-tenant';
 
 type TenantsDialogProps = {
   id: string;
@@ -19,12 +19,12 @@ export const TenantsDialog = NiceModal.create((props: TenantsDialogProps) => {
   const { updateTenant } = SuperAdminQueries();
 
   const [localTenantData, setLocalTenantData] = useState<TenantData>({
-    name: "",
-    description: "",
-    logo_url: "",
-    is_public: true
+    name: '',
+    description: '',
+    logo_url: '',
+    is_public: true,
   });
-  
+
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const isDisabled = isSubmitting || loading;
@@ -33,13 +33,13 @@ export const TenantsDialog = NiceModal.create((props: TenantsDialogProps) => {
     if (tenant) {
       setLocalTenantData({
         id: tenant.id,
-        name: tenant.name || "",
-        description: tenant.description || "",
-        logo_url: tenant.logo_url || "",
+        name: tenant.name || '',
+        description: tenant.description || '',
+        logo_url: tenant.logo_url || '',
         is_public: tenant.is_public ?? true,
         deleted_at: tenant.deleted_at,
         created_at: tenant.created_at,
-        updated_at: tenant.updated_at
+        updated_at: tenant.updated_at,
       });
       console.log(tenant);
     }
@@ -52,13 +52,13 @@ export const TenantsDialog = NiceModal.create((props: TenantsDialogProps) => {
       await updateTenant({
         id: id,
         name: localTenantData.name,
-        description: localTenantData.description ?? "",
+        description: localTenantData.description ?? '',
         is_public: localTenantData.is_public,
-        logo_url: localTenantData.logo_url ?? "",
+        logo_url: localTenantData.logo_url ?? '',
       });
       modal.hide();
     } catch (error) {
-      console.error("Failed to update tenant:", error);
+      console.error('Failed to update tenant:', error);
     } finally {
       setIsSubmitting(false);
     }

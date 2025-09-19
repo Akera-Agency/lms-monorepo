@@ -13,27 +13,21 @@ export const activityHandler = {
     try {
       console.log('Activity created:', payload);
     } catch (error) {
-      throw new EvalError(
-        error instanceof Error ? error.message : 'Unknown error',
-      );
+      throw new EvalError(error instanceof Error ? error.message : 'Unknown error');
     }
   },
   onActivityUpdated: (payload: ActivityUpdatedEvent) => {
     try {
       console.log('Activity updated:', payload);
     } catch (error) {
-      throw new EvalError(
-        error instanceof Error ? error.message : 'Unknown error',
-      );
+      throw new EvalError(error instanceof Error ? error.message : 'Unknown error');
     }
   },
   onActivityDeleted: (payload: ActivityDeletedEvent) => {
     try {
       console.log('Activity deleted:', payload);
     } catch (error) {
-      throw new EvalError(
-        error instanceof Error ? error.message : 'Unknown error',
-      );
+      throw new EvalError(error instanceof Error ? error.message : 'Unknown error');
     }
   },
 };

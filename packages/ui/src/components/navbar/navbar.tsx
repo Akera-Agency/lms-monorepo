@@ -1,22 +1,18 @@
 import { Button } from '../button/button';
 import NavLinkList from '../../components/list/nav-link-list';
-import { Menu, X } from "lucide-react";
-import { useState } from "react";
-import { useLocation } from "@tanstack/react-router";
+import { Menu, X } from 'lucide-react';
+import { useState } from 'react';
+import { useLocation } from '@tanstack/react-router';
 
 interface NavbarProps {
-  handleSignOut: (e: any) => Promise<void>,
-  links: {title: string, href: string}[],
+  handleSignOut: (e: any) => Promise<void>;
+  links: { title: string; href: string }[];
 }
 
-export function Navbar({
-  links,
-  handleSignOut
-}: NavbarProps) {
+export function Navbar({ links, handleSignOut }: NavbarProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
   const openLink = location.pathname;
-  
 
   return (
     <div className="flex justify-center">
@@ -49,19 +45,19 @@ export function Navbar({
       {menuOpen && (
         <div className="sm:hidden fixed top-20 left-0 w-full bg-neutral-950/95 backdrop-blur-xl border-y border-neutral-700 p-6 z-20 animate-in fade-in slide-in-from-top-2 duration-200">
           <div className="flex flex-col gap-6 text-white text-md font-medium">
-          <NavLinkList
-          linkStyle=' transition-colors'
-          containerStyle="gap-6 flex flex-col"
-          links={links}
-          openLink={openLink}
-        />
+            <NavLinkList
+              linkStyle=" transition-colors"
+              containerStyle="gap-6 flex flex-col"
+              links={links}
+              openLink={openLink}
+            />
             <Button
-          variant="default"
-          className="bg-gradient-to-r from-primaryOrange to-[#e94e26] hover:from-transparent hover:to-transparent border-2 border-transparent hover:border-primaryOrange hover:text-primaryOrange shadow-lg hover:shadow-primaryOrange/25 active:scale-95"
-          onClick={handleSignOut}
-        >
-          Sign out
-        </Button>
+              variant="default"
+              className="bg-gradient-to-r from-primaryOrange to-[#e94e26] hover:from-transparent hover:to-transparent border-2 border-transparent hover:border-primaryOrange hover:text-primaryOrange shadow-lg hover:shadow-primaryOrange/25 active:scale-95"
+              onClick={handleSignOut}
+            >
+              Sign out
+            </Button>
           </div>
         </div>
       )}

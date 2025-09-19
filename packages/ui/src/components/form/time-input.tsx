@@ -13,12 +13,7 @@ interface TimeInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   onTimeChange?: (time: string, period: 'AM' | 'PM') => void;
 }
 
-const TimeInput = ({
-  className,
-  onTimeChange,
-  disabled,
-  ...props
-}: TimeInputProps) => {
+const TimeInput = ({ className, onTimeChange, disabled, ...props }: TimeInputProps) => {
   const [time, setTime] = React.useState(() => {
     const now = new Date();
     return now.toLocaleTimeString('en-US', {
@@ -29,14 +24,12 @@ const TimeInput = ({
   });
 
   const [period, setPeriod] = React.useState<'AM' | 'PM'>(() =>
-    new Date().getHours() >= 12 ? 'PM' : 'AM'
+    new Date().getHours() >= 12 ? 'PM' : 'AM',
   );
 
   const formatTime = React.useCallback((input: string): string => {
     const [hours, minutes] = input.split(':');
-    return `${hours?.padStart(2, '0') || '00'}:${
-      minutes?.padStart(2, '0') || '00'
-    }`;
+    return `${hours?.padStart(2, '0') || '00'}:${minutes?.padStart(2, '0') || '00'}`;
   }, []);
 
   const handleTimeChange = React.useCallback(
@@ -45,7 +38,7 @@ const TimeInput = ({
       setTime(newValue);
       onTimeChange?.(newValue, period);
     },
-    [onTimeChange, period]
+    [onTimeChange, period],
   );
 
   const handlePeriodChange = React.useCallback(
@@ -53,7 +46,7 @@ const TimeInput = ({
       setPeriod(newPeriod);
       onTimeChange?.(time, newPeriod);
     },
-    [onTimeChange, time]
+    [onTimeChange, time],
   );
 
   const handleBlur = React.useCallback(() => {
@@ -87,12 +80,8 @@ const TimeInput = ({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start">
-          <DropdownMenuItem onClick={() => handlePeriodChange('AM')}>
-            AM
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => handlePeriodChange('PM')}>
-            PM
-          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => handlePeriodChange('AM')}>AM</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => handlePeriodChange('PM')}>PM</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

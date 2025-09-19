@@ -79,10 +79,7 @@ export const userController = new Elysia<typeof prefix, TContext>({
         .patch(
           '/:id',
           async (ctx) => {
-            const updatedUser = await ctx.store.UserService.update(
-              ctx.params.id,
-              ctx.body,
-            );
+            const updatedUser = await ctx.store.UserService.update(ctx.params.id, ctx.body);
             return updatedUser;
           },
           {

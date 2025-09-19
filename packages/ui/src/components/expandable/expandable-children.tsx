@@ -37,7 +37,7 @@ const Expandable = ({
       <div
         className={cn(
           'flex cursor-pointer items-center justify-start gap-3 px-1 py-3 hover:bg-muted/50 hover:no-underline',
-          triggerStyle
+          triggerStyle,
         )}
         onClick={handleToggle}
       >

@@ -33,9 +33,7 @@ const DropdownMenu = ({
 }: IDropdownMenuProps) => {
   return (
     <DropdownMenuPrimitive.Root>
-      <DropdownMenuPrimitive.Trigger asChild>
-        {children}
-      </DropdownMenuPrimitive.Trigger>
+      <DropdownMenuPrimitive.Trigger asChild>{children}</DropdownMenuPrimitive.Trigger>
       <DropdownMenuPrimitive.Portal>
         <motion.div
           initial={{ opacity: 0 }}
@@ -46,7 +44,7 @@ const DropdownMenu = ({
           <DropdownMenuPrimitive.Content
             className={cn(
               'z-50 w-[var(--radix-dropdown-menu-trigger-width)] min-w-[8rem] rounded-md border bg-white p-0 text-popover-foreground shadow',
-              className
+              className,
             )}
             sideOffset={4}
             align={align}
@@ -74,14 +72,12 @@ const DropdownMenu = ({
                 className={cn(
                   'relative flex cursor-default select-none items-center hover:bg-neutral-700 rounded-sm px-2 py-1.5 text-sm font-normal outline-none transition-colors ',
                   option.disabled && 'pointer-events-none opacity-50',
-                  option.icon && 'pl-3'
+                  option.icon && 'pl-3',
                 )}
               >
                 {option.icon && <span className="mr-2">{option.icon}</span>}
                 {option.label}
-                {showChevronIcon && (
-                  <ChevronRight className="ml-auto h-4 w-4" />
-                )}
+                {showChevronIcon && <ChevronRight className="ml-auto h-4 w-4" />}
               </DropdownMenuPrimitive.Item>
             ))}
           </DropdownMenuPrimitive.Content>

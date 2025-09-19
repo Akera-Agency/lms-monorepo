@@ -16,10 +16,7 @@ const TableRowSkeleton = ({ columnCount = 10 }: TTableRowSkeletonProps) => {
       </TableCell>
       {uniqueIds.map((id) => (
         <TableCell key={id}>
-          <Skeleton
-            variant="foreground"
-            className="h-8 w-full max-w-32 rounded-md"
-          />
+          <Skeleton variant="foreground" className="h-8 w-full max-w-32 rounded-md" />
         </TableCell>
       ))}
       <TableCell>

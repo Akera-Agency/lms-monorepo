@@ -40,15 +40,13 @@ const Expandable = ({
       <div
         className={cn(
           'h-13 bg-custom-gray-blue/10 flex w-full cursor-pointer items-start justify-between p-4',
-          triggerStyle
+          triggerStyle,
         )}
         onClick={handleToggle}
       >
         <div className="flex flex-col gap-2">
           <div className="flex flex-col gap-2">
-            <h3 className="text-primary-text text-base font-semibold">
-              {title}
-            </h3>{' '}
+            <h3 className="text-primary-text text-base font-semibold">{title}</h3>{' '}
             {keysProgress ? (
               <div className="flex items-center justify-items-start gap-2">
                 {showCheck && (
@@ -62,9 +60,7 @@ const Expandable = ({
                     Progress :
                   </span>
 
-                  <span className="text-sm font-normal leading-[19px]">
-                    {keysProgress}
-                  </span>
+                  <span className="text-sm font-normal leading-[19px]">{keysProgress}</span>
                 </div>
               </div>
             ) : (
@@ -121,9 +117,7 @@ const Expandable = ({
             className="overflow-hidden p-2"
           >
             {description && (
-              <div className="text-custom-gray-blue p-4 text-sm font-normal">
-                {description}
-              </div>
+              <div className="text-custom-gray-blue p-4 text-sm font-normal">{description}</div>
             )}
             {children}
           </motion.div>

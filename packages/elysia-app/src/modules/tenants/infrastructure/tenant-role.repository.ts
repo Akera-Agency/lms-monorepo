@@ -23,40 +23,27 @@ export class TenantRoleRepository extends BaseRepo<KyselyTenantRoleEntity> {
         .where('deleted_at', 'is', null)
         .$if(!!query.filter, (q) =>
           q.where((eb) =>
-            eb.and(
-              query.filter?.map((arg) =>
-                eb(arg.column, arg.operator, arg.value)
-              ) || []
-            )
-          )
+            eb.and(query.filter?.map((arg) => eb(arg.column, arg.operator, arg.value)) || []),
+          ),
         )
         .$if(!!query.search, (q) =>
           q.where((e) =>
-            e.or(
-              query.search?.map((arg) =>
-                e(arg.column, arg.operator, arg.value)
-              ) || []
-            )
-          )
+            e.or(query.search?.map((arg) => e(arg.column, arg.operator, arg.value)) || []),
+          ),
         );
 
       const [res, total] = await Promise.all([
         queryBuilder
           .$if(!!query.sort, (q) =>
-            query.sort!.reduce(
-              (qb, arg) => qb.orderBy(arg.orderBy, arg.sort),
-              q
-            )
+            query.sort!.reduce((qb, arg) => qb.orderBy(arg.orderBy, arg.sort), q),
           )
           .$if(!!query.limit, (q) => q.limit(query.limit as number))
           .$if(!!query.limit && !!query.page, (q) =>
-            q.offset(((query.page as number) - 1) * (query.limit as number))
+            q.offset(((query.page as number) - 1) * (query.limit as number)),
           )
           .selectAll('tenant_roles')
           .execute(),
-        queryBuilder
-          .select(this.trx.fn.countAll('tenant_roles').as('count'))
-          .executeTakeFirst(),
+        queryBuilder.select(this.trx.fn.countAll('tenant_roles').as('count')).executeTakeFirst(),
       ]);
       return infinityPagination(res, {
         total_count: Number(total?.count ?? 0),
@@ -78,8 +65,8 @@ export class TenantRoleRepository extends BaseRepo<KyselyTenantRoleEntity> {
           eb.and(
             args.where.map((arg) => {
               return eb(arg.column, arg.operator, arg.value);
-            })
-          )
+            }),
+          ),
         )
         .execute();
       return res;
@@ -94,11 +81,7 @@ export class TenantRoleRepository extends BaseRepo<KyselyTenantRoleEntity> {
         .selectFrom('tenant_roles')
         .selectAll()
         .where('deleted_at', 'is', null)
-        .where((eb) =>
-          eb.and(
-            args.where.map((arg) => eb(arg.column, arg.operator, arg.value))
-          )
-        )
+        .where((eb) => eb.and(args.where.map((arg) => eb(arg.column, arg.operator, arg.value))))
         .executeTakeFirst();
       return res ?? null;
     } catch (error) {

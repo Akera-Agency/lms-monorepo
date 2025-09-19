@@ -31,11 +31,7 @@ const languages = [
 
 const LanguageSelector = ({ className }: LanguageSelectorProps) => {
   return (
-    <Select
-      className={cn(className, 'w-36 rounded-full')}
-      defaultValue="en"
-      items={languages}
-    />
+    <Select className={cn(className, 'w-36 rounded-full')} defaultValue="en" items={languages} />
   );
 };
 

@@ -5,10 +5,7 @@ type GetInitialsProps = {
   lastName?: string;
 };
 
-export const useGetInitials = ({
-  firstName,
-  lastName,
-}: GetInitialsProps): string => {
+export const useGetInitials = ({ firstName, lastName }: GetInitialsProps): string => {
   return useMemo(() => {
     const initials = `${firstName?.charAt(0).toUpperCase() || ''}${
       lastName?.charAt(0).toUpperCase() || ''

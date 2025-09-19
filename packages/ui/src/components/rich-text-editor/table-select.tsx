@@ -48,11 +48,7 @@ const TableSelect = ({ editor }: TableSelectProps) => {
 
     switch (value) {
       case 'insert_table':
-        editor
-          .chain()
-          .focus()
-          .insertTable({ rows: 3, cols: 3, withHeaderRow: true })
-          .run();
+        editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run();
         break;
       case 'delete_table':
         editor.chain().focus().deleteTable().run();
@@ -81,10 +77,7 @@ const TableSelect = ({ editor }: TableSelectProps) => {
   };
 
   return (
-    <DropdownMenu
-      options={TABLE_OPERATIONS}
-      onSelect={(value) => handleTableOperation(value)}
-    >
+    <DropdownMenu options={TABLE_OPERATIONS} onSelect={(value) => handleTableOperation(value)}>
       <Button variant="ghost" className="text-primary-text" type="button">
         <Table /> Table
         <ChevronDown />

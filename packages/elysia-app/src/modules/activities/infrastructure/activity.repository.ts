@@ -24,30 +24,19 @@ export class ActivityRepository extends BaseRepo<KyselyActivityEntity> {
         .where('deleted_at', 'is', null)
         .$if(!!query.filter, (q) =>
           q.where((eb) =>
-            eb.and(
-              query.filter?.map((arg) =>
-                eb(arg.column, arg.operator, arg.value),
-              ) || [],
-            ),
+            eb.and(query.filter?.map((arg) => eb(arg.column, arg.operator, arg.value)) || []),
           ),
         )
         .$if(!!query.search, (q) =>
           q.where((e) =>
-            e.or(
-              query.search?.map((arg) =>
-                e(arg.column, arg.operator, arg.value),
-              ) || [],
-            ),
+            e.or(query.search?.map((arg) => e(arg.column, arg.operator, arg.value)) || []),
           ),
         );
 
       const [res, total] = await Promise.all([
         queryBuilder
           .$if(!!query.sort, (q) =>
-            query.sort!.reduce(
-              (qb, arg) => qb.orderBy(arg.orderBy, arg.sort),
-              q,
-            ),
+            query.sort!.reduce((qb, arg) => qb.orderBy(arg.orderBy, arg.sort), q),
           )
           .$if(!query.sort, (q) => q.orderBy('created_at', 'desc'))
           .$if(!!query.limit, (q) => q.limit(query.limit as number))
@@ -56,9 +45,7 @@ export class ActivityRepository extends BaseRepo<KyselyActivityEntity> {
           )
           .selectAll('activities')
           .execute(),
-        queryBuilder
-          .select(this.trx.fn.countAll('activities').as('count'))
-          .executeTakeFirst(),
+        queryBuilder.select(this.trx.fn.countAll('activities').as('count')).executeTakeFirst(),
       ]);
 
       return infinityPagination(res, {
@@ -117,13 +104,9 @@ export class ActivityRepository extends BaseRepo<KyselyActivityEntity> {
     }
   }
 
-  override async findOne(
-    args: FindManyArgs<Activity>,
-  ): Promise<Activity | null> {
+  override async findOne(args: FindManyArgs<Activity>): Promise<Activity | null> {
     try {
-      const queryBuilder = this.trx
-        .selectFrom('activities')
-        .where('deleted_at', 'is', null);
+      const queryBuilder = this.trx.selectFrom('activities').where('deleted_at', 'is', null);
 
       for (const arg of args.where) {
         queryBuilder.where(arg.column, arg.operator, arg.value);
@@ -138,18 +121,13 @@ export class ActivityRepository extends BaseRepo<KyselyActivityEntity> {
 
   async findAll(args: FindManyArgs<Activity>): Promise<Activity[]> {
     try {
-      const queryBuilder = this.trx
-        .selectFrom('activities')
-        .where('deleted_at', 'is', null);
+      const queryBuilder = this.trx.selectFrom('activities').where('deleted_at', 'is', null);
 
       for (const arg of args.where) {
         queryBuilder.where(arg.column, arg.operator, arg.value);
       }
 
-      const result = await queryBuilder
-        .selectAll()
-        .orderBy('created_at', 'desc')
-        .execute();
+      const result = await queryBuilder.selectAll().orderBy('created_at', 'desc').execute();
 
       return result;
     } catch (error) {
@@ -173,10 +151,7 @@ export class ActivityRepository extends BaseRepo<KyselyActivityEntity> {
     }
   }
 
-  async findByUserIdAndType(
-    userId: string,
-    type: ActivityTypeEnum,
-  ): Promise<Activity[]> {
+  async findByUserIdAndType(userId: string, type: ActivityTypeEnum): Promise<Activity[]> {
     try {
       const result = await this.trx
         .selectFrom('activities')
@@ -208,11 +183,7 @@ export class ActivityRepository extends BaseRepo<KyselyActivityEntity> {
     }
   }
 
-  async getXpByUserIdAndDateRange(
-    userId: string,
-    startDate: Date,
-    endDate: Date,
-  ): Promise<number> {
+  async getXpByUserIdAndDateRange(userId: string, startDate: Date, endDate: Date): Promise<number> {
     try {
       const result = await this.trx
         .selectFrom('activities')

@@ -19,10 +19,7 @@ export const notificationController = new Elysia<typeof prefix, TContext>({
       '/me',
       async (ctx) => {
         const limit = Math.min(Number(ctx.query['limit'] ?? 20), 100);
-        const rows = await ctx.store.NotificationService.listMine(
-          ctx.auth.user.sub,
-          limit,
-        );
+        const rows = await ctx.store.NotificationService.listMine(ctx.auth.user.sub, limit);
         return { items: rows };
       },
       {
@@ -32,19 +29,14 @@ export const notificationController = new Elysia<typeof prefix, TContext>({
     .post(
       '/me/read',
       async (ctx) => {
-        await ctx.store.NotificationService.markRead(
-          ctx.auth.user.sub,
-          ctx.body.ids,
-        );
+        await ctx.store.NotificationService.markRead(ctx.auth.user.sub, ctx.body.ids);
       },
       {
         body: notificationReadSchema,
       },
     )
     .get('/me/preferences', async (ctx) => {
-      const preferences = await ctx.store.NotificationService.listPreferences(
-        ctx.auth.user.sub,
-      );
+      const preferences = await ctx.store.NotificationService.listPreferences(ctx.auth.user.sub);
       return preferences;
     })
     .patch(
@@ -57,10 +49,7 @@ export const notificationController = new Elysia<typeof prefix, TContext>({
           channel: p.channel,
           enabled: p.enabled,
         }));
-        await ctx.store.NotificationService.updatePreferences(
-          userId,
-          normalized,
-        );
+        await ctx.store.NotificationService.updatePreferences(userId, normalized);
       },
       {
         body: updateNotificationPreferencesSchema,

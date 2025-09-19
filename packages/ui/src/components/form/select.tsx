@@ -59,12 +59,15 @@ const Select = ({
     register?.onChange?.({ target: { value } });
   };
 
-  const groupedItems = items.reduce((acc, item) => {
-    const group = item.group || 'Ungrouped';
-    if (!acc[group]) acc[group] = [];
-    acc[group].push(item);
-    return acc;
-  }, {} as Record<string, SelectItemType[]>);
+  const groupedItems = items.reduce(
+    (acc, item) => {
+      const group = item.group || 'Ungrouped';
+      if (!acc[group]) acc[group] = [];
+      acc[group].push(item);
+      return acc;
+    },
+    {} as Record<string, SelectItemType[]>,
+  );
 
   return (
     <div className={cn('space-y-1.5', className)}>
@@ -82,7 +85,7 @@ const Select = ({
             'border p-4 text-sm ring-0 ring-offset-background placeholder:text-sm placeholder:font-normal placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
             className,
             hasError && 'border-destructive',
-            disabled && 'bg-neutral-100'
+            disabled && 'bg-neutral-100',
           )}
         >
           <SelectValue

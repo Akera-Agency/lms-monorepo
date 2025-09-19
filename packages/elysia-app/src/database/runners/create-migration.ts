@@ -18,11 +18,7 @@ function getTimestamp(): string {
 async function createMigrationFile(description: string): Promise<void> {
   const timestamp = getTimestamp();
   const filename = `${timestamp}_${description.trim().split(' ').join('_')}.ts`;
-  const filePath = path.join(
-    process.cwd(),
-    'src/database/migrations',
-    filename
-  );
+  const filePath = path.join(process.cwd(), 'src/database/migrations', filename);
   const content = `import { Kysely } from 'kysely';
 
 export async function up(db: Kysely<unknown>) {
@@ -41,9 +37,7 @@ export async function down(db: Kysely<unknown>) {
       Logger.error(`Migration file already exists: ${filename}`);
     } else {
       Logger.error(
-        `Error creating migration file: ${
-          error instanceof Error ? error.message : error
-        }`
+        `Error creating migration file: ${error instanceof Error ? error.message : error}`,
       );
     }
   }

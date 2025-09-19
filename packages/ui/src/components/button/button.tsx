@@ -10,16 +10,13 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default: 'bg-primary text-primary-foreground hover:bg-primary/90',
-        destructive:
-          'bg-destructive text-primary-foreground hover:bg-destructive-hover',
+        destructive: 'bg-destructive text-primary-foreground hover:bg-destructive-hover',
         outline:
           'border text-accent-foreground bg-white hover:bg-accent hover:text-accent-foreground dark:bg-slate-900 dark:text-white dark:hover:bg-slate-800',
-        secondary:
-          'bg-secondary text-secondary-foreground hover:bg-secondary-hover',
+        secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary-hover',
         ghost: 'text-secondary-foreground bg-transparent hover:bg-accent',
         link: 'flex items-center justify-start p-3 hover:bg-transparent hover:opacity-80 text-secondary-foreground bg-transparent',
-        student:
-          'overflow-hidden rounded-full bg-primary px-6 py-3 shadow-student-button-shadow',
+        student: 'overflow-hidden rounded-full bg-primary px-6 py-3 shadow-student-button-shadow',
       },
       size: {
         default: 'h-9 px-4 py-2',
@@ -33,7 +30,7 @@ const buttonVariants = cva(
       variant: 'default',
       size: 'default',
     },
-  }
+  },
 );
 
 interface IButtonProps
@@ -51,11 +48,10 @@ const Button = forwardRef<HTMLButtonElement, IButtonProps>(
         className={cn(buttonVariants({ variant, size }), className)}
         {...props}
       >
-        {isLoading && <Loader2 className="mr-1 h-5 w-5 animate-spin" />}{' '}
-        {children}
+        {isLoading && <Loader2 className="mr-1 h-5 w-5 animate-spin" />} {children}
       </ShadButton>
     );
-  }
+  },
 );
 
 Button.displayName = 'Button';

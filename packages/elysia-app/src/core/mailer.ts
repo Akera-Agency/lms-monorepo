@@ -46,10 +46,7 @@ export interface ISendMailOptions {
 
 export interface IMailer {
   sendMail: (options: ISendMailOptions) => Promise<void>;
-  sendTemplatedMail: <
-    U extends TemplateName,
-    T extends EmailTemplates[U],
-  >(options: {
+  sendTemplatedMail: <U extends TemplateName, T extends EmailTemplates[U]>(options: {
     to: string[];
     from: string;
     templateName: U;
@@ -102,10 +99,7 @@ export function detectUserLanguage(user?: UserWithLanguage): LanguagesEnum {
   }
 
   // Check preferences object
-  if (
-    user.preferences?.language &&
-    isValidLanguage(user.preferences.language)
-  ) {
+  if (user.preferences?.language && isValidLanguage(user.preferences.language)) {
     return user.preferences.language as LanguagesEnum;
   }
 
@@ -124,11 +118,7 @@ class ResendMailer implements IMailer {
   private resend;
   private templatesDir;
 
-  public constructor(options: {
-    key: string;
-    domain: string;
-    templatesDir: string;
-  }) {
+  public constructor(options: { key: string; domain: string; templatesDir: string }) {
     this.resend = new Resend(options.key);
     this.templatesDir = options.templatesDir;
   }
@@ -165,10 +155,7 @@ class ResendMailer implements IMailer {
     }
   }
 
-  public async sendTemplatedMail<
-    U extends TemplateName,
-    T extends EmailTemplates[U],
-  >(options: {
+  public async sendTemplatedMail<U extends TemplateName, T extends EmailTemplates[U]>(options: {
     to: string[];
     from: string;
     templateName: U;
@@ -207,11 +194,7 @@ class ResendMailer implements IMailer {
   ): Promise<EmailTemplate> {
     try {
       // Try to find a localized .hbs template first
-      const localizedPath = path.join(
-        this.templatesDir,
-        language,
-        `${templateName}.hbs`,
-      );
+      const localizedPath = path.join(this.templatesDir, language, `${templateName}.hbs`);
       let templateContent: string;
 
       try {
@@ -219,8 +202,7 @@ class ResendMailer implements IMailer {
         templateContent = await fs.promises.readFile(localizedPath, 'utf-8');
       } catch (err) {
         Logger.error(
-          `Failed to load email template ${templateName} for language ${language}:` +
-            String(err),
+          `Failed to load email template ${templateName} for language ${language}:` + String(err),
         );
         throw new AppError({
           error: 'failed_to_load_email_template',
@@ -234,8 +216,7 @@ class ResendMailer implements IMailer {
       return { html };
     } catch (error) {
       Logger.error(
-        `Failed to load email template ${templateName} for language ${language}:` +
-          String(error),
+        `Failed to load email template ${templateName} for language ${language}:` + String(error),
       );
       throw new AppError({
         error: 'failed_to_load_email_template',
@@ -251,10 +232,7 @@ export class Mailer implements IMailer {
 
   public constructor() {
     // Set templates directory relative to project root
-    this.templatesDir = path.join(
-      process.cwd(),
-      'packages/elysia-app/assets/templates/emails',
-    );
+    this.templatesDir = path.join(process.cwd(), 'packages/elysia-app/assets/templates/emails');
 
     this.mailer = new ResendMailer({
       key: env.RESEND_API_KEY,
@@ -267,10 +245,7 @@ export class Mailer implements IMailer {
     await this.mailer.sendMail(options);
   }
 
-  public async sendTemplatedMail<
-    U extends TemplateName,
-    T extends EmailTemplates[U],
-  >(options: {
+  public async sendTemplatedMail<U extends TemplateName, T extends EmailTemplates[U]>(options: {
     to: string[];
     from: string;
     templateName: U;

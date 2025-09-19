@@ -1,4 +1,4 @@
-import { ErrorsKeys } from "../i18n/generated-types";
+import { ErrorsKeys } from '../i18n/generated-types';
 
 export interface IAppError {
   error: ErrorsKeys;

@@ -32,9 +32,7 @@ const Switch = ({
         id={id}
         {...register}
       />
-      {label && (
-        <Label className="text-base font-medium" label={label} htmlFor={id} />
-      )}
+      {label && <Label className="text-base font-medium" label={label} htmlFor={id} />}
     </div>
   );
 };

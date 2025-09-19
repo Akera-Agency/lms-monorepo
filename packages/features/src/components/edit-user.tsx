@@ -1,38 +1,38 @@
-import React, { useEffect } from "react";
-import Input from "../../../../packages/ui/src/components/form/input";
-import { useTenantContext } from "../providers/tenant-provider";
-import { TenantData, UserData, RoleData } from "../validation/tenantValidation";
+import React, { useEffect } from 'react';
+import Input from '../../../../packages/ui/src/components/form/input';
+import { useTenantContext } from '../providers/tenant-provider';
+import { TenantData, UserData, RoleData } from '../validation/tenantValidation';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "../../../../packages/ui/src/components/shadcn/dropdown-menu";
-import { Button } from "../../../../packages/ui/src/components/button/button";
-import { ChevronDown, University, Shield } from "lucide-react";
+} from '../../../../packages/ui/src/components/shadcn/dropdown-menu';
+import { Button } from '../../../../packages/ui/src/components/button/button';
+import { ChevronDown, University, Shield } from 'lucide-react';
 
 interface EditUserProps {
-    isDisabled: boolean;
-    userData?: UserData;
-    setUserData?: (data: UserData) => void;
-    tenants: TenantData[];
-    roles: RoleData[];
-    errors?: any;
-    // index: number;
-    fetchTenantRoles: (tenantId: string) => Promise<void>;
-  }
+  isDisabled: boolean;
+  userData?: UserData;
+  setUserData?: (data: UserData) => void;
+  tenants: TenantData[];
+  roles: RoleData[];
+  errors?: any;
+  // index: number;
+  fetchTenantRoles: (tenantId: string) => Promise<void>;
+}
 
-  export default function EditUser({
-    isDisabled,
-    userData: propUserData,
-    setUserData: propSetUserData,
-    errors: propErrors,
-    tenants,
-    roles,
-    // index,
-    fetchTenantRoles,
-  }: EditUserProps) {
-    const context = useTenantContext();
+export default function EditUser({
+  isDisabled,
+  userData: propUserData,
+  setUserData: propSetUserData,
+  errors: propErrors,
+  tenants,
+  roles,
+  // index,
+  fetchTenantRoles,
+}: EditUserProps) {
+  const context = useTenantContext();
 
   const userData = propUserData || context.userData;
   const setUserData = propSetUserData || context.setUserData;
@@ -78,9 +78,7 @@ interface EditUserProps {
               className="bg-neutral-700 hover:bg-neutral-600 text-white border border-neutral-600 px-4 py-2 rounded-md flex items-center gap-2 justify-between"
             >
               <University className="h-4 w-4" />
-              {selectedTenant[index]?.name ||
-                tenants[index]?.name ||
-                "Select a tenant"}
+              {selectedTenant[index]?.name || tenants[index]?.name || 'Select a tenant'}
               <ChevronDown className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
@@ -88,19 +86,15 @@ interface EditUserProps {
             {tenants.map((tenant, index) => (
               <DropdownMenuItem
                 key={tenant.id}
-                onClick={() =>
-                {
-                  setIndex(index)
+                onClick={() => {
+                  setIndex(index);
                   setSelectedTenant((prev) => ({
                     ...prev,
                     [index]: tenant,
-                  }))
-                }
-                }
+                  }));
+                }}
                 className={`hover:bg-neutral-700 cursor-pointer ${
-                  (selectedTenant[index] || tenants[index]) === tenant
-                    ? "bg-neutral-700"
-                    : ""
+                  (selectedTenant[index] || tenants[index]) === tenant ? 'bg-neutral-700' : ''
                 }`}
               >
                 {tenant.name}
@@ -123,7 +117,7 @@ interface EditUserProps {
               className="bg-neutral-700 hover:bg-neutral-600 text-white border border-neutral-600 px-4 py-2 rounded-md flex items-center gap-2 justify-between"
             >
               <Shield className="h-4 w-4" />
-              {selectedRole?.name || "Select a role"}
+              {selectedRole?.name || 'Select a role'}
               <ChevronDown className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
@@ -134,7 +128,7 @@ interface EditUserProps {
                   key={role.id}
                   onClick={() => setSelectedRole(role)}
                   className={`hover:bg-neutral-700 cursor-pointer ${
-                    selectedRole?.id === role.id ? "bg-neutral-700" : ""
+                    selectedRole?.id === role.id ? 'bg-neutral-700' : ''
                   }`}
                 >
                   {role.name}
@@ -144,9 +138,7 @@ interface EditUserProps {
                 </DropdownMenuItem>
               ))
             ) : (
-              <div className="px-3 py-2 text-sm text-neutral-400">
-                No roles for this tenant
-              </div>
+              <div className="px-3 py-2 text-sm text-neutral-400">No roles for this tenant</div>
             )}
           </DropdownMenuContent>
         </DropdownMenu>

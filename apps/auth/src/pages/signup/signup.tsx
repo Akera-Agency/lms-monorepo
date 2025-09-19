@@ -1,7 +1,7 @@
 import { useAuthForm } from '../../../../../packages/auth/src/hooks/use.auth';
 import { AuthForm } from '@/components/auth-form';
 import { userRoute } from '../../../../../packages/auth/src/utils/external-routes';
-import { ROLES } from '../../../../../packages/elysia-app/src/shared/constants/permissions'
+import { ROLES } from '../../../../../packages/elysia-app/src/shared/constants/permissions';
 
 export default function SignupPage() {
   const {
@@ -31,22 +31,20 @@ export default function SignupPage() {
     e.preventDefault();
     setLoading(true);
     try {
-      
-        const result = await signUp(email, password, name, ROLES.STUDENT, tenant);
-        if (result?.data.session) {
-          console.log('Signup successful:', result.data);
-          window.location.href = `${userRoute}/#access_token=${result.data.session.access_token}&refresh_token=${result.data.session.refresh_token}`;
-        }
-        else if (result.error === null) {
-          console.log('Signup successful, please confirm your email:', result);
-          setSuccessMessage('Signup successful! Please check your email to confirm your account before logging in.');
-        }
-        else {
-          console.error('Signup failed:', result.error);
-          setError(result?.error?.message || 'Signup failed');
-        }
-      }      
-      catch (error) {
+      const result = await signUp(email, password, name, ROLES.STUDENT, tenant);
+      if (result?.data.session) {
+        console.log('Signup successful:', result.data);
+        window.location.href = `${userRoute}/#access_token=${result.data.session.access_token}&refresh_token=${result.data.session.refresh_token}`;
+      } else if (result.error === null) {
+        console.log('Signup successful, please confirm your email:', result);
+        setSuccessMessage(
+          'Signup successful! Please check your email to confirm your account before logging in.',
+        );
+      } else {
+        console.error('Signup failed:', result.error);
+        setError(result?.error?.message || 'Signup failed');
+      }
+    } catch (error) {
       console.error(error);
       if (error instanceof Error) {
         setError(error.message);
@@ -87,8 +85,8 @@ export default function SignupPage() {
                 id === 'email'
                   ? setEmail(value)
                   : id === 'password'
-                  ? setPassword(value)
-                  : setName(value);
+                    ? setPassword(value)
+                    : setName(value);
               }}
               error={error}
               successMessage={successMessage}

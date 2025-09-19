@@ -9,15 +9,11 @@ type ThumbnailUploaderProps = {
 
 const ThumbnailUploader = ({ onChange }: ThumbnailUploaderProps) => {
   const inputFileRef = useRef<HTMLInputElement | null>(null);
-  const onClickRef = () =>
-    inputFileRef?.current && inputFileRef.current.click();
+  const onClickRef = () => inputFileRef?.current && inputFileRef.current.click();
 
   return (
     <div className="relative flex h-[13.25rem] items-center justify-center rounded-xl border-2 border-dashed bg-gray-50 p-6">
-      <div
-        onClick={onClickRef}
-        className="z-10 flex flex-col items-center gap-4"
-      >
+      <div onClick={onClickRef} className="z-10 flex flex-col items-center gap-4">
         <div className="bg-secondary-hover flex h-10 w-10 items-center justify-center rounded-full">
           <CloudUpload className="h-5 w-5 text-secondary-foreground" />
         </div>
@@ -51,11 +47,7 @@ type ThumbnailPreviewProps = {
   onRemove: () => void;
 };
 
-export const ThumbnailPreview = ({
-  alt,
-  preview,
-  onRemove,
-}: ThumbnailPreviewProps) => {
+export const ThumbnailPreview = ({ alt, preview, onRemove }: ThumbnailPreviewProps) => {
   return (
     <div className="group relative h-[11.25rem] w-full grow rounded-xl">
       <div className="relative h-full w-full">

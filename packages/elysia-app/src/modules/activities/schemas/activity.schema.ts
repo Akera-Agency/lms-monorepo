@@ -64,9 +64,7 @@ export const activityDateQuerySchema = z.object({
 });
 
 export type CreateActivityRequest = z.infer<typeof createActivitySchema>;
-export type ActivityPaginationQuery = z.infer<
-  typeof activityPaginationQuerySchema
->;
+export type ActivityPaginationQuery = z.infer<typeof activityPaginationQuerySchema>;
 export type ActivityParams = z.infer<typeof activityParamsSchema>;
 export type ActivityUserParams = z.infer<typeof activityUserParamsSchema>;
 export type ActivityTypeParams = z.infer<typeof activityTypeParamsSchema>;
