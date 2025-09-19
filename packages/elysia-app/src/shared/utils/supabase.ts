@@ -1,5 +1,5 @@
+import { env } from '@akera/env';
 import { createClient } from '@supabase/supabase-js';
-import { env } from 'src/conf/env';
 
 const supabaseUrl = env.SUPABASE_URL;
 

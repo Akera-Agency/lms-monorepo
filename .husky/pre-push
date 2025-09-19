@@ -5,7 +5,7 @@
 
 # 1. Builds the project to confirm that it compiles successfully.
 #    → Guarantees that broken builds are not pushed to the repository.
-#
+bunx nx run elysia-app:build
 
 # 2. Runs tests to ensure code changes don’t break functionality.
 #    → Prevents pushing code that fails existing test cases.
